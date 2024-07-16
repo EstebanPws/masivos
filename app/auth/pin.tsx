@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, TextInput, View, Image } from "react-native"
+import { StyleSheet, TextInput, View, Image, TouchableOpacity, TouchableHighlight, Platform } from "react-native"
 import { Link, useRouter } from "expo-router";
 import ViewFadeIn from "@/components/viewFadeIn";
 import NumericKeyboard from "@/components/numericKeyboard/numericKeyboard";
@@ -7,6 +7,7 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OtpInputs from "@/components/otp/otpInputs";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Icon } from "react-native-paper";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
@@ -45,8 +46,18 @@ export default function Page() {
         router.push('/');
     }
 
+    const handleBack = () => {
+        router.back();
+    }
+
     return (
       <ViewFadeIn>
+        <TouchableOpacity onPress={handleBack} style={[styles.back, Platform.OS === 'android' ? styles.back : styles.backIos]}>
+            <Icon 
+                source={Platform.OS === 'android' ? 'arrow-left' : 'apple-keyboard-control'}
+                size={25}
+            />
+        </TouchableOpacity>
         <View style={styles.row}>
             <Image source={require('../../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
         </View>
@@ -94,5 +105,15 @@ const styles = StyleSheet.create({
         color: colorPrimary,
         marginTop: 20,
         fontSize: 13
+    },
+    back: {
+        position: 'absolute', 
+        top: 25,
+        left: -55,
+        padding: 50,
+        zIndex: 2
+    },
+    backIos: {
+        transform: [{ rotate: '-90deg' }]
     }
  });

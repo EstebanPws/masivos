@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    maxWidth: 960,
+    maxWidth: 1200,
     marginHorizontal: 'auto',
   }
 });
