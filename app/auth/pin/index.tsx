@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, TextInput, View, Image, TouchableOpacity, TouchableHighlight, Platform } from "react-native"
+import { TextInput, View, Image, TouchableOpacity, Platform } from "react-native"
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import ViewFadeIn from "@/components/viewFadeIn";
 import NumericKeyboard from "@/components/numericKeyboard/numericKeyboard";
@@ -9,9 +9,9 @@ import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Icon } from "react-native-paper";
 import { useAuth } from "@/components/auth/context/authenticationContext";
+import { styles } from "./pin.styles";
 
 const extra = Constants.expoConfig?.extra || {};
-const { colorPrimary } = extra;
 const { primaryBold } = extra.text;
 
 export default function Page() {
@@ -75,7 +75,7 @@ export default function Page() {
             />
         </TouchableOpacity>
         <View style={styles.row}>
-            <Image source={require('../../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
+            <Image source={require('../../../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
         </View>
         <View style={styles.row}>
             {otpValues.map((value, index) => (
@@ -101,35 +101,3 @@ export default function Page() {
       </ViewFadeIn>
     );
 }
-
-const styles = StyleSheet.create({
-    mt5: {
-      marginTop: 30
-    },
-    row: {
-        flexDirection: "row",
-        justifyContent: "center"
-    },
-    otp: {
-        marginRight: 10,
-    },
-    logo: {
-        marginTop: 30,
-        width: 200
-    },
-    link: {
-        color: colorPrimary,
-        marginTop: 20,
-        fontSize: 13
-    },
-    back: {
-        position: 'absolute', 
-        top: 25,
-        left: -55,
-        padding: 50,
-        zIndex: 2
-    },
-    backIos: {
-        transform: [{ rotate: '-90deg' }]
-    }
- });

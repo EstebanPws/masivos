@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Platform, TouchableOpacity } from "react-native";
+import { Image, View, Platform, TouchableOpacity } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ViewFadeIn from "@/components/viewFadeIn";
@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/components/auth/context/authenticationContext";
 import { useState } from "react";
 import InfoModal from "@/components/modals/infoModal/infoModal";
+import { styles  } from "./styles";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
@@ -31,11 +32,11 @@ export default function Page() {
   };
 
   const handleLogin = () => {
-    router.push({ pathname: 'auth/pin', params: { document: inputDocument } });
+    router.push({ pathname: 'auth/pin/', params: { document: inputDocument } });
   }
 
   const handleRegister = () => {
-    router.push('auth/signUp');
+    router.push('auth/signUp/');
   }
 
   return (
@@ -105,67 +106,3 @@ export default function Page() {
     </ViewFadeIn>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  containerImage: {
-    position: 'relative',
-    flex: 1,
-  },
-  image: {
-    height: 500,
-    paddingBottom: 50,
-    borderBottomEndRadius: 30,
-    borderBottomStartRadius: 30,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: '50%',
-    transform: [{ translateX: -125 }],
-    backgroundColor: '#fff',
-    width: 250,
-    zIndex: 2,
-    borderBottomEndRadius: 20,
-    borderBottomStartRadius: 20,
-    paddingTop: 30,
-    alignItems: 'center',
-  },
-  logo: {
-    width: 200
-  },
-  containerText: {
-    position: 'absolute',
-    bottom: '46%',
-    left: 30,
-    right: 30,
-    zIndex: 2,
-  },
-  containerForm: {
-    marginVertical: 30,
-    paddingHorizontal: 40
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 20,
-    paddingRight: 30
-  },
-  textWhite: {
-    color: '#fff'
-  },
-  icon: {
-    borderWidth: 2,
-    borderColor: colorPrimary,
-    padding: 5,
-    borderRadius: 5,
-    marginRight: 5
-  },
-  mt5: {
-    marginTop: 30
-  }
-});
