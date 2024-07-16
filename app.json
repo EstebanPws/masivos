@@ -1,12 +1,24 @@
 {
   "expo": {
-    "name": "wallet-payments-way",
-    "slug": "wallet-payments-way",
+    "name": "Payments Way",
+    "slug": "Payments Way",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
+    "extra": {
+      "text": {
+        "primaryBold": {
+          "fontFamily": "Montserrat_700Bold"
+        },
+        "primaryRegular": {
+          "fontFamily": "Montserrat_400Regular"
+        }
+      },
+      "colorPrimary": "#FF0042",
+      "colorSecondary": "#800021"
+    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -27,7 +39,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
