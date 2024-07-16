@@ -15,6 +15,10 @@ const { primaryBold, primaryRegular } = extra.text;
 export default function Page() {
   const router = useRouter();
 
+  const handleLogin = () => {
+    router.push('auth/pin');
+  }
+
   const handleRegister = () => {
     router.push('auth/signUp');
   }
@@ -46,6 +50,7 @@ export default function Page() {
             <ButtonsPrimary
               label="Acceder a la billetera"
               style={styles.mt5}
+              onPress={handleLogin}
             />
           </View>
           <View style={{...styles.row, ...styles.mt5}}>

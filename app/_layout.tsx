@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
+import { StatusBar } from 'expo-status-bar';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,6 +24,8 @@ export default function Layout() {
       }
 
     return (
+      <>
+        <StatusBar style="auto" />
         <Stack
             screenOptions={{
                 headerShadowVisible: false,
@@ -34,5 +37,6 @@ export default function Layout() {
         >
             <Stack.Screen name="index"/>
         </Stack>
+      </>
      );
 }

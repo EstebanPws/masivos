@@ -17,11 +17,12 @@
         }
       },
       "colorPrimary": "#FF0042",
-      "colorSecondary": "#800021"
+      "colorSecondary": "#800021",
+      "colorSecondaryDark": "#333333"
     },
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {

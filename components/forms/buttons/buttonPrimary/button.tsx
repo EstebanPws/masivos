@@ -13,9 +13,10 @@ interface ButtonsPrimaryProps {
     icon?: IconSource;
     label?: string;
     style?: any;
+    onPress?: () => void; 
 }
 
-export default  function ButtonsPrimary({icon = '' , label, style} : ButtonsPrimaryProps) {  
+export default  function ButtonsPrimary({icon = '' , label, style, onPress} : ButtonsPrimaryProps) {  
     return (
         <LinearGradient
             colors={[colorPrimary, colorSecondary]}
@@ -23,7 +24,7 @@ export default  function ButtonsPrimary({icon = '' , label, style} : ButtonsPrim
             end={{ x: 1, y: 0 }}
             style={{...style, ...styles.btn}}
         >
-            <Button mode="contained" buttonColor={'transparent'}  onPress={() => console.log('Pressed')}>
+            <Button mode="contained" buttonColor={'transparent'}  onPress={onPress}>
                 <Text style={{...styles.btnText, ...primaryRegular}}>{label}</Text>
             </Button>
         </LinearGradient>

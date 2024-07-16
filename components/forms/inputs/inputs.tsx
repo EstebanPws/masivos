@@ -23,7 +23,7 @@ interface InputsProps {
   isTextArea?: boolean;
 }
 
-export default  function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false} : InputsProps) {
+export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false} : InputsProps) {
   const [text, setText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
