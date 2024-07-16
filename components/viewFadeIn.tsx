@@ -1,7 +1,6 @@
 import React, {ReactNode}from 'react';
 import { StyleSheet, View } from 'react-native';
 import { MotiView } from 'moti';
-import Page from './viewFadeIn';
 
 interface ViewFadeInProps  {
   children: ReactNode

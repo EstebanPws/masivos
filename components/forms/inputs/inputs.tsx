@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { Dispatch, SetStateAction, useState }  from 'react';
 import { MotiView } from 'moti';
 import { View, Text} from 'react-native';
 import { TextInput } from 'react-native-paper';
@@ -10,7 +10,6 @@ const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 const { primaryBold } = extra.text;
 
-
 interface InputsProps {
   icon?: IconSource;
   label?: string;
@@ -21,10 +20,11 @@ interface InputsProps {
   iconColor?: string;
   flag?: any;
   isTextArea?: boolean;
+  onChangeText?: Dispatch<SetStateAction<string>>;
+  value: string;
 }
 
-export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false} : InputsProps) {
-  const [text, setText] = useState('');
+export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value} : InputsProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -63,6 +63,8 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
           cursorColor={isFocused ? `${colorPrimary}` : 'transparent'}
           multiline={isTextArea}
           numberOfLines={4}
+          onChangeText={onChangeText}
+          value={value} // Asegurarse de que el TextInput sea controlado
         />
       ) : (
         <TextInput
@@ -77,10 +79,11 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
           cursorColor={isFocused ? `${colorPrimary}` : 'transparent'}
           multiline={isTextArea}
           numberOfLines={4}
+          onChangeText={onChangeText}
+          value={value} // Asegurarse de que el TextInput sea controlado
         />
-       
       )}
       </MotiView>
-
     </View>
-)};
+  );
+}

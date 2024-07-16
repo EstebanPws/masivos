@@ -7,16 +7,31 @@ import Constants from "expo-constants";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 import { useRouter } from "expo-router";
+import { useAuth } from "@/components/auth/context/authenticationContext";
+import { useState } from "react";
+import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 const { primaryBold, primaryRegular } = extra.text;
 
 export default function Page() {
+  const { authenticate, documentNumber, password } = useAuth();
+  const [inputDocument, setInputDocument] = useState('');
+  const [showAlertAuth, setShowAlertAuth] = useState(false);
+
   const router = useRouter();
 
+  const handleAuthenticate = async () => {  
+    if(inputDocument === documentNumber){
+      await authenticate(documentNumber!, password!);
+    } else {
+      setShowAlertAuth(true);
+    }
+  };
+
   const handleLogin = () => {
-    router.push('auth/pin');
+    router.push({ pathname: 'auth/pin', params: { document: inputDocument } });
   }
 
   const handleRegister = () => {
@@ -46,6 +61,8 @@ export default function Page() {
               isSecureText={false}
               isRequired={false}
               keyboardType="numeric"
+              onChangeText={setInputDocument}
+              value={inputDocument}
             />
             <ButtonsPrimary
               label="Acceder a la billetera"
@@ -54,18 +71,22 @@ export default function Page() {
             />
           </View>
           <View style={{...styles.row, ...styles.mt5}}>
-            <TouchableOpacity>
-              <View style={styles.row}>
-                <View style={styles.icon}>
-                  <Icon
-                    source="account"
-                    color={colorPrimary}
-                    size={20}
-                  />
+            {documentNumber  ? (
+              <TouchableOpacity onPress={handleAuthenticate}>
+                <View style={styles.row}>
+                  <View style={styles.icon}>
+                    <Icon
+                      source="account"
+                      color={colorPrimary}
+                      size={20}
+                    />
+                  </View>
+                  <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
                 </View>
-                <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            ) : (
+              <View />
+            )}
             <ButtonsSecondary
               label="Registrarse"
               onPress={handleRegister}
@@ -73,6 +94,14 @@ export default function Page() {
           </View>
         </View>
       </KeyboardAwareScrollView>
+      {showAlertAuth && (
+        <InfoModal
+            isVisible={showAlertAuth}
+            type="info"
+            message={`El número de documento ingresado no coincide con el de la sesión guradada. ${'\n\n'} Por favor verifique los datos e intentelo nuevamente.`}
+            onPress={() => setShowAlertAuth(false)}
+        />
+      )}
     </ViewFadeIn>
   );
 }
@@ -123,7 +152,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 25,
+    paddingLeft: 20,
+    paddingRight: 30
   },
   textWhite: {
     color: '#fff'

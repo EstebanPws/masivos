@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View, Image, TouchableOpacity, TouchableHighlight, Platform } from "react-native"
-import { Link, useRouter } from "expo-router";
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import ViewFadeIn from "@/components/viewFadeIn";
 import NumericKeyboard from "@/components/numericKeyboard/numericKeyboard";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -8,15 +8,18 @@ import OtpInputs from "@/components/otp/otpInputs";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Icon } from "react-native-paper";
+import { useAuth } from "@/components/auth/context/authenticationContext";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 const { primaryBold } = extra.text;
 
 export default function Page() {
+    const { authenticate } = useAuth();
     const inputRefs = useRef<TextInput[]>([]);
     const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '']);
     const router = useRouter();
+    const { document } = useLocalSearchParams();
 
     useEffect(() => {
         inputRefs.current[0]?.focus();
@@ -42,12 +45,25 @@ export default function Page() {
         }
     };
 
-    const handleLogin = () => {
-        router.push('/');
-    }
-
     const handleBack = () => {
         router.back();
+    }
+
+    const handleAuthenticate = async () => {
+        const otpIsEmpty = otpValues.some((val) => val === '');
+
+        if (otpIsEmpty) {
+            alert('Por favor ingresa el pin.');
+            return;
+        }
+
+        const otpConcatenated = otpValues.join('');
+
+        await authenticate(document!.toString(), otpConcatenated);
+    };
+
+    const handleLogin = () => {
+       router.push('/');
     }
 
     return (
@@ -75,7 +91,7 @@ export default function Page() {
             <Link href={'/'} style={{...styles.link, ...primaryBold}}>¿Olvidaste tu PIN?</Link>
         </View>
         <GestureHandlerRootView>
-            <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress } onPress={() => console.log('faceId')} />
+            <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress } onPress={handleAuthenticate} />
             <ButtonsPrimary
                 label="Acceder a la billetera"
                 style={styles.mt5}
