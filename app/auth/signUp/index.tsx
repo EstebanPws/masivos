@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Icon } from "react-native-paper";
 import { styles } from "./signUp.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
+import HeaderGeneral from "@/components/headers/headerGeneral/headerGeneral";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
@@ -99,15 +100,7 @@ export default function Page() {
     return (
       <>
         <ViewFadeIn>
-          <TouchableOpacity onPress={handleBack} style={[styles.back, Platform.OS === 'android' ? styles.back : styles.backIos]}>
-              <Icon 
-                  source={Platform.OS === 'android' ? 'arrow-left' : 'apple-keyboard-control'}
-                  size={25}
-              />
-          </TouchableOpacity>
-          <View style={styles.row}>
-              <Image source={require('../../../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
-          </View>
+          <HeaderGeneral onBack={handleBack}/>
           <View style={styles.mt5}>
             <View style={styles.containerText}>
               <Text variant="titleLarge" style={{...primaryBold, ...styles.title}}>Configurar un nuevo PIN</Text>

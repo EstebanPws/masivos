@@ -15,23 +15,9 @@ export const styles = StyleSheet.create({
     otp: {
         marginRight: 10,
     },
-    logo: {
-        marginTop: 30,
-        width: 200
-    },
     link: {
         color: colorPrimary,
         marginTop: 20,
         fontSize: 13
-    },
-    back: {
-        position: 'absolute', 
-        top: 25,
-        left: -55,
-        padding: 50,
-        zIndex: 2
-    },
-    backIos: {
-        transform: [{ rotate: '-90deg' }]
     }
  });
