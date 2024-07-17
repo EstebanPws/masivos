@@ -18,6 +18,7 @@ export default function Page() {
     const { authenticate } = useAuth();
     const inputRefs = useRef<TextInput[]>([]);
     const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '']);
+    const [isSecure, setIsSecure] = useState(true);
     const router = useRouter();
     const { document } = useLocalSearchParams();
 
@@ -66,6 +67,10 @@ export default function Page() {
        router.push('/');
     }
 
+    const handleViewPin = () => {
+        setIsSecure(!isSecure);
+    }
+
     return (
       <ViewFadeIn>
         <TouchableOpacity onPress={handleBack} style={[styles.back, Platform.OS === 'android' ? styles.back : styles.backIos]}>
@@ -84,6 +89,7 @@ export default function Page() {
                     style={index === 3 ? null : styles.otp}
                     editable={false}
                     value={value}
+                    isSecure={isSecure}
                 />
             ))}
         </View>
@@ -91,7 +97,7 @@ export default function Page() {
             <Link href={'/'} style={{...styles.link, ...primaryBold}}>¿Olvidaste tu PIN?</Link>
         </View>
         <GestureHandlerRootView>
-            <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress } onPress={handleAuthenticate} />
+            <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress } onPress={handleAuthenticate}onView={handleViewPin}/>
             <ButtonsPrimary
                 label="Acceder a la billetera"
                 style={styles.mt5}

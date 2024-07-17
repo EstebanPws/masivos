@@ -32,6 +32,13 @@ export const styles = StyleSheet.create({
         marginLeft: -85,
         borderRadius: 10,
     },
+    buttonView: {
+        paddingVertical: 25,
+        paddingHorizontal: 10,
+        marginRight: 20,
+        marginLeft: -72,
+        borderRadius: 10,
+    },
     buttonDelete: {
         paddingVertical: 25,
         paddingHorizontal: 10,

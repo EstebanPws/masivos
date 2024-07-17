@@ -9,9 +9,10 @@ const { primaryBold } = extra.text;
 interface Props extends TextInputProps {
   style?: any;
   focusNextField?: () => void;
+  isSecure?: boolean
 }
 
-const OtpInputs = React.forwardRef<TextInput, Props>(({style, focusNextField, ...rest }, ref) => {
+const OtpInputs = React.forwardRef<TextInput, Props>(({style, focusNextField, isSecure = false, ...rest }, ref) => {
   const handleChangeText = (text: string) => {
     if (text.length === 1 && focusNextField) {
       focusNextField();
@@ -20,6 +21,7 @@ const OtpInputs = React.forwardRef<TextInput, Props>(({style, focusNextField, ..
 
   return (
     <TextInput
+      secureTextEntry={isSecure}
       ref={ref}
       style={{...styles.input, ...primaryBold ,...style}}
       maxLength={1}

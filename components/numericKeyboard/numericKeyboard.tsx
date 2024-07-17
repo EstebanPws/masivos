@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, Platform } from 'react-native';
 import { styles } from './numericKeyboard.styles'
 import { Icon } from 'react-native-paper';
@@ -11,13 +11,21 @@ const { primaryBold } = extra.text;
 
 interface NumericKeyboardProps {
     onKeyPress: (value: string) => void;
-    onDeletePress: () => void;
-    onPress: () => void;
+    onDeletePress?: () => void;
+    onPress?: () => void;
+    onView?: () => void;
 }
 
-export default function NumericKeyboard  ({ onKeyPress, onDeletePress, onPress} : NumericKeyboardProps) {
+export default function NumericKeyboard  ({ onKeyPress, onDeletePress, onPress, onView} : NumericKeyboardProps) {
+    const [view, setView] = useState(false);
+
     const handleKeyPress = (value: string) => {
         onKeyPress(value);
+    };
+
+    const handleChange = () => {
+        if (onView) onView();
+        setView(!view);
     };
 
     return (
@@ -56,6 +64,15 @@ export default function NumericKeyboard  ({ onKeyPress, onDeletePress, onPress} 
                 </TouchableHighlight>
             </View>
             <View style={styles.row}>
+                <TouchableOpacity  onPress={handleChange} style={styles.buttonView}>
+                    <View>
+                        <Icon
+                            source={view ? "eye-off" : "eye"}
+                            color={colorPrimary}
+                            size={30}
+                        />
+                    </View>
+                </TouchableOpacity>
                 <TouchableHighlight onPress={() => handleKeyPress('0')} style={styles.button} underlayColor={`${colorPrimary}`}>
                     <Text style={{...styles.buttonText, ...primaryBold}}>0</Text>
                 </TouchableHighlight>
@@ -69,18 +86,20 @@ export default function NumericKeyboard  ({ onKeyPress, onDeletePress, onPress} 
                     </View>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={onPress} style={styles.containerFeceId}>
-                <View style={styles.row}>
-                    <View style={styles.faceIcon}>
-                        <Icon
-                            source="account"
-                            color={colorPrimary}
-                            size={20}
-                        />
+            {onPress && (
+                <TouchableOpacity onPress={onPress} style={styles.containerFeceId}>
+                    <View style={styles.row}>
+                        <View style={styles.faceIcon}>
+                            <Icon
+                                source="account"
+                                color={colorPrimary}
+                                size={20}
+                            />
+                        </View>
+                        <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
                     </View>
-                    <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
+            )}
         </View>
     );
 };
