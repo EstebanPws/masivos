@@ -11,6 +11,7 @@ import { useAuth } from "@/components/auth/context/authenticationContext";
 import { useState } from "react";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { styles  } from "./styles";
+import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
@@ -48,9 +49,7 @@ export default function Page() {
       >
         <View style={styles.containerImage}>
           <Image source={require('../assets/images/general/home.webp')} resizeMode="cover" style={styles.image} />
-          <View style={styles.header}>
-            <Image source={require('../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
-          </View>
+          <HeaderSecondary type={0}/>
           <View style={styles.containerText}>
             <Text style={{ ...primaryBold, ...styles.textWhite }} variant="headlineMedium">¡Bienvenido!</Text>
             <Text style={{ ...primaryRegular, ...styles.textWhite }} variant="titleLarge">Por favor identificate para entrar en tu cuenta.</Text>

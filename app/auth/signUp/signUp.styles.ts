@@ -6,7 +6,7 @@ const { colorPrimary } = extra;
 
 export const styles = StyleSheet.create({
     mt5: {
-      marginTop: 20
+      marginTop: 10
     },
     row: {
         flexDirection: "row",

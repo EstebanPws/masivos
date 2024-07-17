@@ -19,22 +19,6 @@ export const styles = StyleSheet.create({
       borderBottomEndRadius: 30,
       borderBottomStartRadius: 30,
     },
-    header: {
-      position: 'absolute',
-      top: 0,
-      left: '50%',
-      transform: [{ translateX: -125 }],
-      backgroundColor: '#fff',
-      width: 250,
-      zIndex: 2,
-      borderBottomEndRadius: 20,
-      borderBottomStartRadius: 20,
-      paddingTop: 30,
-      alignItems: 'center',
-    },
-    logo: {
-      width: 200
-    },
     containerText: {
       position: 'absolute',
       bottom: '46%',

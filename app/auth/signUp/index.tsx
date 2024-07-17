@@ -8,10 +8,9 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OtpInputs from "@/components/otp/otpInputs";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Icon } from "react-native-paper";
 import { styles } from "./signUp.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
-import HeaderGeneral from "@/components/headers/headerGeneral/headerGeneral";
+import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
@@ -100,7 +99,7 @@ export default function Page() {
     return (
       <>
         <ViewFadeIn>
-          <HeaderGeneral onBack={handleBack}/>
+          <HeaderSecondary type={1} onBack={handleBack}/>
           <View style={styles.mt5}>
             <View style={styles.containerText}>
               <Text variant="titleLarge" style={{...primaryBold, ...styles.title}}>Configurar un nuevo PIN</Text>
