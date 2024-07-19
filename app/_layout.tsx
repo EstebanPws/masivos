@@ -9,6 +9,7 @@ import AuthenticationProvider from '@/components/auth/context/authenticationCont
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  
     const [loaded, error] = useFonts({
         Montserrat_400Regular,
         Montserrat_700Bold

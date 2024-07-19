@@ -34,6 +34,9 @@ export const styles = StyleSheet.create({
         marginBottom: 5
     },
     mrn: {
-        marginRight: -10
+        marginRight: -15
+    },
+    mrnPinEmpty: {
+        marginRight: -25
     }
  });

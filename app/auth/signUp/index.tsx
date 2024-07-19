@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { styles } from "./signUp.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
+import { setData } from '@/utils/storageUtils';
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
@@ -25,6 +26,9 @@ export default function Page() {
     const [firstPin, setFirstPin] = useState('');
     const [validateAfterSettingPin, setValidateAfterSettingPin] = useState(false);
     const router = useRouter();
+    const [formData, setFormData] = useState({
+      pin: ''
+    });
 
     useEffect(() => {
         inputRefs.current[0]?.focus();
@@ -83,8 +87,16 @@ export default function Page() {
 
     useEffect(() => {
       if (validateAfterSettingPin) {
-        if (firstPin === otpValues.join('')) {
-          router.push('/');
+        if (firstPin === otpValues.join('')) {    
+          const updatedFormData = { ...formData, pin: otpValues.join('')};
+          setFormData(updatedFormData);
+
+          const fetchFormData = async () => {
+            await setData('registrationForm', formData);
+            router.push('auth/signUp/videoIdentification');
+          };
+
+          fetchFormData();
         } else {
           setShowErrorPin(true);
         }
@@ -105,7 +117,7 @@ export default function Page() {
               <Text variant="titleLarge" style={{...primaryBold, ...styles.title}}>Configurar un nuevo PIN</Text>
               <Text variant="titleMedium" style={{...primaryRegular}}>{step === 0 ? 'Selecciona un código de 4 dígitos' : 'Confirmar nuevo PIN'}</Text>
             </View>
-            <View style={[styles.row, (pinEmpty ? styles.mrn : null)]}>
+            <View style={[styles.row, (pinEmpty ? styles.mrnPinEmpty : styles.mrn)]}>
                 {otpValues.map((value, index) => (
                     <OtpInputs
                         key={index}
