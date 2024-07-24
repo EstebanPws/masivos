@@ -8,7 +8,7 @@ import { styles } from "./videoIdentifications.styles";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
 import InfoModal from "@/components/modals/infoModal/infoModal";
-import { ShouldStartLoadRequest, WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
+import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes";
 import { setData, getData } from "@/utils/storageUtils";
 import { stateMessages , documentType } from '@/utils/listUtils';
 import Loader from "@/components/loader/loader";
@@ -17,7 +17,7 @@ const urlAdo = process.env.EXPO_PUBLIC_URL_ADO;
 
 export default function Page() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [locationPermission, setLocationPermission] = useState<any>();
     const [cameraPermission, setCameraPermission] = useState<any>();
     const [showAlert, setShowAlert] = useState(false);
@@ -64,10 +64,6 @@ export default function Page() {
                     setShowAlert(true);
                     return;
                 }
-
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 3000);
             } catch (error) {
                 setLocationPermission("denied");
                 setCameraPermission("denied");
@@ -88,6 +84,7 @@ export default function Page() {
                     const savedData = await getData('registrationForm');
                     if (savedData) {
                       setFormData({ ...formData, ...savedData });
+                      await setData('registrationForm', formData);
                     }
                 };
             
@@ -122,8 +119,6 @@ export default function Page() {
                     setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
                     setShowAlertMessageResponse(true);
                 }
-
-                console.log("Parsed JSON Object:", jsonObject);
             }
             return false;
         }
@@ -147,14 +142,21 @@ export default function Page() {
         );
     };
 
-    if (isLoading){
-        return (
-            <Loader/>
-        )
-    }
+    const handleLoadStart = () => {
+        setIsLoading(true);
+      };
+
+    const handleLoadProgress = (nativeEvent: WebViewProgressEvent) => {
+        if (nativeEvent.nativeEvent.progress === 1) {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <>
+            {isLoading && (
+                <Loader/>
+            )}
             <View style={styles.containerHeader}>
                 <HeaderSecondary type={1} onBack={() => router.back()} />
             </View>
@@ -179,6 +181,8 @@ export default function Page() {
                     userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
                     source={{ uri: `https://${urlAdo}/validar-persona?callback=https%3A%2F%2FURL_OK&key=9E33C3A4C252187&projectName=PaymentsWay_QA&product=1` }}
                     injectedJavaScript={customJavaScript}
+                    onLoadStart={handleLoadStart}
+                    onLoadProgress={(nativeEvent) => handleLoadProgress(nativeEvent)}
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
                     onError={(syntheticEvent) => handleError(syntheticEvent)}
                     onSslError={(event: { preventDefault: () => void; }) => handleSslError(event)}

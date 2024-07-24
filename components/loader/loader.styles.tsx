@@ -5,6 +5,10 @@ export const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      zIndex: 9
     },
     gradient: {
       width: '100%',
