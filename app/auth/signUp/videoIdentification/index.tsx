@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
 import { Camera } from "expo-camera";
-import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 import { styles } from "./videoIdentifications.styles";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
@@ -12,6 +11,7 @@ import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from 
 import { setData, getData } from "@/utils/storageUtils";
 import { stateMessages , documentType } from '@/utils/listUtils';
 import Loader from "@/components/loader/loader";
+import HeaderForm from "@/components/headers/headerForm/headerForm";
 
 const urlAdo = process.env.EXPO_PUBLIC_URL_ADO;
 
@@ -83,8 +83,9 @@ export default function Page() {
                 const fetchFormData = async () => {
                     const savedData = await getData('registrationForm');
                     if (savedData) {
-                      setFormData({ ...formData, ...savedData });
-                      await setData('registrationForm', formData);
+                      const updatedFormData = { ...savedData, ...formData };
+                      await setData('registrationForm', updatedFormData);   
+                      router.push('auth/signUp/selectTypeAccount/');
                     }
                 };
             
@@ -142,13 +143,11 @@ export default function Page() {
         );
     };
 
-    const handleLoadStart = () => {
-        setIsLoading(true);
-      };
-
-    const handleLoadProgress = (nativeEvent: WebViewProgressEvent) => {
+    const handleLoadProgress = (nativeEvent: WebViewProgressEvent) => { 
         if (nativeEvent.nativeEvent.progress === 1) {
             setIsLoading(false);
+        } else {
+            setIsLoading(true);
         }
     };
 
@@ -157,9 +156,8 @@ export default function Page() {
             {isLoading && (
                 <Loader/>
             )}
-            <View style={styles.containerHeader}>
-                <HeaderSecondary type={1} onBack={() => router.back()} />
-            </View>
+            <HeaderForm onBack={() => router.back()}/>
+            
             <MotiView
                 from={{ opacity: 0, translateY: -50 }}
                 animate={{ opacity: 1, translateY: 0 }}
@@ -174,14 +172,13 @@ export default function Page() {
                     domStorageEnabled={true}
                     allowFileAccessFromFileURLs={true}
                     allowUniversalAccessFromFileURLs={true}
-                    mediaPlaybackRequiresUserAction={false}
+                    allowsInlineMediaPlayback={true}
                     originWhitelist={['*']}
                     mixedContentMode="always"
                     geolocationEnabled={true}
                     userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
                     source={{ uri: `https://${urlAdo}/validar-persona?callback=https%3A%2F%2FURL_OK&key=9E33C3A4C252187&projectName=PaymentsWay_QA&product=1` }}
                     injectedJavaScript={customJavaScript}
-                    onLoadStart={handleLoadStart}
                     onLoadProgress={(nativeEvent) => handleLoadProgress(nativeEvent)}
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
                     onError={(syntheticEvent) => handleError(syntheticEvent)}
