@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState }  from 'react';
 import { MotiView } from 'moti';
 import { View, Text} from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { MD2Colors, TextInput } from 'react-native-paper';
 import { styles } from './inputs.styles';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import Constants from "expo-constants";
@@ -22,9 +22,10 @@ interface InputsProps {
   isTextArea?: boolean;
   onChangeText?: Dispatch<SetStateAction<string>>;
   value: string;
+  maxLength?: number;
 }
 
-export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value} : InputsProps) {
+export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value,  maxLength} : InputsProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -32,12 +33,12 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
       <Text style={[primaryBold, isFocused ? styles.labelActive : styles.label]}>{isRequired ? `${label} *` : label}</Text>
       <MotiView
         from={{
-            borderColor: '#949494',
+            borderColor: `${MD2Colors.grey500}`,
             borderWidth: 1,
             scale: 1,
         }}
         animate={{
-            borderColor: isFocused ? `${colorPrimary}` : '#949494',
+            borderColor: isFocused ? `${colorPrimary}` : `${MD2Colors.grey500}`,
             borderWidth: 1.5,
             borderRadius: 20,
         }}
@@ -64,7 +65,8 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
           multiline={isTextArea}
           numberOfLines={4}
           onChangeText={onChangeText}
-          value={value} // Asegurarse de que el TextInput sea controlado
+          value={value}
+          maxLength={maxLength}
         />
       ) : (
         <TextInput
@@ -80,7 +82,8 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
           multiline={isTextArea}
           numberOfLines={4}
           onChangeText={onChangeText}
-          value={value} // Asegurarse de que el TextInput sea controlado
+          value={value}
+          maxLength={maxLength}
         />
       )}
       </MotiView>

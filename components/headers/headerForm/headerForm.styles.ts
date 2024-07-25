@@ -10,4 +10,8 @@ export const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         elevation: 0,
     },
+    text: {
+        fontSize: 16,
+        textAlign: 'center'
+    }
 })

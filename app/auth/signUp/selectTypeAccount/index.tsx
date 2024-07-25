@@ -113,6 +113,7 @@ export default function Page() {
                             <Text variant="titleMedium" style={{ ...styles.textBtnLine, ...primaryBold }}>
                                 Indicanos que tipo de persona eres
                             </Text>
+                            <View style={styles.line}/>
                             <View style={styles.row}>
                                 <View>
                                     <TouchableOpacity style={styles.btnAccount} onPress={() => {handleNext(0)}}>

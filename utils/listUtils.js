@@ -22,3 +22,33 @@ export const documentType = {
     5: 'T',
     17: 'V'
 };
+
+export const listDocumentType = [
+    {
+        name: 'Cédula Ciudadanía',
+        value: 'C'
+    },
+    {
+        name: 'Tarjeta Identidad',
+        value: 'T'
+    },
+    {
+        name: 'Pasaporte',
+        value: 'P'
+    },
+    {
+        name: 'PPT',
+        value: 'V'
+    }
+];
+
+export const listGenderType = [
+    {
+        name: 'Femenino',
+        value: 'F'
+    },
+    {
+        name: 'Masculino',
+        value: 'M'
+    }
+];

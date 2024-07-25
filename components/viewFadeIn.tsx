@@ -3,10 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import { MotiView } from 'moti';
 
 interface ViewFadeInProps  {
+  isWidthFull?: boolean,
   children: ReactNode
 }
 
-export default function ViewFadeIn({ children }: ViewFadeInProps) {
+export default function ViewFadeIn({ isWidthFull = false, children }: ViewFadeInProps) {
   return (
     <MotiView
         from={{ opacity: 0, translateY: -50 }}
@@ -14,7 +15,7 @@ export default function ViewFadeIn({ children }: ViewFadeInProps) {
         transition={{ type: 'timing', duration: 500 }}
         style={styles.container}
     >
-        <View style={styles.main}>
+        <View style={[isWidthFull ? { width: '100%' } : {}, styles.main]}>
             {children}
         </View>
     </MotiView>

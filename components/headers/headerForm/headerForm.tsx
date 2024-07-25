@@ -6,7 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
 
 const extra = Constants.expoConfig?.extra || {};
-const {primaryRegular} = extra.text;
+const {primaryBold} = extra.text;
 const {colorPrimary, colorSecondary} = extra;
 
 interface HeaderForm {
@@ -24,7 +24,7 @@ export default function HeaderForm ({title = "", onBack} : HeaderForm) {
         >
             <Appbar.Header style={styles.appbarHeader}>
                 <Appbar.BackAction onPress={onBack} size={30} color="#fff"/>
-                <Appbar.Content style={primaryRegular}  color="#fff" title={title} />
+                <Appbar.Content titleStyle={{...primaryBold, ...styles.text}}  color="#fff" title={title} />
                 <Appbar.Action 
                     icon={() => (
                         <Image 

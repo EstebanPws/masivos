@@ -85,12 +85,14 @@ export const styles = StyleSheet.create({
         color: `${MD2Colors.white}`
     },
     textBtnLine: {
-        borderBottomColor: `${MD2Colors.white}`,
-        borderBottomWidth: 2,
         paddingBottom: 10,
-        marginBottom: 20,
         fontSize: 12,
         textAlign: 'center',
         color: `${MD2Colors.white}`
+    },
+    line: {
+        borderBottomColor: `${MD2Colors.white}`,
+        borderBottomWidth: 2,
+        marginBottom: 20,
     },
  });
