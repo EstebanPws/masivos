@@ -107,12 +107,12 @@ export default function Page() {
 
                 const updatedFormData = { 
                     ...formData, 
-                    nombre1: "jsonObject.FirstName", 
-                    nombre2: "jsonObject.SecondName", 
-                    apellido1: "jsonObject.FirstSurname", 
-                    apellido2: "jsonObject.SecondSurname", 
+                    nombre1: jsonObject.FirstName, 
+                    nombre2: jsonObject.SecondName, 
+                    apellido1: jsonObject.FirstSurname, 
+                    apellido2: jsonObject.SecondSurname, 
                     tipo_doc: document ,
-                    no_docum: "jsonObject.IdNumber"};
+                    no_docum: jsonObject.IdNumber};
              
                 setFormData(updatedFormData)
 

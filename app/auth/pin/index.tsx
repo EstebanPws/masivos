@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { TextInput, View, Image, TouchableOpacity, Platform } from "react-native"
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
-import ViewFadeIn from "@/components/viewFadeIn";
+import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import NumericKeyboard from "@/components/numericKeyboard/numericKeyboard";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OtpInputs from "@/components/otp/otpInputs";

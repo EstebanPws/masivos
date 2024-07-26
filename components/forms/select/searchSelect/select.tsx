@@ -17,7 +17,7 @@ interface SearchSelectProps {
     data: any;
     placeholder: string;
     onSelect: (item: any) => void;
-    selectedValue?: any;
+    selectedValue: any;
 }
 
 export default function SearchSelect({ isRequired = false, label, data, placeholder, onSelect, selectedValue = '' }: SearchSelectProps) {
@@ -26,8 +26,11 @@ export default function SearchSelect({ isRequired = false, label, data, placehol
     const [filteredData, setFilteredData] = useState(data);
 
     useEffect(() => {
-      setSearchQuery(selectedValue);
-    }, [selectedValue]);
+        if (data) {
+            const itemSelected = data.find((item: { value: any; }) => item.value === selectedValue) || { name: '', value: '' };
+            setSearchQuery(itemSelected.name);
+        }
+    }, [data, selectedValue]);
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);

@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 import { Icon, MD2Colors, Text } from "react-native-paper";
 import { styles } from "./selecTypeAccount.styles";
 import { useRouter } from "expo-router";
-import ViewFadeIn from "@/components/viewFadeIn";
+import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import Constants from "expo-constants";
 import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 import { GestureHandlerRootView, TouchableHighlight } from "react-native-gesture-handler";
@@ -21,7 +21,7 @@ export default function Page() {
     const [isPressed1, setIsPressed1] = useState(false);
     const [isPressed2, setIsPressed2] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [formData, setFormData] = useState({
+    const [formData] = useState({
         modalidad: ''
     });
 
@@ -38,7 +38,7 @@ export default function Page() {
     const handlePressOut2 = () => setIsPressed2(false);
 
     const handleNext = (type: number) => {
-        const updatedFormData = { modalidad: String(type) };
+        const updatedFormData = {...formData, modalidad: String(type) };
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
             if (savedData) {

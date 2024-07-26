@@ -20,10 +20,10 @@ interface DateSelectProps {
 }
 
 export default function DateSelect({ isRequired = false, label, placeholder, onSelect }: DateSelectProps) {
-    const [isPickerVisible, setPickerVisible] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-    const [tempDate, setTempDate] = useState<Date | undefined>(undefined);
     const today = new Date();
+    const [isPickerVisible, setPickerVisible] = useState(false);
+    const [selectedDate, setSelectedDate] = useState<Date>(today);
+    const [tempDate, setTempDate] = useState<Date>(today);
 
     const colorScheme = Appearance.getColorScheme();
     const backgroundColor = colorScheme === 'dark' ? `${MD2Colors.grey800}` : `${MD2Colors.grey800}`;
@@ -90,7 +90,7 @@ export default function DateSelect({ isRequired = false, label, placeholder, onS
                 <View style={styles.modalContainer}>
                   <DateTimePicker
                     accentColor={colorPrimary}
-                    value={selectedDate || new Date()}
+                    value={selectedDate}
                     mode="date"
                     style={{...styles.dateTimePicker, backgroundColor: backgroundColor}}
                     display={'inline'}

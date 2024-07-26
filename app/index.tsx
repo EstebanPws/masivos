@@ -1,7 +1,7 @@
 import { Image, View, Platform, TouchableOpacity } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import ViewFadeIn from "@/components/viewFadeIn";
+import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import Inputs from "@/components/forms/inputs/inputs";
 import Constants from "expo-constants";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
