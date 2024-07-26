@@ -44,7 +44,7 @@ export default function Page() {
             if (savedData) {
                 const newFormData = {...savedData, ...updatedFormData };
                 await setData('registrationForm', newFormData);
-                router.push('auth/signUp/selectTypeAccount/');
+                router.push('auth/signUp/formRegister/');
             }
         };
     

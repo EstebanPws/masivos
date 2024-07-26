@@ -50,6 +50,9 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
       > 
       {icon !== '' ? (
         <TextInput
+          mode='outlined'
+          outlineColor='transparent'
+          outlineStyle={styles.outlined}
           keyboardType={keyboardType}
           placeholder={placeholder}
           secureTextEntry={isSecureText}
@@ -70,6 +73,9 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
         />
       ) : (
         <TextInput
+          mode='outlined'
+          outlineColor='transparent'
+          outlineStyle={styles.outlined}
           keyboardType={keyboardType}
           placeholder={placeholder}
           secureTextEntry={isSecureText}

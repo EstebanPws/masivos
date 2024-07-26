@@ -7,6 +7,7 @@ import { listDocumentType } from "@/utils/listUtils";
 import DateSelect from "../../select/dateSelect/dateSelect";
 import { formatDate } from "@/utils/fomatDate";
 import ButtonsPrimary from "../../buttons/buttonPrimary/button";
+import { getData } from "@/utils/storageUtils";
 
 interface BasicInfoProps{
     onSubmit: (data: any) => void;
@@ -26,7 +27,7 @@ export default function BasicInfo({ onSubmit }: BasicInfoProps) {
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
     const handleSelect = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
-        setter(item);
+        setter(item.name);
     };
 
     const handleDateSelect = (setter: { (value: React.SetStateAction<string>): void }) => (date: any) => {
@@ -53,6 +54,22 @@ export default function BasicInfo({ onSubmit }: BasicInfoProps) {
         const allFieldsFilled = names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
         setIsButtonEnabled(!!allFieldsFilled);
     }, [names, surnames, birthDate, placeBirthDate, typeDocument, inputDocument, birthDateDoc, placeBirthDateDoc, phone, email]);
+
+    useEffect(() => {
+        const fetchFormData = async () => {
+            const savedData = await getData('registrationForm');
+            if (savedData) {
+                const type = listDocumentType.find(item => item.value === savedData.tipo_doc) || { name: '', value: '' };
+
+                setNames(`${savedData.nombre1} ${savedData.nombre2}`);
+                setSurnames(`${savedData.apellido1} ${savedData.apellido2}`);
+                setTypeDocument(type.name);
+                setInputDocument(savedData.no_docum);
+            }
+        };
+
+        fetchFormData();
+    }, [])
 
     return (
         <View style={styles.containerForm}>
@@ -102,6 +119,7 @@ export default function BasicInfo({ onSubmit }: BasicInfoProps) {
                     data={listDocumentType}
                     placeholder="Seleccione una opción"
                     onSelect={handleSelect(setTypeDocument)}
+                    selectedValue={typeDocument}
                 />
             </View>
             <View style={styles.mb5}>

@@ -23,5 +23,10 @@ export const styles = StyleSheet.create({
         marginBottom: 5,
         marginRight: 5,
         marginLeft: 5
+    },
+    outlined:{
+        borderColor: 'transparent', 
+        borderWidth: 0, 
+        borderRadius: 50
     }
 });
