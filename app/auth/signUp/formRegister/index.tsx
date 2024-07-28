@@ -20,12 +20,12 @@ interface List {
 }
 
 export default function Page() {
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(1);
     const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
 
-    const timeOut = 800;
+    const timeOut = 600;
 
     useEffect(() => {  
         instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300')
@@ -61,6 +61,11 @@ export default function Page() {
            setTimeout(() => {
             setStep(1);
            }, timeOut);
+        } else {
+            const next = step + 1;
+            setTimeout(() => {
+                setStep(next);
+            }, timeOut);
         }
     };
 

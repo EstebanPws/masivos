@@ -78,7 +78,7 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
         };
 
         fetchFormData();
-    }, [])
+    }, []);
 
     const handleSelect = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
         setter(item.value);
