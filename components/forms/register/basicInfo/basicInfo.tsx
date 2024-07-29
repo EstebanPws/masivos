@@ -12,6 +12,7 @@ import { validateEmail, validatePhone, validateDocumentNumber} from "@/utils/val
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
+import TitleLine from "@/components/titleLine/titleLine";
 
 interface List {
     name: string;
@@ -147,6 +148,9 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
             {isVisible && (
                 <FadeInOut key="step0">
                     <View style={styles.containerForm}>
+                        <TitleLine 
+                            label="Infomarción basica"
+                        />
                         <View style={styles.mb5}>
                             <Inputs
                                 label="Nombres"

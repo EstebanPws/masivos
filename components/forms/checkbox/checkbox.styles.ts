@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { MD2Colors } from 'react-native-paper';
 
 export const styles = StyleSheet.create({
@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     height: 24,
   },
   paragraph: {
-    fontSize: 14,
+    fontSize: Platform.OS === 'android' ? 11: 13,
     color: MD2Colors.white,
   }
 });

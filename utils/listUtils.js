@@ -116,3 +116,10 @@ export const listAddressOtherType = [
     { name: 'Unidad', value: 'UN' },
     { name: 'Urbanización', value: 'URB' }
 ];
+
+export const listTaxesType = [
+    { name: 'Régimen ordinario', value: '1' },
+    { name: 'Régimen tributario especial', value: '2' },
+    { name: 'Régimen simple de tributación', value: '3' },
+    { name: 'No contribuyente', value: '4' }
+];

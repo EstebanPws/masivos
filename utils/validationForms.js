@@ -12,3 +12,15 @@ export const validateDocumentNumber = (documentNumber) => {
     const regex = /^[0-9]+$/;
     return regex.test(documentNumber);
 };
+
+export const formatCurrency = (value) => {
+    const newValue = value.replace(/^\$/, '');
+    const numberValue = parseFloat(newValue.replaceAll('.', ''));
+    if (isNaN(numberValue)) return '';
+    return numberValue.toLocaleString('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+};

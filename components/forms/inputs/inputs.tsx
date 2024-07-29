@@ -5,6 +5,7 @@ import { MD2Colors, TextInput } from 'react-native-paper';
 import { styles } from './inputs.styles';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import Constants from "expo-constants";
+import { formatCurrency } from '@/utils/validationForms';
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
@@ -23,10 +24,20 @@ interface InputsProps {
   onChangeText?: Dispatch<SetStateAction<string>>;
   value: string;
   maxLength?: number;
+  isCurrency?: boolean,
 }
 
-export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value,  maxLength} : InputsProps) {
+export default function Inputs ({icon = '' , label, isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value,  maxLength, isCurrency = false,} : InputsProps) {
   const [isFocused, setIsFocused] = useState(false);
+
+  const handleChangeText = (text: string) => {
+    if (isCurrency) {
+      const formattedValue = formatCurrency(text);
+      onChangeText?.(formattedValue);
+    } else {
+      onChangeText?.(text);
+    }
+  };
 
   return (
     <View>
@@ -67,7 +78,7 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
           cursorColor={isFocused ? `${colorPrimary}` : 'transparent'}
           multiline={isTextArea}
           numberOfLines={4}
-          onChangeText={onChangeText}
+          onChangeText={handleChangeText}
           value={value}
           maxLength={maxLength}
         />
@@ -87,7 +98,7 @@ export default function Inputs ({icon = '' , label, isSecureText = false, isRequ
           cursorColor={isFocused ? `${colorPrimary}` : 'transparent'}
           multiline={isTextArea}
           numberOfLines={4}
-          onChangeText={onChangeText}
+          onChangeText={handleChangeText}
           value={value}
           maxLength={maxLength}
         />

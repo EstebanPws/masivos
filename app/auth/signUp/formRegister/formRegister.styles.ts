@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import { StyleSheet } from "react-native";
+import { MD2Colors } from "react-native-paper";
 
 
 const extra = Constants.expoConfig?.extra || {};
@@ -21,5 +22,27 @@ export const styles  = StyleSheet.create({
     },
     ph2:{
       paddingHorizontal: 30
+    },
+    containerProgressBar:{
+      position: 'relative',
+      marginTop: 30,
+      marginBottom: 20
+    },
+    stepsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      flex: 1,
+      marginTop: -3
+    },
+    step: {
+      backgroundColor: colorPrimary,
+      borderRadius: 50,
+      width: 24,
+      height: 24,
+      top: -10
+    },
+    textStep:{
+      textAlign: 'center',
+      color: MD2Colors.white
     },
 })

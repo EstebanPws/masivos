@@ -6,17 +6,17 @@ import SearchSelect from "@/components/forms/select/searchSelect/select";
 import { listCivilStatusType, listEducationType, listGenderType, listHousingType, listOcupationType, listUbicationZoneType } from "@/utils/listUtils";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { getData, setData } from "@/utils/storageUtils";
-import InfoModal from "@/components/modals/infoModal/infoModal";
 import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
+import TitleLine from "@/components/titleLine/titleLine";
 
-interface BasicInfoProps{
+interface InfoGeneralProps{
     onSubmit: (data: any) => void;
 }
 
-export default function InfoGeneral({ onSubmit }: BasicInfoProps) {
+export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [gender, setGender] = useState('');
@@ -117,6 +117,9 @@ export default function InfoGeneral({ onSubmit }: BasicInfoProps) {
             {isVisible && (
                 <FadeInOut>
                     <View style={styles.containerForm}>
+                        <TitleLine 
+                            label="Infomarción general"
+                        />
                         <View style={styles.mb5}>
                             <SearchSelect
                                 isRequired
