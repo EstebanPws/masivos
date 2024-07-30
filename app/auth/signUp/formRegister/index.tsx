@@ -13,6 +13,7 @@ import instanceCompliance from "@/services/instanceCompliance";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import InfoWorking from "@/components/forms/register/infoWorking/infoWorking";
 import InfoPep from "@/components/forms/register/infoPep/infoPep";
+import OtherInfo from "@/components/forms/register/otherInfo/otherInfo";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
@@ -23,15 +24,15 @@ interface List {
 }
 
 export default function Page() {
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
     const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
     const [listCiiu, setListCiiu] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
 
     const timeOut = 600;
-    const totalSteps = 7;
-    const progress = (Math.ceil((step/ totalSteps) * 100) / 100) + .03;
+    const totalSteps = 6;
+    const progress = (Math.ceil((step/ totalSteps) * 100) / 100) + (step === 0 ? 0 : .09);
 
     useEffect(() => {  
         instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300')
@@ -145,6 +146,9 @@ export default function Page() {
                         )}
                         {step === 3 && (
                             <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />
+                        )}
+                        {step === 4 && (
+                            <OtherInfo listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />
                         )}
                     </ScrollView>
                 </KeyboardAwareScrollView>

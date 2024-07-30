@@ -27,6 +27,12 @@ export default function SearchSelect({ isRequired = false, label, data, placehol
 
     useEffect(() => {
         if (data) {
+            data.sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name));
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (data) {
             const itemSelected = data.find((item: { value: any; }) => item.value === selectedValue) || { name: '', value: '' };
             setSearchQuery(itemSelected.name);
         }
