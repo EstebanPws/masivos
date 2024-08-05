@@ -8,12 +8,16 @@ import { styles } from "./formRegister.styles";
 import Constants from "expo-constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import InfoGeneral from "@/components/forms/register/infoGeneral/infoGeneral";
-import instanceMunicipios  from "@/services/instanceMunicipio";
+import instanceMunicipios from "@/services/instanceMunicipio";
 import instanceCompliance from "@/services/instanceCompliance";
+import instanceWallet from "@/services/instanceWallet";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import InfoWorking from "@/components/forms/register/infoWorking/infoWorking";
 import InfoPep from "@/components/forms/register/infoPep/infoPep";
 import OtherInfo from "@/components/forms/register/otherInfo/otherInfo";
+import Authorization from "@/components/forms/register/authorizations/authorization";
+import { getData } from "@/utils/storageUtils";
+import Loader from "@/components/loader/loader";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
@@ -27,69 +31,98 @@ export default function Page() {
     const [step, setStep] = useState(0);
     const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
     const [listCiiu, setListCiiu] = useState<List[] | null>(null);
+    const [listProfesiones, setListProfesiones] = useState<List[] | null>(null);
+    const [listPaises, setListPaises] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const timeOut = 600;
     const totalSteps = 6;
-    const progress = (Math.ceil((step/ totalSteps) * 100) / 100) + (step === 0 ? 0 : .09);
+    const progress = (Math.ceil((step / totalSteps) * 100) / 100) + (step === 0 ? 0 : 0.09);
 
-    useEffect(() => {  
-        instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300')
-        .then(response => {
-            const data = response.data;
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
 
-            const transformedData: List[] = data.map((item: any) => {
-                const municipio = item.municipio;
-                const departamento = item.departamento;
-                let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
+                const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
+                const municipiosData = municipiosResponse.data;
+
+                const transformedMunicipios: List[] = municipiosData.map((item: any) => {
+                    const municipio = item.municipio;
+                    const departamento = item.departamento;
+                    let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
+
+                    if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
+                        codigoDane = `0${codigoDane}`;
+                    }
+
+                    return {
+                        name: `${municipio} - ${departamento}`,
+                        value: codigoDane
+                    };
+                });
+
+                setListMunicipios(transformedMunicipios);
+
+                const ciiuResponse = await instanceCompliance.get('GetAllCodigosCIIU');
+                const ciiuData = ciiuResponse.data;
+
+                const transformedCiiu: List[] = ciiuData.map((item: any) => {
+                    const nombre = item.Nombre;
+                    const codigo = item.Codigo;
+
+                    return {
+                        name: `${codigo} - ${nombre}`,
+                        value: codigo
+                    };
+                });
+
+                setListCiiu(transformedCiiu);
+
+                const profesionesResponse = await instanceWallet.get('obtenerProfesiones');
+                const profesionesData = profesionesResponse.data;
+
+                const transformedProfesiones: List[] = profesionesData.map((item: any) => {
+                    return {
+                        name: item.name,
+                        value: item.value
+                    };
+                });
+
+                setListProfesiones(transformedProfesiones);
+
+                const paisesResponse = await instanceWallet.get('obtenerPais');
+                const paisesData = paisesResponse.data;
+
+                const transformedPaises: List[] = paisesData.map((item: any) => {
+                    return {
+                        name: item.name,
+                        value: item.value
+                    };
+                });
+
+                setListPaises(transformedPaises);
                 
-                if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
-                    codigoDane = `0${codigoDane}`;
-                }
-                
-                return {
-                    name: `${municipio} - ${departamento}`,
-                    value: codigoDane
-                };
-            });
+            } catch (err) {
+                setMessageError("Ha ocurrido un error al intentar cargar los datos.");
+                setShowError(true);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-            const sortedData = transformedData.sort((a, b) => a.name.localeCompare(b.name));
-            setListMunicipios(sortedData);
-        })
-        .catch(err => {
-            setMessageError("Ha ocurrido un error al intentar listar los municipios.");
-            setShowError(true);
-        });
-
-        instanceCompliance.get('GetAllCodigosCIIU')
-        .then(response => {
-            const data = response.data;
-
-            const transformedData: List[] = data.map((item: any) => {
-                const nombre = item.Nombre;
-                const codigo = item.Codigo;
-            
-                return {
-                    name: `${codigo} - ${nombre}`,
-                    value: codigo
-                };
-            });
-
-            const sortedData = transformedData.sort((a, b) => a.name.localeCompare(b.name));
-            setListCiiu(sortedData);
-        })
-        .catch(err => {
-            setMessageError("Ha ocurrido un error al intentar listar los códigos CIIU.");
-            setShowError(true);
-        });
-    }, [])
+        fetchData();
+    }, []);
 
     const handleFormSubmit = (data: any) => {
         if (step === 0) {
-           setTimeout(() => {
-            setStep(1);
-           }, timeOut);
+            setTimeout(() => {
+                setStep(1);
+            }, timeOut);
+        } else if (step === 5) {
+            handleSend();
         } else {
             const next = step + 1;
             setTimeout(() => {
@@ -98,10 +131,47 @@ export default function Page() {
         }
     };
 
+    const extractErrorCode = (message: string) => {
+        const regex = /\[(\d+)\]/;
+        const match = message.match(regex);
+        return match ? match[1] : null;
+    };
+
     const handleBack = () => {
         const back = step - 1;
-        step === 0 ? router.back() : setTimeout(() => {setStep(back)}, timeOut);
+        step === 0 ? router.back() : setTimeout(() => { setStep(back) }, timeOut);
     };
+
+    const handleSend = () => {
+        const fetchFormData = async () => {
+            const savedData = await getData('registrationForm');
+
+            if (savedData) {
+                setIsLoading(true);
+                instanceWallet.post('createNat')
+                    .then(response => {
+                        const data = response.data;
+                        const code = extractErrorCode(data.message);
+
+                        setMessageError(data.message);
+                        setShowError(true);
+                        setIsLoading(false);
+                    })
+                    .catch(err => {
+                        setMessageError("Ha ocurrido un error al intentar enviar el formulario.");
+                        setShowError(true);
+
+                        setIsLoading(false);
+                    });
+            }
+        };
+
+        fetchFormData();
+    }
+
+    if (isLoading) {
+        return <Loader />;
+    }
 
     return (
         <>
@@ -112,7 +182,7 @@ export default function Page() {
                         <ProgressBar progress={progress} color={MD3Colors.error50} />
                         <View style={styles.stepsContainer}>
                             {Array.from({ length: totalSteps }, (_, index) => (
-                                <View key={index} style={{...styles.step, backgroundColor: step >= index ? MD3Colors.error50 : MD2Colors.grey500}}>
+                                <View key={index} style={{ ...styles.step, backgroundColor: step >= index ? MD3Colors.error50 : MD2Colors.grey500 }}>
                                     <Text
                                         variant="labelLarge"
                                         style={{
@@ -142,19 +212,22 @@ export default function Page() {
                             <InfoGeneral onSubmit={handleFormSubmit} />
                         )}
                         {step === 2 && (
-                            <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} />
+                            <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} />
                         )}
                         {step === 3 && (
                             <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />
                         )}
                         {step === 4 && (
-                            <OtherInfo listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />
+                            <OtherInfo listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />
+                        )}
+                        {step === 5 && (
+                            <Authorization listPaises={listPaises} onSubmit={handleFormSubmit} />
                         )}
                     </ScrollView>
                 </KeyboardAwareScrollView>
             </View>
             {showError && (
-                <InfoModal 
+                <InfoModal
                     isVisible={showError}
                     type="info"
                     message={messageError}

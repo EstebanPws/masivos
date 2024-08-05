@@ -9,14 +9,14 @@ const { primaryBold } = extra.text;
 const { colorPrimary, colorSecondary } = extra;
 
 interface CheckboxCustomProps{
-    label: string;
+    label?: string;
     isRequired?: boolean;
     options: any;
     onSelect: (value: string) => void;
     selectedValue: string
 }
 
-export default function CheckboxCustom({label, isRequired = false, options,  onSelect, selectedValue}: CheckboxCustomProps) {
+export default function CheckboxCustom({label = '', isRequired = false, options,  onSelect, selectedValue}: CheckboxCustomProps) {
     const [selected, setSelected] = useState(selectedValue);
 
     const handlePress = (value: string) => {

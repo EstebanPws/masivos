@@ -21,10 +21,11 @@ interface List {
 interface InfoWorkingProps{
     listMunicipios: List[] | null;
     listCiiu: List[] | null;
+    listProfesiones: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function InfoWorking({listMunicipios, listCiiu , onSubmit }: InfoWorkingProps) {
+export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, onSubmit }: InfoWorkingProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [actiCiiu, setActiCiiu] = useState('');
@@ -199,7 +200,7 @@ export default function InfoWorking({listMunicipios, listCiiu , onSubmit }: Info
                             <SearchSelect
                                 isRequired
                                 label="Profesión"
-                                data={listCiiu}
+                                data={listProfesiones}
                                 placeholder="Seleccione una opción"
                                 onSelect={handleSelect(setProfesion)}
                                 selectedValue={profesion}

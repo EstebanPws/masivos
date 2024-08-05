@@ -8,10 +8,10 @@ const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
 
 interface TitleLineProps{
-    label: string;
+    label?: string;
 }
 
-export default function TitleLine({label}: TitleLineProps) {
+export default function TitleLine({label = ''}: TitleLineProps) {
 
     return (
         <View style={styles.container}>

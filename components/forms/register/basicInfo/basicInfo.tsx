@@ -13,6 +13,7 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
 import TitleLine from "@/components/titleLine/titleLine";
+import CheckboxCustom from "../../checkbox/checkbox";
 
 interface List {
     name: string;
@@ -35,11 +36,17 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
     const [placeBirthDateDoc, setPlaceBirthDateDoc] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
+    const [autaEnvSms, setAutaEnvSms] = useState('');
+    const [autEnvEmail, setAutEnvEmail] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [formData] = useState({
+        entidad: '9011569983',
+        oficina: '73',
+        tipo_pers: '3',
+        fecha_vincul_client: formatDate(new Date()),
         nombre1: '',
         nombre2: '',
         apellido1: '',
@@ -51,8 +58,15 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
         fecha_exp: '',
         expedida_en: '',
         numero_celular: '',
-        correo: ''
+        correo: '',
+        auta_env_sms: '',
+        aut_env_email: ''
     });
+
+    const options = [
+        { label: 'SI', value: 'S' },
+        { label: 'NO', value: 'N' }
+    ];
 
     useEffect(() => {
         const allFieldsFilled = names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
@@ -74,6 +88,8 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
                 setPlaceBirthDateDoc(savedData.fecha_exp);
                 setPhone(savedData.numero_celular);
                 setEmail(savedData.correo);
+                setAutaEnvSms(savedData.auta_env_sms);
+                setAutEnvEmail(savedData.aut_env_email);
                 setIsVisible(true);
             }
         };
@@ -106,6 +122,12 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
             return;
         }
 
+        if (autaEnvSms !== 'S' && autEnvEmail !== 'S') {
+            setMessageError("Por favor autorice el envío de SMS o el envío de información a su correo electrónico.");
+            setShowError(true);
+            return;
+        }
+
         setIsVisible(false);
 
         const newNames = formatNames(names);
@@ -124,7 +146,9 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
             fecha_exp: formatDateWithoutSlash(birthDateDoc),
             expedida_en: placeBirthDateDoc,
             numero_celular: phone,
-            correo: email
+            correo: email,
+            auta_env_sms: autaEnvSms,
+            aut_env_email: autEnvEmail
         };
 
         const fetchFormData = async () => {
@@ -142,6 +166,19 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
     
         fetchFormData();
     };
+
+    const handleSelectCheckBox = (type: string) => (value: string) => {
+        switch (type) {
+          case 'autaEnvSms':
+            setAutaEnvSms(value);
+            break;
+          case 'autEnvEmail':
+            setAutEnvEmail(value);
+            break;
+          default:
+            break;
+        }
+      };
 
     return (
         <AnimatePresence>
@@ -252,6 +289,24 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
                                 onChangeText={setEmail}
                                 value={email}
                             />
+                        </View>
+                        <View style={styles.mb5}>
+                            <CheckboxCustom 
+                                label="¿Autoriza el envio de mensajes de texto a su celular?"
+                                options={options}
+                                onSelect={handleSelectCheckBox('autaEnvSms')}
+                                selectedValue={autaEnvSms}
+                                isRequired
+                            />    
+                        </View>
+                        <View style={styles.mb5}>
+                            <CheckboxCustom 
+                                label="¿Autoriza el envio de mensajes a su correo electrónico?"
+                                options={options}
+                                onSelect={handleSelectCheckBox('autEnvEmail')}
+                                selectedValue={autEnvEmail}
+                                isRequired
+                            />    
                         </View>
                         <View style={styles.mV2}>
                             <ButtonsPrimary 

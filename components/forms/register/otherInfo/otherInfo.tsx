@@ -10,7 +10,7 @@ import FadeInOut from "@/components/animations/fade/fadeInOut";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
-import { listAutoTypes, listBienesType, listCurrencyType, listOperationType, listPaisType } from "@/utils/listUtils";
+import { listAutoTypes, listBienesType, listCurrencyType, listOperationType } from "@/utils/listUtils";
 
 interface List {
     name: string;
@@ -19,10 +19,11 @@ interface List {
 
 interface OtherInfoProps{
     listMunicipios: List[] | null;
+    listPaises: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function OtherInfo({listMunicipios , onSubmit }: OtherInfoProps) {
+export default function OtherInfo({listMunicipios, listPaises, onSubmit }: OtherInfoProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [tipoBienRaices, setTipoBienRaices] = useState('');
@@ -187,7 +188,7 @@ export default function OtherInfo({listMunicipios , onSubmit }: OtherInfoProps) 
             if (savedData) {
                 const newUpdatedFormData = { ...savedData, ...updatedFormData };
                 await setData('registrationForm', newUpdatedFormData); 
-                const step = 3;
+                const step = 4;
                 const data = {
                     step
                 };
@@ -386,7 +387,7 @@ export default function OtherInfo({listMunicipios , onSubmit }: OtherInfoProps) 
                                 <SearchSelect
                                     isRequired
                                     label="Pais"
-                                    data={listPaisType}
+                                    data={listPaises}
                                     placeholder="Seleccione una opción"
                                     onSelect={handleSelect(setPaisOperaextr)}
                                     selectedValue={paisOperaextr}

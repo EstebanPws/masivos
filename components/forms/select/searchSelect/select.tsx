@@ -13,14 +13,14 @@ const { colorPrimary, colorSecondary } = extra;
 
 interface SearchSelectProps {
     isRequired?: boolean;
-    label: string;
+    label?: string;
     data: any;
     placeholder: string;
     onSelect: (item: any) => void;
     selectedValue: any;
 }
 
-export default function SearchSelect({ isRequired = false, label, data, placeholder, onSelect, selectedValue = '' }: SearchSelectProps) {
+export default function SearchSelect({ isRequired = false, label = '', data, placeholder, onSelect, selectedValue = '' }: SearchSelectProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [filteredData, setFilteredData] = useState(data);
