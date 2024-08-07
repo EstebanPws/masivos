@@ -2,6 +2,7 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 import * as SecureStore from 'expo-secure-store';
 import * as LocalAuthentication from 'expo-local-authentication';
 import InfoModal from '@/components/modals/infoModal/infoModal';
+import { router } from 'expo-router';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -56,6 +57,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             setDocumentNumber(docWithOtp);
             setPassword(password);
             setIsAuthenticated(true);
+            router.push('/home/');
         } else {
             setShowErrorModal(true);
         }
