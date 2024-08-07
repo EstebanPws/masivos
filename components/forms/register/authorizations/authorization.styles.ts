@@ -1,5 +1,9 @@
+import Constants from "expo-constants";
 import {StyleSheet} from "react-native";
 
+const extra = Constants.expoConfig?.extra || {};
+
+const { colorPrimary } = extra;
 export const styles = StyleSheet.create({
     containerForm: {
       marginVertical: 30,
@@ -21,5 +25,20 @@ export const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center'
+    },
+    textLeft: {
+      textAlign: 'justify'
+    },
+    link: {
+      color: colorPrimary,
+      textAlign: 'center',
+      fontSize: 16,
+      textDecorationColor: colorPrimary,
+      textDecorationLine: 'underline'
+    },
+    image:{
+      maxWidth: 200,
+      maxHeight: 100,
+      margin: 'auto'
     }
 });

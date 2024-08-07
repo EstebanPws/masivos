@@ -12,11 +12,18 @@ import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
 
+interface List {
+    name: string;
+    value: string;
+}
+
 interface InfoGeneralProps{
+    listMunicipios: List[] | null;
+    type: string | string[] | undefined;
     onSubmit: (data: any) => void;
 }
 
-export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
+export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGeneralProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [gender, setGender] = useState('');
@@ -25,6 +32,7 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
     const [ocupation, setOcupation] = useState('');
     const [ubicationZone, setUbicationZone] = useState(''); 
     const [housing, setHousing] = useState('');
+    const [ciudMuni, setCiudMuni] = useState('');
     const [neighborhood, setNeighborhood] = useState('');
     const [address, setAddress] = useState('');
     const [isExtranjero, setIsExtranjero] = useState('');
@@ -35,6 +43,7 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
         ocupacion: '',
         zon_ubi: '',
         tip_vivien: '',
+        ciud_muni: '',
         barrio: '',
         dire_domi: '',
         extrenjero: ''
@@ -46,10 +55,10 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
     ];
 
     useEffect(() => {
-        const allFieldsFilled = gender && civilStatus && education && ocupation && ubicationZone && housing && neighborhood && address && isExtranjero;
+        const allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && housing && ciudMuni && neighborhood && address && isExtranjero :  ciudMuni && neighborhood && address;
         
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [gender, civilStatus, education, ocupation, ubicationZone, housing, neighborhood, address, isExtranjero]);
+    }, [gender, civilStatus, education, ocupation, ubicationZone, housing, ciudMuni, neighborhood, address, isExtranjero]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
@@ -61,6 +70,7 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
                 setOcupation(savedData.ocupacion);
                 setUbicationZone(savedData.zon_ubi);
                 setHousing(savedData.tip_vivien);
+                setCiudMuni(savedData.ciud_muni)
                 setNeighborhood(savedData.barrio);
                 setAddress(savedData.dire_domi);
                 setIsExtranjero(savedData.extrenjero);
@@ -83,6 +93,7 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
             ocupacion: ocupation,
             zon_ubi: ubicationZone,
             tip_vivien: housing,
+            ciud_muni: ciudMuni,
             barrio: neighborhood,
             dire_domi: address,
             extrenjero: isExtranjero
@@ -130,54 +141,68 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
                                 selectedValue={gender}
                             />
                         </View>
+                        {type !== '8' && (
+                            <>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Estado civil"
+                                        data={listCivilStatusType}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setCivilStatus)}
+                                        selectedValue={civilStatus}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Nivel de educación"
+                                        data={listEducationType}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setEducation)}
+                                        selectedValue={education}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Ocupación"
+                                        data={listOcupationType}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setOcupation)}
+                                        selectedValue={ocupation}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Zona de ubicación"
+                                        data={listUbicationZoneType}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setUbicationZone)}
+                                        selectedValue={ubicationZone}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Tipo de vivienda"
+                                        data={listHousingType}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setHousing)}
+                                        selectedValue={housing}
+                                    />
+                                </View>
+                            </>
+                        )}
                         <View style={styles.mb5}>
                             <SearchSelect
                                 isRequired
-                                label="Estado civil"
-                                data={listCivilStatusType}
+                                label="Ciudad de residencia"
+                                data={listMunicipios}
                                 placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setCivilStatus)}
-                                selectedValue={civilStatus}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Nivel de educación"
-                                data={listEducationType}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setEducation)}
-                                selectedValue={education}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Ocupación"
-                                data={listOcupationType}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setOcupation)}
-                                selectedValue={ocupation}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Zona de ubicación"
-                                data={listUbicationZoneType}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setUbicationZone)}
-                                selectedValue={ubicationZone}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Tipo de vivienda"
-                                data={listHousingType}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setHousing)}
-                                selectedValue={housing}
+                                onSelect={handleSelect(setCiudMuni)}
+                                selectedValue={ciudMuni}
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -200,15 +225,17 @@ export default function InfoGeneral({ onSubmit }: InfoGeneralProps) {
                                 isRequired
                             />
                         </View>
-                        <View style={styles.mb5}>
-                            <CheckboxCustom 
-                                label="¿Es usted extrajero?"
-                                isRequired
-                                options={options}
-                                onSelect={handleSelectCheckBox}
-                                selectedValue={isExtranjero}
-                            />
-                        </View>
+                        {type !== '8' && (
+                            <View style={styles.mb5}>
+                                <CheckboxCustom 
+                                    label="¿Es usted extrajero?"
+                                    isRequired
+                                    options={options}
+                                    onSelect={handleSelectCheckBox}
+                                    selectedValue={isExtranjero}
+                                />
+                            </View>
+                        )}
                         <View style={styles.mV2}>
                             <ButtonsPrimary 
                                 disabled={!isButtonEnabled}

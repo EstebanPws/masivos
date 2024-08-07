@@ -44,7 +44,10 @@ export default function Page() {
             if (savedData) {
                 const newFormData = {...savedData, ...updatedFormData };
                 await setData('registrationForm', newFormData);
-                router.push('auth/signUp/formRegister/');
+                router.push({
+                    pathname: 'auth/signUp/formRegister/',
+                    params: { type: type }
+                });
             }
         };
     

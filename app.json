@@ -8,6 +8,10 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "extra": {
+      "contacto": {
+        "nit": "901156998-3",
+        "correo": "sac@paymentsway.com.co"
+      },
       "text": {
         "primaryBold": {
           "fontFamily": "Montserrat_700Bold"

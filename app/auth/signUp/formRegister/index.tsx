@@ -3,7 +3,7 @@ import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { Platform, ScrollView, View } from "react-native";
 import { MD2Colors, MD3Colors, ProgressBar, Text } from "react-native-paper";
 import BasicInfo from '@/components/forms/register/basicInfo/basicInfo';
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { styles } from "./formRegister.styles";
 import Constants from "expo-constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -35,17 +35,16 @@ export default function Page() {
     const [listPaises, setListPaises] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const { type } = useLocalSearchParams();
 
     const timeOut = 600;
-    const totalSteps = 6;
-    const progress = (Math.ceil((step / totalSteps) * 100) / 100) + (step === 0 ? 0 : 0.09);
+    const totalSteps = type === '8' ? 3 : 6;
+    const progress = (Math.ceil((step / totalSteps) * 100) / 100) + (type === '8' ? (step === 0 ? 0 : step === 1 ? 0.15 : 0.3) : (step === 0 ? 0 : 0.09) );
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsLoading(true);
-
                 const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
                 const municipiosData = municipiosResponse.data;
 
@@ -105,7 +104,7 @@ export default function Page() {
 
                 setListPaises(transformedPaises);
                 
-            } catch (err) {
+            } catch (err) {  
                 setMessageError("Ha ocurrido un error al intentar cargar los datos.");
                 setShowError(true);
             } finally {
@@ -121,9 +120,11 @@ export default function Page() {
             setTimeout(() => {
                 setStep(1);
             }, timeOut);
-        } else if (step === 5) {
+        } else if (type !== '8' && step === 5) {
             handleSend();
-        } else {
+        } else if (type === '8' && step === 2){
+            handleSend();
+        }else {
             const next = step + 1;
             setTimeout(() => {
                 setStep(next);
@@ -173,6 +174,25 @@ export default function Page() {
         return <Loader />;
     }
 
+    const renderStep = (step: number) => {
+        switch (step) {
+            case 0:
+                return <BasicInfo listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+            case 1:
+                return <InfoGeneral type={type} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+            case 2:
+                return type !== '8' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+            case 3:
+                return <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+            case 4:
+                return <OtherInfo listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+            case 5:
+                return <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+            default:
+                return null;
+        }
+    };
+
     return (
         <>
             <HeaderForm title="Registro" onBack={handleBack} />
@@ -182,21 +202,20 @@ export default function Page() {
                         <ProgressBar progress={progress} color={MD3Colors.error50} />
                         <View style={styles.stepsContainer}>
                             {Array.from({ length: totalSteps }, (_, index) => (
-                                <View key={index} style={{ ...styles.step, backgroundColor: step >= index ? MD3Colors.error50 : MD2Colors.grey500 }}>
-                                    <Text
-                                        variant="labelLarge"
-                                        style={{
-                                            ...primaryBold,
-                                            ...styles.textStep
-                                        }}
-                                    >
+                                <View
+                                    key={index}
+                                    style={{ ...styles.step, backgroundColor: step >= index ? MD3Colors.error50 : MD2Colors.grey500 }}
+                                >
+                                    <Text variant="labelLarge" style={{ ...primaryBold, ...styles.textStep }}>
                                         {index + 1}
                                     </Text>
                                 </View>
                             ))}
                         </View>
                     </View>
-                    <Text variant="titleMedium" style={{ ...primaryBold, ...styles.text }}>PERSONA NATURAL</Text>
+                    <Text variant="titleMedium" style={{ ...primaryBold, ...styles.text }}>
+                        PERSONA {type === '1' ? 'JURÍDICA' : type === '8' ? 'NATURAL - DBM' : 'NATURAL'}
+                    </Text>
                     <View style={styles.line} />
                 </View>
                 <KeyboardAwareScrollView
@@ -205,24 +224,7 @@ export default function Page() {
                     extraHeight={Platform.select({ ios: 100, android: 120 })}
                 >
                     <ScrollView>
-                        {step === 0 && (
-                            <BasicInfo listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />
-                        )}
-                        {step === 1 && (
-                            <InfoGeneral onSubmit={handleFormSubmit} />
-                        )}
-                        {step === 2 && (
-                            <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} />
-                        )}
-                        {step === 3 && (
-                            <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />
-                        )}
-                        {step === 4 && (
-                            <OtherInfo listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />
-                        )}
-                        {step === 5 && (
-                            <Authorization listPaises={listPaises} onSubmit={handleFormSubmit} />
-                        )}
+                        {type === '8' ? renderStep(step) : renderStep(step)}
                     </ScrollView>
                 </KeyboardAwareScrollView>
             </View>

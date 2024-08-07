@@ -13,7 +13,7 @@ const { primaryRegular } = extra.text;
 interface InfoModalProps {
     title?: string;
     type: 'success' | 'error' | 'info';
-    message: string;
+    message: string | null;
     onPress: () => void;
     isVisible: boolean;
 }
