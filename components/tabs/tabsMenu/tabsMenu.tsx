@@ -1,8 +1,8 @@
-import React, {useState } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import { MotiView } from 'moti';
 import { styles } from "./tabsMenu.styles";
-import { router } from 'expo-router';
+import { router, useSegments } from 'expo-router';
 import { Icon, MD3Colors } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
@@ -12,16 +12,26 @@ const {colorPrimary, colorSecondary} = extra;
 
 const tabs = [
     { name: 'Home', screen: '/home/', icon: 'home' },
-    { name: 'Services', screen: '/home/profile/', icon: 'file' },
+    { name: 'Services', screen: '/home/services/', icon: 'file' },
     { name: 'More', screen: '/home/', icon: 'plus' },
     { name: 'Card', screen: '/home/profile/', icon: 'credit-card' },
     { name: 'Profile', screen: '/home/', icon: 'account' }
 ];
 
-export default function TabMenu () {
+export default function TabMenu() {
     const [activeTab, setActiveTab] = useState(tabs[0].name);
+    const segments = useSegments();
 
-    const handleTabPress = (tab: { name: any; screen: any; }) => {
+    useEffect(() => {
+      const currentTab = tabs.find(tab => tab.screen === `/${segments.join('/')}/`);
+      if (currentTab) {
+          setActiveTab(currentTab.name);
+      } else {
+          setActiveTab(tabs[0].name);
+      }
+  }, [segments]);
+
+    const handleTabPress = (tab: { name: any; screen: any; icon?: string; }) => {
         setActiveTab(tab.name);
         router.push(tab.screen);
     };
@@ -53,7 +63,7 @@ export default function TabMenu () {
               }}
               style={styles.gradientContainer}
             >
-              {activeTab === tab.name && (
+              {activeTab === tab.name ? (
                 <LinearGradient
                   colors={[colorPrimary, colorSecondary]}
                   style={styles.gradient}
@@ -64,8 +74,7 @@ export default function TabMenu () {
                     size={30}
                   />
                 </LinearGradient>
-              )}
-              {activeTab !== tab.name && (
+              ) : (
                 <Icon
                   source={tab.icon}
                   color={MD3Colors.neutral50}
@@ -77,4 +86,4 @@ export default function TabMenu () {
         ))}
       </View>
     );
-  }
+}
