@@ -24,7 +24,7 @@ export default function ViewFadeIn({ isWidthFull = false, children }: ViewFadeIn
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   main: {
     flex: 1,

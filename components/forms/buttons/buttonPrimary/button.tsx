@@ -1,8 +1,8 @@
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button } from "react-native-paper";
+import { Button, MD2Colors } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
-import { Text } from "react-native-paper";
+import { Text, Icon } from "react-native-paper";
 import { styles } from "./button.styles";
 
 const extra = Constants.expoConfig?.extra || {};
@@ -26,6 +26,13 @@ export default  function ButtonsPrimary({icon = '' , label, style, disabled = fa
             style={{...style, ...styles.btn, opacity: disabled ? .7 : 1}}
         >
             <Button mode="contained" buttonColor={'transparent'}  onPress={onPress} disabled={disabled}>
+                {icon && (
+                    <Icon
+                        source={icon}
+                        size={24}
+                        color={MD2Colors.white}
+                    />
+                )}
                 <Text style={{...styles.btnText, ...primaryRegular}}>{label}</Text>
             </Button>
         </LinearGradient>
