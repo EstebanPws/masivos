@@ -15,8 +15,6 @@ const extra = Constants.expoConfig?.extra || {};
 const { primaryRegular, primaryBold } = extra.text;
 const { colorPrimary, colorSecondary } = extra;
 
-
-
 export default function Page() {
     const [isPressed1, setIsPressed1] = useState(false);
     const [isPressed2, setIsPressed2] = useState(false);

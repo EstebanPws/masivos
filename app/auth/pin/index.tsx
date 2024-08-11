@@ -7,21 +7,23 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OtpInputs from "@/components/otp/otpInputs";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Icon } from "react-native-paper";
 import { useAuth } from "@/components/auth/context/authenticationContext";
 import { styles } from "./pin.styles";
 import HeaderGeneral from "@/components/headers/headerGeneral/headerGeneral";
+import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
 
 export default function Page() {
-    const { authenticate } = useAuth();
+    const { authenticate, authenticateWithoutFaceId } = useAuth();
     const inputRefs = useRef<TextInput[]>([]);
     const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '']);
     const [isSecure, setIsSecure] = useState(true);
     const router = useRouter();
     const { document } = useLocalSearchParams();
+    const [showError, setShowError] = useState(false);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         inputRefs.current[0]?.focus();
@@ -55,7 +57,8 @@ export default function Page() {
         const otpIsEmpty = otpValues.some((val) => val === '');
 
         if (otpIsEmpty) {
-            alert('Por favor ingresa el pin.');
+            setMessage('Por favor ingrese su pin.');
+            setShowError(true);
             return;
         }
 
@@ -64,8 +67,18 @@ export default function Page() {
         await authenticate(document!.toString(), otpConcatenated);
     };
 
-    const handleLogin = () => {
-       router.push('/');
+    const handleLogin = async () => {
+        const otpIsEmpty = otpValues.some((val) => val === '');
+
+        if (otpIsEmpty) {
+            setMessage('Por favor ingrese su pin.');
+            setShowError(true);
+            return;
+        }
+
+        const otpConcatenated = otpValues.join('');
+
+        await authenticateWithoutFaceId(document!.toString(), otpConcatenated);
     }
 
     const handleViewPin = () => {
@@ -97,6 +110,14 @@ export default function Page() {
                 onPress={handleLogin}
             />
         </GestureHandlerRootView>
+        {showError && (
+            <InfoModal
+                isVisible={showError}
+                type="error"
+                message={message}
+                onPress={() => setShowError(false)}
+            />
+        )}
       </ViewFadeIn>
     );
 }

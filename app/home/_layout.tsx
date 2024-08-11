@@ -1,13 +1,13 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import AuthenticationProvider from '@/components/auth/context/authenticationContext';
 import TabMenu from '@/components/tabs/tabsMenu/tabsMenu';
+import { TabProvider } from '@/components/auth/tabsContext/tabsContext';
 
 
 export default function Layout() {
     return (
-      <AuthenticationProvider>
+      <TabProvider>
             <StatusBar style="auto" />
             <Tabs
                 screenOptions={{
@@ -21,6 +21,6 @@ export default function Layout() {
                 <Tabs.Screen name="index" />
             </Tabs>
             <TabMenu/>
-        </AuthenticationProvider>
+        </TabProvider>
      );
 }

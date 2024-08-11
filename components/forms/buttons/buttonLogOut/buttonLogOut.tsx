@@ -4,20 +4,21 @@ import { styles } from './buttonLogOut.styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import { Icon } from 'react-native-paper';
+import { useAuth } from '@/components/auth/context/authenticationContext';
 
 const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary, colorSecondary} = extra;
 
 export default function ButtonLogOut() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
 
-  const toggleSlideBar = () => {
-    setIsOpen(!isOpen);
-  };
+  const handleLogout = async () => {
+    await logout();
+  }
 
   return (
     <View style={styles.container}>
-        <TouchableOpacity onPress={toggleSlideBar}>
+        <TouchableOpacity onPress={handleLogout}>
             <LinearGradient
                 colors={[colorPrimary, colorSecondary]}
                 style={styles.toggleButton}

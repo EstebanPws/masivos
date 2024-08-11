@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     },
     services:{
         backgroundColor: 'white',
+        borderRadius: 27,
         width: '100%',
         maxHeight: '75%',
         justifyContent: 'center',

@@ -37,7 +37,7 @@ export default function Page() {
   }
 
   const handleRegister = () => {
-    router.push('auth/signUp/selectTypeAccount/');
+    router.push('auth/signUp/');
   }
 
   return (

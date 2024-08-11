@@ -32,16 +32,21 @@ export const styles = StyleSheet.create({
         left: 10,
         top: 60,
     },
+    options:{
+        position: 'relative',
+        zIndex: 1
+    },
     imageContainer:{
         justifyContent: 'flex-start',
         alignItems: 'center'
     },
     image:{
         width: 280,
-        marginTop: -290
+        marginTop: -70,
+        height: 200
     },
     mt5:{
-        marginTop: -270,
+        marginTop: -50,
         width: '80%'
     }
 })

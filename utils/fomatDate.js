@@ -13,3 +13,7 @@ export const formatNames = (names) => {
 export const formatDateWithoutSlash = (date) => {
     return date.replaceAll('/', '');
 }
+
+export const formatCardNumber = (number) => {
+    return number.replace(/(.{4})/g, '$1 ');
+};

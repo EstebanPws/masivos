@@ -4,7 +4,6 @@ import { Icon, Text } from "react-native-paper";
 import { styles } from "./optionsMain.styles";
 import Constants from "expo-constants";
 
-
 const extra = Constants.expoConfig?.extra || {};
 const {primaryRegular} = extra.text;
 const {colorPrimary} = extra;

@@ -6,6 +6,7 @@ import { router, useSegments } from 'expo-router';
 import { Icon, MD3Colors } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
+import MoreOptions from '@/components/options/moreOptions/moreOptions';
 
 const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary, colorSecondary} = extra;
@@ -14,12 +15,13 @@ const tabs = [
     { name: 'Home', screen: '/home/', icon: 'home' },
     { name: 'Services', screen: '/home/services/', icon: 'file' },
     { name: 'More', screen: '/home/', icon: 'plus' },
-    { name: 'Card', screen: '/home/profile/', icon: 'credit-card' },
-    { name: 'Profile', screen: '/home/', icon: 'account' }
+    { name: 'Card', screen: '/home/cards/', icon: 'credit-card' },
+    { name: 'Profile', screen: '/home/profile/', icon: 'account' }
 ];
 
 export default function TabMenu() {
     const [activeTab, setActiveTab] = useState(tabs[0].name);
+    const [showOptions, setShowOptions] = useState(false);
     const segments = useSegments();
 
     useEffect(() => {
@@ -33,11 +35,16 @@ export default function TabMenu() {
 
     const handleTabPress = (tab: { name: any; screen: any; icon?: string; }) => {
         setActiveTab(tab.name);
-        router.push(tab.screen);
+        if (tab.name !== 'More') {
+          router.replace(tab.screen);
+        } else {
+          setShowOptions(true);
+        }
     };
 
     return (
-      <View style={styles.container}>
+      <View>
+        <View style={styles.container}>
         {tabs.map((tab, index) => (
           <TouchableOpacity
             key={index}
@@ -84,6 +91,12 @@ export default function TabMenu() {
             </MotiView>
           </TouchableOpacity>
         ))}
+        </View>
+        {showOptions && (
+          <MoreOptions 
+            onPress={() => setShowOptions(false)}
+          />
+        )}
       </View>
     );
 }

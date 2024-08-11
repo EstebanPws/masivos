@@ -4,12 +4,13 @@ import { Icon, Text } from "react-native-paper";
 import { styles } from "./services.styles";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
-import { router } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import Constants from "expo-constants";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OptionsService from "@/components/options/optionsService/optionsService";
 import Inputs from "@/components/forms/inputs/inputs";
+import { useTab } from "@/components/auth/tabsContext/tabsContext";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
@@ -20,6 +21,11 @@ export default function Page() {
   const [recharge, setRecharge] = useState('');
   const [isRecharge, setIsRecharge] = useState(false);
   const [idRecharge, setIdRecharge] = useState(0);
+  const { setActiveTab, goBack } = useTab();
+  
+  useFocusEffect(() => {
+    setActiveTab('/home/services/');
+  });
 
   const listSevices = [
     { name: 'Recargas', value: '01' },
@@ -63,10 +69,14 @@ export default function Page() {
 
   const selectedOption = options.find(option => option.id === idRecharge);
 
+  const handleBack = () => {
+    goBack();
+  };
+
   return (
     <ViewFadeIn isWidthFull>
       <HeaderForm
-        onBack={() => router.back()}
+        onBack={() => handleBack()}
         title="Servicios"
       />
       <View style={styles.container}>
