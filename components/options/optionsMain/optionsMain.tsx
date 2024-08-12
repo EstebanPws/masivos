@@ -8,11 +8,15 @@ const extra = Constants.expoConfig?.extra || {};
 const {primaryRegular} = extra.text;
 const {colorPrimary} = extra;
 
-export default function OptionsMain() {
+interface OptionsMain {
+    onRecharge: () => void;
+}
+
+export default function OptionsMain({onRecharge}:OptionsMain ) {
     return(
         <View style={styles.row}>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={onRecharge}>
                     <Icon 
                         source={'plus'}
                         size={24}

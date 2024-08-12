@@ -9,7 +9,11 @@ const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
 const {colorPrimary, colorSecondary} = extra;
 
-export default function Balance() {
+interface BalanceProps {
+    isWelcome?: boolean;
+}
+
+export default function Balance({isWelcome = true}: BalanceProps) {
     return(
         <LinearGradient
             colors={[colorPrimary, colorSecondary]}
@@ -17,9 +21,11 @@ export default function Balance() {
             end={{ x: 1, y: 0 }}
             style={styles.container}
         >
-            <Text variant="titleSmall" style={[primaryRegular, styles.text]}>¡Bienvenido 
-                <Text variant="titleSmall" style={[primaryBold, styles.text]}> Juan!</Text>
-            </Text>
+            {isWelcome && (
+                <Text variant="titleSmall" style={[primaryRegular, styles.text]}>¡Bienvenido 
+                    <Text variant="titleSmall" style={[primaryBold, styles.text]}> Juan!</Text>
+                </Text>
+            )}
             <LinearGradient
                 colors={[colorPrimary, colorSecondary]}
                 start={{ x: 1, y: 0 }}
@@ -28,7 +34,7 @@ export default function Balance() {
             >
                 <Text variant="headlineSmall" style={[primaryBold, styles.text]}>{formatCurrency('20000000')} COP</Text>
             </LinearGradient>
-            <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Saldo</Text>
+            <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Tu saldo</Text>
         </LinearGradient>
 
     );

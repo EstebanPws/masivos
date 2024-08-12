@@ -22,7 +22,7 @@ interface InputsProps {
   flag?: any;
   isTextArea?: boolean;
   onChangeText?: Dispatch<SetStateAction<string>>;
-  value: string;
+  value: string | undefined;
   maxLength?: number;
   isCurrency?: boolean,
   readonly?: boolean

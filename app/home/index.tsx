@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "moti";
-import { Image, TouchableOpacity } from "react-native";
+import { Image, ImageSourcePropType, TouchableOpacity } from "react-native";
 import { styles } from "./home.styles";
 import SideBar from "@/components/sideBar/sideBar";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
@@ -11,13 +11,39 @@ import OptionsMain from "@/components/options/optionsMain/optionsMain";
 import OptionsSecondary from "@/components/options/optionsSecondary/optionsSecondary";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { router, useFocusEffect } from "expo-router";
+import OperationsModal from "@/components/modals/operationsModal/operationsModal";
+
+interface BntOptions {
+  name: string;
+  image: ImageSourcePropType;
+  onPress: () => void;
+}
 
 export default function Page() {  
   const { setActiveTab } = useTab();
+  const [showOperationsRecharge, setShowOperationsRecharge] = useState(false);
   
   useFocusEffect(() => {
     setActiveTab('/home/');
   });
+
+  const button1Recharge: BntOptions = {
+    name: 'Solicitar Recarga',
+    image: require('@/assets/images/general/bolsa-de-dinero.png'),
+    onPress: () => router.push({
+      pathname: '/home/recharge/',
+      params: { type: 0 }
+    })
+  }
+
+  const button2Recharge: BntOptions = {
+    name: 'PSE',
+    image: require('@/assets/images/general/pse-logo.png'),
+    onPress: () => router.push({
+      pathname: '/home/recharge/',
+      params: { type: 1 }
+    })
+  }
 
   return (
     <ViewFadeIn isWidthFull>
@@ -29,7 +55,9 @@ export default function Page() {
           </View>
           <Balance/>
           <View style={styles.options}>
-            <OptionsMain />
+            <OptionsMain 
+              onRecharge={() => setShowOperationsRecharge(true)}
+            />
           </View>
         </View>
         <View style={styles.imageContainer}>
@@ -45,6 +73,13 @@ export default function Page() {
           <SideBar/>
         </View>
       </View>
+      {showOperationsRecharge && (
+        <OperationsModal
+          button1={button1Recharge} 
+          button2={button2Recharge} 
+          onPress={() => setShowOperationsRecharge(false)}                
+        />  
+      )}  
     </ViewFadeIn>
   );
 }

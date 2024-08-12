@@ -24,3 +24,10 @@ export const formatCurrency = (value) => {
       maximumFractionDigits: 0,
     });
 };
+
+export const validateNumber = (value) => {
+    const newValue = value.replace(/^\$/, '');
+    const numberValue = parseFloat(newValue.replaceAll('.', ''));
+    if (isNaN(numberValue)) return '';
+    return Number(numberValue);
+};
