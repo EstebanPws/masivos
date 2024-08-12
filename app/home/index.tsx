@@ -10,7 +10,7 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OptionsMain from "@/components/options/optionsMain/optionsMain";
 import OptionsSecondary from "@/components/options/optionsSecondary/optionsSecondary";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 export default function Page() {  
   const { setActiveTab } = useTab();
@@ -37,7 +37,7 @@ export default function Page() {
           <ButtonsPrimary 
             label="Solicitar tarjeta"
             style={styles.mt5}
-            onPress={() => console.log('rger')}
+            onPress={() => router.push('/home/cards/')}
           />
         </View>
         <OptionsSecondary />

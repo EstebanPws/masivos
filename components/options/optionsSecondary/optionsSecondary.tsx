@@ -3,6 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { styles } from "./optionsSecondary.styles";
 import Constants from "expo-constants";
+import { router } from "expo-router";
 
 
 const extra = Constants.expoConfig?.extra || {};
@@ -13,7 +14,7 @@ export default function OptionsSecondary() {
     return(
         <View style={styles.row}>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/services/')}>
                     <Icon 
                         source={'home-assistant'}
                         size={28}
