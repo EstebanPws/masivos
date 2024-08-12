@@ -3,6 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { styles } from "./optionsMain.styles";
 import Constants from "expo-constants";
+import { router } from "expo-router";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryRegular} = extra.text;
@@ -26,7 +27,7 @@ export default function OptionsMain({onRecharge}:OptionsMain ) {
                 <Text variant="labelMedium" style={[primaryRegular, styles.text]}>Recargar</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/bankTransfer/')}>
                     <Icon 
                         source={'bank-check'}
                         size={24}

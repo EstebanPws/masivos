@@ -135,8 +135,7 @@ export default function Page() {
             setShowError(true);
             return;
         }
-
-        setValRecharge(String(valueFinal));
+        
         setShowPse(true)
     }
     

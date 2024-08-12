@@ -23,16 +23,16 @@ interface SelectAmountProps {
     concepto?: Input
 }
 
-export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto}:SelectAmountProps) {
+export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto = { onChangeText: () => {}, value: '' }}:SelectAmountProps) {
     return(
         <View style={styles.container}>
             {(valMax || valMin) &&(
                 <View style={styles.text}>
-                    {valMax && (
-                        <Text style={[primaryRegular]}>Valor máximo: {formatCurrency(valMax)}</Text>
-                    )}
                     {valMin && (
-                        <Text style={[primaryRegular]}>Valor mínimo: {formatCurrency(valMin)}</Text>
+                        <Text style={[primaryRegular]}>Valor mínimo: {formatCurrency(valMin)} COP</Text>
+                    )}
+                    {valMax && (
+                        <Text style={[primaryRegular]}>Valor máximo: {formatCurrency(valMax)} COP</Text>
                     )}
                 </View>
             )}
@@ -47,7 +47,7 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
                 keyboardType="numeric"          
             />
             {comision && (
-                <Text style={[primaryBold, styles.text]}>Comisión: {formatCurrency(comision)}</Text>
+                <Text style={[primaryBold, styles.text]}>Comisión: {formatCurrency(comision)} COP</Text>
             )}
             <Text style={[primaryRegular, styles.text]}>
                 Limites transaccionales 
@@ -65,9 +65,8 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
                         placeholder="Concepto"
                         isSecureText={false} 
                         isRequired={false}
-                        onChangeText={concepto?.onChangeText}
-                        value={concepto?.value}  
-                        isCurrency
+                        onChangeText={concepto.onChangeText}
+                        value={concepto.value}  
                         keyboardType="default"          
                     />
                 </View>

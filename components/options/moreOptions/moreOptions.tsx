@@ -26,8 +26,16 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
         setTimeout(onPress, 400);
     };
 
-    const handleRoute = () => {
-        router.push('/home');
+    const handleRoute = (type: number) => {
+        if (type === 0) {
+            router.push({
+                pathname: '/home/',
+                params: { type: 0 }
+            })
+        } else if (type === 1) {
+            router.push('/home/bankTransfer');
+        }
+
         handlePress();
     }
 
@@ -52,7 +60,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                             transition={{ type: 'timing', duration: 300 }}
                             style={styles.modalContainer}
                         >
-                            <TouchableOpacity onPress={() => handleRoute()} style={styles.touch}>
+                            <TouchableOpacity onPress={() => handleRoute(0)} style={styles.touch}>
                                 <View style={styles.row}>
                                     <Icon 
                                         source={'plus'}
@@ -62,7 +70,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                                     <Text variant="labelMedium" style={[primaryBold]}>Recargar</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleRoute()} style={styles.touch}>
+                            <TouchableOpacity onPress={() => handleRoute(1)} style={styles.touch}>
                                 <View style={styles.row}>
                                     <Icon 
                                         source={'bank-check'}
@@ -72,7 +80,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                                     <Text variant="labelMedium" style={[primaryBold]}>Transferir</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleRoute()} style={styles.touch}>
+                            <TouchableOpacity onPress={() => handleRoute(2)} style={styles.touch}>
                                 <View style={styles.row}>
                                     <Icon 
                                         source={'arrow-right'}
@@ -82,7 +90,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                                     <Text variant="labelMedium" style={[primaryBold]}>Enviar</Text>
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleRoute()} style={styles.touch}>
+                            <TouchableOpacity onPress={() => handleRoute(3)} style={styles.touch}>
                                 <View style={styles.row}>
                                     <Icon 
                                         source={'arrow-down'}
