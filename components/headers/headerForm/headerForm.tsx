@@ -1,6 +1,6 @@
 import React from "react";
-import { Image, TouchableOpacity} from "react-native";
-import { Appbar, Icon } from "react-native-paper";
+import { Image} from "react-native";
+import { Appbar } from "react-native-paper";
 import { styles } from "./headerForm.styles";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
@@ -11,16 +11,17 @@ const {colorPrimary, colorSecondary} = extra;
 
 interface HeaderForm {
     title?: string;
+    isBorder?: boolean;
     onBack: () => void;
 }
 
-export default function HeaderForm ({title = "", onBack} : HeaderForm) {
+export default function HeaderForm ({title = "", isBorder = true ,onBack} : HeaderForm) {
     return (
         <LinearGradient
             colors={[colorPrimary, colorSecondary]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={styles.header}
+            style={isBorder ? styles.header : styles.headerNotBorder}
         >
             <Appbar.Header style={styles.appbarHeader}>
                 <Appbar.BackAction onPress={onBack} size={30} color="#fff"/>

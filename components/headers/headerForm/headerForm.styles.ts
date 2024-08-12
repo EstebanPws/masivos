@@ -6,6 +6,9 @@ export const styles = StyleSheet.create({
         borderBottomLeftRadius: 27,
         borderBottomRightRadius: 27
     },
+    headerNotBorder:{
+        paddingTop: 12
+    },
     appbarHeader: {
         backgroundColor: 'transparent',
         elevation: 0,

@@ -20,83 +20,86 @@ const tabs = [
 ];
 
 export default function TabMenu() {
-    const [activeTab, setActiveTab] = useState(tabs[0].name);
-    const [showOptions, setShowOptions] = useState(false);
-    const segments = useSegments();
+  const [activeTab, setActiveTab] = useState(tabs[0].name);
+  const [showOptions, setShowOptions] = useState(false);
+  const segments = useSegments();
 
-    useEffect(() => {
-      const currentTab = tabs.find(tab => tab.screen === `/${segments.join('/')}/`);
-      if (currentTab) {
-          setActiveTab(currentTab.name);
-      } else {
-          setActiveTab(tabs[0].name);
-      }
+  useEffect(() => {
+    const currentTab = tabs.find(tab => tab.screen === `/${segments.join('/')}/`);
+
+    if (currentTab) {
+      setActiveTab(currentTab.name);
+    } else if (segments[1] === 'profile'){
+      setActiveTab('Profile');
+    } else {
+      setActiveTab(tabs[0].name);
+  }
   }, [segments]);
 
-    const handleTabPress = (tab: { name: any; screen: any; icon?: string; }) => {
-        setActiveTab(tab.name);
-        if (tab.name !== 'More') {
-          router.replace(tab.screen);
-        } else {
-          setShowOptions(true);
-        }
-    };
+  const handleTabPress = (tab: { name: any; screen: any; icon?: string; }) => {
+      setActiveTab(tab.name);
+      if (tab.name !== 'More') {
+        router.replace(tab.screen);
+      } else {
+        setShowOptions(true);
+      }
+  };
 
-    return (
-      <View>
-        <View style={styles.container}>
-        {tabs.map((tab, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleTabPress(tab)}
-            style={activeTab === tab.name ? styles.tabActive : styles.tab}
+  return (
+    <View>
+      <View style={styles.container}>
+      {tabs.map((tab, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() => handleTabPress(tab)}
+          style={activeTab === tab.name ? styles.tabActive : styles.tab}
+        >
+          <MotiView
+            from={{
+              scale: 0.9,
+              opacity: 0.5,
+              backgroundColor: 'transparent',
+              marginTop: -30,
+            }}
+            animate={{
+              scale: activeTab === tab.name ? 1 : 0.9,
+              opacity: activeTab === tab.name ? 1 : 0.5,
+              backgroundColor: 'transparent',
+              marginTop: 0,
+            }}
+            transition={{
+              type: 'timing',
+              duration: 300
+            }}
+            style={styles.gradientContainer}
           >
-            <MotiView
-              from={{
-                scale: 0.9,
-                opacity: 0.5,
-                backgroundColor: 'transparent',
-                marginTop: -30,
-              }}
-              animate={{
-                scale: activeTab === tab.name ? 1 : 0.9,
-                opacity: activeTab === tab.name ? 1 : 0.5,
-                backgroundColor: 'transparent',
-                marginTop: 0,
-              }}
-              transition={{
-                type: 'timing',
-                duration: 300
-              }}
-              style={styles.gradientContainer}
-            >
-              {activeTab === tab.name ? (
-                <LinearGradient
-                  colors={[colorPrimary, colorSecondary]}
-                  style={styles.gradient}
-                >
-                  <Icon
-                    source={tab.icon}
-                    color="#fff"
-                    size={30}
-                  />
-                </LinearGradient>
-              ) : (
+            {activeTab === tab.name ? (
+              <LinearGradient
+                colors={[colorPrimary, colorSecondary]}
+                style={styles.gradient}
+              >
                 <Icon
                   source={tab.icon}
-                  color={MD3Colors.neutral50}
+                  color="#fff"
                   size={30}
                 />
-              )}
-            </MotiView>
-          </TouchableOpacity>
-        ))}
-        </View>
-        {showOptions && (
-          <MoreOptions 
-            onPress={() => setShowOptions(false)}
-          />
-        )}
+              </LinearGradient>
+            ) : (
+              <Icon
+                source={tab.icon}
+                color={MD3Colors.neutral50}
+                size={30}
+              />
+            )}
+          </MotiView>
+        </TouchableOpacity>
+      ))}
       </View>
-    );
+      {showOptions && (
+        <MoreOptions 
+          onPress={() => setShowOptions(false)}
+        />
+      )}
+    </View>
+  );
 }

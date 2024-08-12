@@ -25,9 +25,10 @@ interface InputsProps {
   value: string;
   maxLength?: number;
   isCurrency?: boolean,
+  readonly?: boolean
 }
 
-export default function Inputs ({icon = '' , label = '', isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value,  maxLength, isCurrency = false,} : InputsProps) {
+export default function Inputs ({icon = '' , label = '', isSecureText = false, isRequired = false, placeholder, keyboardType = 'default', iconColor, flag, isTextArea = false, onChangeText, value,  maxLength, isCurrency = false, readonly = false} : InputsProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleChangeText = (text: string) => {
@@ -81,6 +82,7 @@ export default function Inputs ({icon = '' , label = '', isSecureText = false, i
           onChangeText={handleChangeText}
           value={value}
           maxLength={maxLength}
+          disabled={readonly}
         />
       ) : (
         <TextInput
@@ -101,6 +103,7 @@ export default function Inputs ({icon = '' , label = '', isSecureText = false, i
           onChangeText={handleChangeText}
           value={value}
           maxLength={maxLength}
+          disabled={readonly}
         />
       )}
       </MotiView>
