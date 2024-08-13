@@ -16,10 +16,11 @@ interface DateSelectProps {
     isRequired?: boolean;
     label: string;
     placeholder: string;
+    icon?: boolean; 
     onSelect: (date: Date) => void;
 }
 
-export default function DateSelect({ isRequired = false, label, placeholder, onSelect }: DateSelectProps) {
+export default function DateSelect({ isRequired = false, label, placeholder, icon = true, onSelect }: DateSelectProps) {
     const today = new Date();
     const [isPickerVisible, setPickerVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date>(today);
@@ -69,16 +70,18 @@ export default function DateSelect({ isRequired = false, label, placeholder, onS
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>
                   {selectedDate ? formatDate(selectedDate) : placeholder}
                 </Text>
-                <LinearGradient
+                {icon && (
+                  <LinearGradient
                     colors={[colorPrimary, colorSecondary]}
                     style={styles.containerIcon}
-                >
-                  <Icon
-                    source="calendar"
-                    size={24}
-                    color={MD2Colors.white}
-                  />
-                </LinearGradient>
+                  >
+                    <Icon
+                      source="calendar"
+                      size={24}
+                      color={MD2Colors.white}
+                    />
+                  </LinearGradient>
+                )}
             </TouchableOpacity>
             {isPickerVisible && Platform.OS === 'ios' && (
               <Modal

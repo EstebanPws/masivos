@@ -24,7 +24,7 @@ export default function OptionsSecondary() {
                 <Text variant="labelSmall" style={[primaryBold, styles.text]}>Servicios</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/transactions/')}>
                     <Icon 
                         source={'shopping'}
                         size={28}
