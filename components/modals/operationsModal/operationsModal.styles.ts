@@ -1,5 +1,5 @@
 import Constants from "expo-constants";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, Platform, StyleSheet } from "react-native";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
     },
     message: {
-      fontSize: 14,
+      fontSize: Platform.OS === 'android' ? 12 : 14,
       textAlign: 'center',
       marginVertical: 20,
     },

@@ -37,7 +37,7 @@ export default function OptionsMain({onRecharge}:OptionsMain ) {
                 <Text variant="labelMedium" style={[primaryRegular, styles.text]}>Transferir</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/sendMoney/')}>
                     <Icon 
                         source={'arrow-right'}
                         size={24}

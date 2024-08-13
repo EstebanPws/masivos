@@ -42,7 +42,9 @@ export default function Inputs ({icon = '' , label = '', isSecureText = false, i
 
   return (
     <View>
-      <Text style={[primaryBold, isFocused ? styles.labelActive : styles.label]}>{isRequired ? `${label} *` : label}</Text>
+      {label && (
+        <Text style={[primaryBold, isFocused ? styles.labelActive : styles.label]}>{isRequired ? `${label} *` : label}</Text>
+      )}
       <MotiView
         from={{
             borderColor: `${MD2Colors.grey500}`,

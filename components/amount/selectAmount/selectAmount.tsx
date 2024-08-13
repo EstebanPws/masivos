@@ -20,10 +20,11 @@ interface SelectAmountProps {
     comision?: string;
     isConcepto?: boolean;
     amount: Input;
-    concepto?: Input
+    concepto?: Input;
+    type: number;
 }
 
-export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto = { onChangeText: () => {}, value: '' }}:SelectAmountProps) {
+export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto = { onChangeText: () => {}, value: '' }, type}:SelectAmountProps) {
     return(
         <View style={styles.container}>
             {(valMax || valMin) &&(
@@ -37,8 +38,8 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
                 </View>
             )}
             <Inputs 
-                label="Introduce el valor a recargar"
-                placeholder="Introduce el valor"
+                label={`Ingrese el valor a ${type === 0 ? 'recargar' : type === 1 ? 'transferir' : 'enviar'}`}
+                placeholder="Ingrese el valor"
                 isSecureText={false} 
                 isRequired 
                 onChangeText={amount.onChangeText}

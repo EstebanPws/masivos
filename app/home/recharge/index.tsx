@@ -164,6 +164,7 @@ export default function Page() {
                                         valMin={valMin}
                                         comision="0"
                                         amount={inputAmount}
+                                        type={0}
                                     />
                                 )}
                                 {showPse &&(

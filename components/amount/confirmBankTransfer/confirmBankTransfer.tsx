@@ -11,14 +11,17 @@ const {primaryBold, primaryRegular} = extra.text;
 interface ConfirmBankTransferProps{
     amount: string;
     comision: string;
-    names: string;
-    document: string;
-    account: string;
-    bank: string;
-    concepto: string;
+    names: string | undefined;
+    document?: string;
+    account?: string;
+    bank?: string;
+    concepto?: string;
+    phone?: string | undefined;
 }
 
-export default function ConfirmBankTransfer({amount, comision, names, document, account, bank, concepto}: ConfirmBankTransferProps) {
+export default function ConfirmBankTransfer({amount, comision, names, document, account, bank, concepto, phone}: ConfirmBankTransferProps) {
+    const cleanNames = names?.replace(/undefined/g, '').trim();
+
     return(
         <View>
             <View style={styles.row}>
@@ -32,25 +35,39 @@ export default function ConfirmBankTransfer({amount, comision, names, document, 
                 </View>
                 <View style={[styles.row, styles.line]}>
                     <Text style={primaryBold}>Titular:</Text>
-                    <Text style={primaryRegular}>{names}</Text>
+                    <Text style={primaryRegular}>{cleanNames}</Text>
                 </View>
-                <View style={[styles.row, styles.line]}>
-                    <Text style={primaryBold}>Número de{'\n'}documento:</Text>
-                    <Text style={primaryRegular}>{document}</Text>
-                </View>
-                <View style={[styles.row, styles.line]}>
-                    <Text style={primaryBold}>Número de{'\n'}cuenta:</Text>
-                    <Text style={primaryRegular}>{account}</Text>
-                </View>
-                <View style={[styles.row]}>
-                    <Text style={primaryBold}>Entidad:</Text>
-                    <Text style={primaryRegular}>{bank}</Text>
-                </View>
+                {document && (
+                    <View style={[styles.row, styles.line]}>
+                        <Text style={primaryBold}>Número de{'\n'}documento:</Text>
+                        <Text style={primaryRegular}>{document}</Text>
+                    </View>
+                )}
+                {account && (
+                    <View style={[styles.row, styles.line]}>
+                        <Text style={primaryBold}>Número de{'\n'}cuenta:</Text>
+                        <Text style={primaryRegular}>{account}</Text>
+                    </View>
+                )}
+                {bank && (
+                    <View style={[styles.row]}>
+                        <Text style={primaryBold}>Entidad:</Text>
+                        <Text style={primaryRegular}>{bank}</Text>
+                    </View>
+                )}
+                {phone && (
+                    <View style={[styles.row]}>
+                        <Text style={primaryBold}>Número de{'\n'}celular:</Text>
+                        <Text style={primaryRegular}>{phone}</Text>
+                    </View>
+                )}
             </View>
-            <View style={styles.row}>
-                <Text style={primaryBold}>Concepto:</Text>
-                <Text style={primaryRegular}>{concepto}</Text>
-            </View>
+            {concepto && (
+                <View style={styles.row}>
+                    <Text style={primaryBold}>Concepto:</Text>
+                    <Text style={primaryRegular}>{concepto}</Text>
+                </View>
+            )}
         </View>
     );
 }

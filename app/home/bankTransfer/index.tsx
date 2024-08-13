@@ -182,6 +182,7 @@ export default function Page() {
                                 isConcepto
                                 concepto={inputConcepto}
                                 amount={inputAmount}
+                                type={1}
                             />
                         )}
                         {(showAddAccount && disableContinue) &&(
@@ -209,7 +210,8 @@ export default function Page() {
                                 document={document} 
                                 account={accountNumber} 
                                 bank={banks}
-                                concepto={concepto} />
+                                concepto={concepto} 
+                            />
                         )}
                     </ScrollView>
                     <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain"/>

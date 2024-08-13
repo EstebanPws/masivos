@@ -25,8 +25,8 @@ export default function RequestRecharge({ phone}:RequestRechargeProps) {
                 <Text style={[primaryRegular]}>Ingresa a continuación el número de celular al cual quierem solicitar la recarga.</Text>
             </View>
             <Inputs 
-                label="Introduce el número  de celular"
-                placeholder="Introduce el valor"
+                label="Introduce el número de celular"
+                placeholder="Ingrese el valor"
                 isSecureText={false} 
                 isRequired 
                 onChangeText={phone.onChangeText}

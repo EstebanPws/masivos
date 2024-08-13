@@ -131,7 +131,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                     <View style={styles.mb5}>
                         <Inputs 
                             label="Nombres"
-                            placeholder="Introduce el valor"
+                            placeholder="Ingrese el valor"
                             isSecureText={false} 
                             isRequired 
                             onChangeText={names.onChangeText}
@@ -142,7 +142,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                     <View style={styles.mb5}>
                         <Inputs 
                             label="Apellidos"
-                            placeholder="Introduce el valor"
+                            placeholder="Ingrese el valor"
                             isSecureText={false} 
                             isRequired 
                             onChangeText={surnames.onChangeText}
@@ -153,7 +153,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                     <View style={styles.mb5}>
                         <Inputs 
                             label="Alias"
-                            placeholder="Introduce el valor"
+                            placeholder="Ingrese el valor"
                             isSecureText={false} 
                             isRequired 
                             onChangeText={alias.onChangeText}
@@ -164,7 +164,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                     <View style={styles.mb5}>
                         <Inputs 
                             label="Número de cuenta"
-                            placeholder="Introduce el valor"
+                            placeholder="Ingrese el valor"
                             isSecureText={false} 
                             isRequired 
                             onChangeText={accountNumber.onChangeText}
@@ -176,7 +176,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                         <View style={styles.mb5}>
                             <Inputs 
                                 label="Número de documento del titular"
-                                placeholder="Introduce el valor"
+                                placeholder="Ingrese el valor"
                                 isSecureText={false} 
                                 isRequired 
                                 onChangeText={document.onChangeText}

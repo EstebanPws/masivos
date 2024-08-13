@@ -38,7 +38,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Nombres"
-                    placeholder="Introduce el valor"
+                    placeholder="Ingrese el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={names.onChangeText}
@@ -49,7 +49,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Apellidos"
-                    placeholder="Introduce el valor"
+                    placeholder="Ingrese el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={surnames.onChangeText}
@@ -60,7 +60,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Número de documento"
-                    placeholder="Introduce el valor"
+                    placeholder="Ingrese el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={document.onChangeText}
@@ -71,7 +71,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Correo"
-                    placeholder="Introduce el valor"
+                    placeholder="Ingrese el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={email.onChangeText}
@@ -91,7 +91,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Celular"
-                    placeholder="Introduce el valor"
+                    placeholder="Ingrese el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={phone.onChangeText}
