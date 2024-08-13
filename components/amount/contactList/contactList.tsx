@@ -46,9 +46,15 @@ export default function ContactList({ onPress, setContact }: ContactListProps) {
     setSearchQuery(query);
   };
 
-  const filteredContacts = contacts.filter((contact) => {
-    const contactName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
-    return contactName.includes(searchQuery.toLowerCase());
+  const filteredContacts = contacts
+    .filter((contact) => {
+      const contactName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
+      return contactName.includes(searchQuery.toLowerCase());
+    })
+    .sort((a, b) => {
+      const nameA = `${a.firstName || ''} ${a.lastName || ''}`.trim().toLowerCase();
+      const nameB = `${b.firstName || ''} ${b.lastName || ''}`.trim().toLowerCase();
+      return nameA.localeCompare(nameB);
   });
 
   const handleSelect = (item: Contact) => {

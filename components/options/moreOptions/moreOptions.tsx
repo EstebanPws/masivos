@@ -36,6 +36,8 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
             router.push('/home/bankTransfer');
         } else if (type === 2) {
             router.push('/home/sendMoney/');
+        } else {
+            router.push('/home/cashout/');
         }
 
         handlePress();

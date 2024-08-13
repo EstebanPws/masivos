@@ -47,7 +47,7 @@ export default function OptionsMain({onRecharge}:OptionsMain ) {
                 <Text variant="labelMedium" style={[primaryRegular, styles.text]}>Enviar</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/cashout')}>
                     <Icon 
                         source={'arrow-down'}
                         size={24}

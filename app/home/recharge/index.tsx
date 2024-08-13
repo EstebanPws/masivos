@@ -155,7 +155,7 @@ export default function Page() {
                     enableOnAndroid={true}
                     extraHeight={Platform.select({ ios: 100, android: 120 })}
                 >
-                    <ScrollView showsHorizontalScrollIndicator={false}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
                        {type === '1' && (
                             <>
                                 {!showPse &&(

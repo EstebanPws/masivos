@@ -38,7 +38,7 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
                 </View>
             )}
             <Inputs 
-                label={`Ingrese el valor a ${type === 0 ? 'recargar' : type === 1 ? 'transferir' : 'enviar'}`}
+                label={`Ingrese el valor a ${type === 0 ? 'recargar' : type === 1 ? 'transferir' : type === 2 ? 'enviar' : 'retirar'}`}
                 placeholder="Ingrese el valor"
                 isSecureText={false} 
                 isRequired 
@@ -49,6 +49,9 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
             />
             {comision && (
                 <Text style={[primaryBold, styles.text]}>Comisión: {formatCurrency(comision)} COP</Text>
+            )}
+            {type === 3 && (
+                <Text variant='labelMedium' style={[primaryBold, styles.text]}>Nota: Recuerda que puedes retirar en cualquier efecty a nivel nacional.</Text>
             )}
             <Text style={[primaryRegular, styles.text]}>
                 Limites transaccionales 
