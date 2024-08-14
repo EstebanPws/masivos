@@ -19,13 +19,14 @@ interface List {
 }
 
 interface InfoWorkingProps{
+    type?: number;
     listMunicipios: List[] | null;
     listCiiu: List[] | null;
     listProfesiones: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, onSubmit }: InfoWorkingProps) {
+export default function InfoWorking({type = 0, listMunicipios, listCiiu, listProfesiones, onSubmit }: InfoWorkingProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [actiCiiu, setActiCiiu] = useState('');
@@ -80,7 +81,7 @@ export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, 
     ];
 
     useEffect(() => {
-        const allFieldsFilled = actiCiiu && profesion && nomEmpreNeg && tipoEmpNeg && ciuEmpreNeg && direEmpreNeg && cargo && mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo;
+        const allFieldsFilled = type !== 1 ? actiCiiu && profesion && nomEmpreNeg && tipoEmpNeg && ciuEmpreNeg && direEmpreNeg && cargo && mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo : mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo;
         
         setIsButtonEnabled(!!allFieldsFilled);
     }, [actiCiiu, profesion, nomEmpreNeg, tipoEmpNeg, ciuEmpreNeg, direEmpreNeg, cargo, mesInfoFinan, declarante, ingreMes, otroIngre, totalIngre, totalEgreso, ingreAdic, totalActivo,
@@ -90,24 +91,26 @@ export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, 
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
             if (savedData) {
-                setActiCiiu(savedData.acti_CIIU);
-                setDescCiiu(savedData.desc_CIIU);
-                setProfesion(savedData.profesion);
-                setNomEmpreNeg(savedData.Nom_empre_neg);
-                setTipoEmpNeg(savedData.Tipo_emp_neg);
-                setCiuEmpreNeg(savedData.ciu_empre_neg);
-                setDireEmpreNeg(savedData.dire_empre_neg);
-                setCargo(savedData.cargo);
+                if(type !== 1) {
+                    setActiCiiu(savedData.acti_CIIU);
+                    setDescCiiu(savedData.desc_CIIU);
+                    setProfesion(savedData.profesion);
+                    setNomEmpreNeg(savedData.Nom_empre_neg);
+                    setTipoEmpNeg(savedData.Tipo_emp_neg);
+                    setCiuEmpreNeg(savedData.ciu_empre_neg);
+                    setDireEmpreNeg(savedData.dire_empre_neg);
+                    setCargo(savedData.cargo);
+                }
                 setMesInfoFinan(savedData.mes_info_finan);
                 setDeclarante(savedData.declarante);
-                setIngreMes(savedData.ingre_mes);
-                setOtroIngre(savedData.otro_ingre);
+                setIngreMes(type !== 1 ? savedData.ingre_mes : savedData.r_l_ingresos_mens);
+                setOtroIngre(type !== 1 ? savedData.otro_ingre : savedData.r_l_vrlr_otros_in);
                 setTotalIngre(savedData.total_ingre);
-                setTotalEgreso(savedData.total_engreso);
+                setTotalEgreso(type !== 1 ? savedData.total_engreso : savedData.r_l_vrlr_egresos);
                 setDesOtrosIngresos(savedData.des_otros_ingresos);
                 setIngreAdic(savedData.ingre_adic);
-                setTotalActivo(savedData.total_activo);
-                setTotalPasivo(savedData.total_pasivo);
+                setTotalActivo(type !== 1 ? savedData.total_activo : savedData.r_l_vr_tot_acti);
+                setTotalPasivo(type !== 1 ? savedData.total_pasivo : savedData.r_l_vr_tot_pasi);
 
                 setIsVisible(true);
             }
@@ -119,7 +122,7 @@ export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, 
     const handleSubmit = () => {
         setIsVisible(false);
 
-        const updatedFormData = { 
+        const updatedFormData = type !== 1 ? { 
             ...formData, 
             acti_CIIU: actiCiiu,
             desc_CIIU: descCiiu,
@@ -139,6 +142,18 @@ export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, 
             ingre_adic: ingreAdic,
             total_activo: totalActivo,
             total_pasivo: totalPasivo
+        } : {
+            ...formData,
+            mes_info_finan: mesInfoFinan,
+            declarante: declarante,
+            r_l_ingresos_mens: ingreMes,
+            r_l_vrlr_otros_in: otroIngre,
+            total_ingre: totalIngre,
+            r_l_vrlr_egresos: totalEgreso,
+            des_otros_ingresos: desOtrosIngresos,
+            ingre_adic: ingreAdic,
+            r_l_vr_tot_acti: totalActivo,
+            r_l_vr_tot_pasi: totalPasivo
         }; 
 
         const fetchFormData = async () => {
@@ -183,79 +198,83 @@ export default function InfoWorking({listMunicipios, listCiiu, listProfesiones, 
             {isVisible && (
                 <FadeInOut>
                     <View style={styles.containerForm}>
-                        <TitleLine 
-                            label="Infomarción laboral"
-                        />
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Actividad economica"
-                                data={listCiiu}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelectCiiu(setActiCiiu)}
-                                selectedValue={actiCiiu}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Profesión"
-                                data={listProfesiones}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setProfesion)}
-                                selectedValue={profesion}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <Inputs
-                                label="Nombre de la empresa o negocio"
-                                placeholder="Escribe el nombre de empresa o negocio"
-                                isSecureText={false}
-                                isRequired={true}
-                                keyboardType="default"
-                                onChangeText={setNomEmpreNeg}
-                                value={nomEmpreNeg}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <CheckboxCustom 
-                                label="Tipo de empresa o negocio"
-                                isRequired
-                                options={options}
-                                onSelect={handleSelectCheckBox}
-                                selectedValue={tipoEmpNeg}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Ciudad"
-                                data={listMunicipios}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setCiuEmpreNeg)}
-                                selectedValue={ciuEmpreNeg}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <AddressDian 
-                                label="Dirección de trabajo" 
-                                placeholder="Escribe tu dirección" 
-                                onSelect={handleSelect(setDireEmpreNeg)} 
-                                selectedValue={direEmpreNeg}
-                                isRequired
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <Inputs
-                                label="Cargo"
-                                placeholder="Escribe el cargo en tu empresa"
-                                isSecureText={false}
-                                isRequired={true}
-                                keyboardType="default"
-                                onChangeText={setCargo}
-                                value={cargo}
-                            />
-                        </View>
+                        {type !== 1 && (
+                            <>
+                                <TitleLine 
+                                    label="Infomarción laboral"
+                                />
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Actividad economica"
+                                        data={listCiiu}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelectCiiu(setActiCiiu)}
+                                        selectedValue={actiCiiu}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Profesión"
+                                        data={listProfesiones}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setProfesion)}
+                                        selectedValue={profesion}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Nombre de la empresa o negocio"
+                                        placeholder="Escribe el nombre de empresa o negocio"
+                                        isSecureText={false}
+                                        isRequired={true}
+                                        keyboardType="default"
+                                        onChangeText={setNomEmpreNeg}
+                                        value={nomEmpreNeg}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <CheckboxCustom 
+                                        label="Tipo de empresa o negocio"
+                                        isRequired
+                                        options={options}
+                                        onSelect={handleSelectCheckBox}
+                                        selectedValue={tipoEmpNeg}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Ciudad"
+                                        data={listMunicipios}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setCiuEmpreNeg)}
+                                        selectedValue={ciuEmpreNeg}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <AddressDian 
+                                        label="Dirección de trabajo" 
+                                        placeholder="Escribe tu dirección" 
+                                        onSelect={handleSelect(setDireEmpreNeg)} 
+                                        selectedValue={direEmpreNeg}
+                                        isRequired
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Cargo"
+                                        placeholder="Escribe el cargo en tu empresa"
+                                        isSecureText={false}
+                                        isRequired={true}
+                                        keyboardType="default"
+                                        onChangeText={setCargo}
+                                        value={cargo}
+                                    />
+                                </View>
+                            </>
+                        )}
                         <TitleLine 
                             label="Información financiera"
                         />

@@ -36,7 +36,7 @@ export default function Page() {
     const handlePressOut2 = () => setIsPressed2(false);
 
     const handleNext = (type: number) => {
-        const updatedFormData = {...formData, modalidad: String(type) };
+        const updatedFormData = {...formData, modalidad: type !== 8 ? String(0) : String(type) };
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
             if (savedData) {

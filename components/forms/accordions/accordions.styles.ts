@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
         borderRadius: 8,
         padding: 10,
-        maxHeight: 500
+        
     },
     item: {
         paddingVertical: 5,

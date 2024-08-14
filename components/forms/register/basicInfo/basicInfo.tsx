@@ -21,11 +21,12 @@ interface List {
 }
 
 interface BasicInfoProps{
+    type: number;
     listMunicipios: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) {
+export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoProps) {
     const [names, setNames] = useState('');
     const [surnames, setSurnames] = useState('');
     const [birthDate, setBirthDate] = useState('');
@@ -80,14 +81,14 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
             if (savedData) {
                 setNames(`${savedData.nombre1} ${savedData.nombre2}`);
                 setSurnames(`${savedData.apellido1} ${savedData.apellido2}`);
-                setBirthDate(savedData.fecha_nac);
-                setPlaceBirthDate(savedData.lug_nac);
-                setTypeDocument(savedData.tipo_doc);
-                setInputDocument(savedData.no_docum);
-                setBirthDateDoc(savedData.expedida_en);
-                setPlaceBirthDateDoc(savedData.fecha_exp);
-                setPhone(savedData.numero_celular);
-                setEmail(savedData.correo);
+                setBirthDate(type === 1 ? savedData.r_l_fecnacimie : savedData.fecha_nac);
+                setPlaceBirthDate(type === 1 ? savedData.r_l_ciu_nacimiento : savedData.lug_nac);
+                setTypeDocument(type === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc);
+                setInputDocument(type === 1 ? savedData.r_l_ced : savedData.no_docum);
+                setBirthDateDoc(type === 1 ? savedData.r_l_fecha_expdoc : savedData.expedida_en);
+                setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.fecha_exp);
+                setPhone(type === 1 ? savedData.r_l_tel : savedData.numero_celular);
+                setEmail(type === 1 ? savedData.r_l_email : savedData.correo);
                 setAutaEnvSms(savedData.auta_env_sms);
                 setAutEnvEmail(savedData.aut_env_email);
                 setIsVisible(true);
@@ -133,7 +134,22 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
         const newNames = formatNames(names);
         const newSurnames = formatNames(surnames);
 
-        const updatedFormData = { 
+        const updatedFormData = type === 1 ? { 
+            ...formData, 
+            r_l_nombres: `${newNames[0]} ${newNames[1] === undefined ? '' : newNames[1]}`, 
+            r_l_pri_ape: newSurnames[0], 
+            r_l_seg_ape: newSurnames[1] === undefined ? '' : newSurnames[1], 
+            r_l_fecnacimie: formatDateWithoutSlash(birthDate),
+            r_l_ciu_nacimiento: placeBirthDate,
+            r_l_tipo_doc: typeDocument,
+            r_l_ced: inputDocument,
+            r_l_fecha_expdoc: formatDateWithoutSlash(birthDateDoc),
+            r_l_expedida: placeBirthDateDoc,
+            r_l_tel: phone,
+            r_l_email: email,
+            auta_env_sms: autaEnvSms,
+            aut_env_email: autEnvEmail
+        } : {
             ...formData, 
             nombre1: newNames[0], 
             nombre2: newNames[1] === undefined ? '' : newNames[1], 
@@ -186,7 +202,7 @@ export default function BasicInfo({listMunicipios,  onSubmit }: BasicInfoProps) 
                 <FadeInOut key="step0">
                     <View style={styles.containerForm}>
                         <TitleLine 
-                            label="Infomarción basica"
+                            label={`Infomarción ${type === 1 ? 'del representante legal' : 'basica'}`}
                         />
                         <View style={styles.mb5}>
                             <Inputs

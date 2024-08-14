@@ -33,11 +33,11 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                 params: { type: 0 }
             })
         } else if (type === 1) {
-            router.push('/home/bankTransfer');
+            router.replace('/home/bankTransfer');
         } else if (type === 2) {
-            router.push('/home/sendMoney/');
+            router.replace('/home/sendMoney/');
         } else {
-            router.push('/home/cashout/');
+            router.replace('/home/cashout/');
         }
 
         handlePress();

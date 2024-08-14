@@ -37,11 +37,11 @@ export default function CheckboxCustom({label = '', isRequired = false, options,
                                 end={{ x: 1, y: 0 }}
                                 style={styles.gradientContainer}
                             >
-                                <Text style={[styles.paragraph, primaryBold]}>{option.label}</Text>
+                                <Text style={[options.length === 4 ? styles.paragraphSmall : styles.paragraph, primaryBold]}>{option.label}</Text>
                             </LinearGradient>
                         ) : (
                             <View style={styles.greyContainer}>
-                                <Text style={[styles.paragraph, primaryBold]}>{option.label}</Text>
+                                <Text style={[options.length === 4 ? styles.paragraphSmall : styles.paragraph, primaryBold]}>{option.label}</Text>
                             </View>
                         )}
                     </TouchableOpacity>

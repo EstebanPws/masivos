@@ -42,5 +42,9 @@ export const styles = StyleSheet.create({
   paragraph: {
     fontSize: Platform.OS === 'android' ? 11: 13,
     color: MD2Colors.white,
+  },
+  paragraphSmall: {
+    fontSize: Platform.OS === 'android' ? 8: 10,
+    color: MD2Colors.white,
   }
 });

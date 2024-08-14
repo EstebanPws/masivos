@@ -71,7 +71,7 @@ export default function Page() {
           <ButtonsPrimary
             label="Solicitar tarjeta"
             style={styles.mt5}
-            onPress={() => router.push('/home/cards/')}
+            onPress={() => router.replace('/home/cards/')}
           />
         </View>
         <OptionsSecondary />

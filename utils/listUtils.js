@@ -213,3 +213,15 @@ export const listCurrencyType = [
     {value: '22',name: 'Euro'},	
     {value: '23',name: 'Bolívar'}
 ];
+
+export const listAssociationType = [
+    {name: 'Cooperativa de ahorro y crédito', value: '1'},
+    {name: 'Cooperartiva multiactiva', value: '2'},
+    {name: 'Fondo de empleados', value: '3'},
+    {name: 'Otras solidarias', value: '4'},
+    {name: 'Sociedad Anómima Vigilada por SFC', value: '5'},
+    {name: 'Sociedad Anómima', value: '6'},
+    {name: 'S.A.S', value: '7'},
+    {name: 'Empresas públicas', value: '8'},
+    {name: 'Otras', value: '9'}
+];

@@ -27,7 +27,7 @@ export default function OptionsMain({onRecharge}:OptionsMain ) {
                 <Text variant="labelMedium" style={[primaryRegular, styles.text]}>Recargar</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/bankTransfer/')}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/bankTransfer/')}>
                     <Icon 
                         source={'bank-check'}
                         size={24}
@@ -37,7 +37,7 @@ export default function OptionsMain({onRecharge}:OptionsMain ) {
                 <Text variant="labelMedium" style={[primaryRegular, styles.text]}>Transferir</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/sendMoney/')}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/sendMoney/')}>
                     <Icon 
                         source={'arrow-right'}
                         size={24}
@@ -47,7 +47,7 @@ export default function OptionsMain({onRecharge}:OptionsMain ) {
                 <Text variant="labelMedium" style={[primaryRegular, styles.text]}>Enviar</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn} onPress={() => router.push('/home/cashout')}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/cashout')}>
                     <Icon 
                         source={'arrow-down'}
                         size={24}

@@ -66,51 +66,51 @@ export default function Page() {
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Listado de tarjetas</Text>
             <OptionsProfile
-              onPress={() => router.push('/home/cards/')}
+              onPress={() => router.replace('/home/cards/')}
               title="Gestión de tarjetas"
             />
           </View>
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Cuentas bancarias</Text>
             <OptionsProfile
-              onPress={() => router.push('/home/profile/adminAccounts')}
+              onPress={() => router.replace('/home/profile/adminAccounts')}
               title="Administración de cuentas"
             />
           </View>
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Detalles personales</Text>
             <OptionsProfile
-              onPress={() => router.push('/home/profile/personalInfo')}
+              onPress={() => router.replace('/home/profile/personalInfo')}
               title="Datos personales"
             />
             <OptionsProfile
-              onPress={() => router.push('/home/profile/addressInfo')}
+              onPress={() => router.replace('/home/profile/addressInfo')}
               title="Dirección"
             />
           </View>
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Seguridad</Text>
             <OptionsProfile
-              onPress={() => router.push('/home/profile/pinSecurity')}
+              onPress={() => router.replace('/home/profile/pinSecurity')}
               title="PIN"
             />
           </View>
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Información y contacto</Text>
             <OptionsProfile
-              onPress={() => router.push('/home/profile/canalAttention')}
+              onPress={() => router.replace('/home/profile/canalAttention')}
               title="Canales de atención"
             />
             <OptionsProfile
-              onPress={() => router.push('/home/profile/defenderConsumer')}
+              onPress={() => router.replace('/home/profile/defenderConsumer')}
               title="Defensor del consumidor"
             />
             <OptionsProfile
-              onPress={() => router.push('/home/profile/comissions')}
+              onPress={() => router.replace('/home/profile/comissions')}
               title="Tarifas"
             />
             <OptionsProfile
-              onPress={() => router.push('/home/profile/')}
+              onPress={() => router.replace('/home/profile/')}
               title={`Darse de baja de ${expo}`}
             />
           </View>

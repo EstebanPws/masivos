@@ -18,6 +18,8 @@ import OtherInfo from "@/components/forms/register/otherInfo/otherInfo";
 import Authorization from "@/components/forms/register/authorizations/authorization";
 import { getData } from "@/utils/storageUtils";
 import Loader from "@/components/loader/loader";
+import BasicInfoJuridica from "@/components/forms/register/basicInfoJuridica/basicInfoJuridica";
+import AuthorizationJuridica from "@/components/forms/register/authorizationsJuridica/authorizationJuridica";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
@@ -81,7 +83,7 @@ export default function Page() {
                 setListCiiu(transformedCiiu);
 
                 const profesionesResponse = await instanceWallet.get('obtenerProfesiones');
-                const profesionesData = profesionesResponse.data;
+                const profesionesData = profesionesResponse.data.message;
 
                 const transformedProfesiones: List[] = profesionesData.map((item: any) => {
                     return {
@@ -93,7 +95,7 @@ export default function Page() {
                 setListProfesiones(transformedProfesiones);
 
                 const paisesResponse = await instanceWallet.get('obtenerPais');
-                const paisesData = paisesResponse.data;
+                const paisesData = paisesResponse.data.message;
 
                 const transformedPaises: List[] = paisesData.map((item: any) => {
                     return {
@@ -148,10 +150,14 @@ export default function Page() {
             const savedData = await getData('registrationForm');
 
             if (savedData) {
+                console.log(savedData);
+                
                 setIsLoading(true);
-                instanceWallet.post('createNat')
+                instanceWallet.post('createNat', savedData)
                     .then(response => {
                         const data = response.data;
+                        console.log(data);
+                        
                         const code = extractErrorCode(data.message);
 
                         setMessageError(data.message);
@@ -159,6 +165,8 @@ export default function Page() {
                         setIsLoading(false);
                     })
                     .catch(err => {
+                        console.log(err);
+                        
                         setMessageError("Ha ocurrido un error al intentar enviar el formulario.");
                         setShowError(true);
 
@@ -177,17 +185,17 @@ export default function Page() {
     const renderStep = (step: number) => {
         switch (step) {
             case 0:
-                return <BasicInfo listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <BasicInfoJuridica listMunicipios={listMunicipios}  listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <BasicInfo type={0}listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
             case 1:
-                return <InfoGeneral type={type} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+                return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
             case 2:
-                return type !== '8' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : type === '0' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 3:
-                return <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <InfoWorking type={Number(type)} listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} /> : <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
             case 4:
                 return <OtherInfo listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 5:
-                return <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <AuthorizationJuridica type={type} listPaises={listPaises} onSubmit={handleFormSubmit} /> :<Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             default:
                 return null;
         }

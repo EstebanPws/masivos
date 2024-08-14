@@ -1,5 +1,6 @@
-import { router } from 'expo-router';
-import React, { createContext, useContext, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { BackHandler } from 'react-native';
 
 interface TabContextType {
     activeTab: string;
@@ -36,6 +37,22 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
             router.replace(lastTab === "" ? '/home/' : lastTab);
         }
     };
+
+    useFocusEffect(() => {
+        const onBackPress = () => {
+            if (activeTab !== '/') {
+                handleGoBack();
+                return true;
+            }
+            return false;
+        };
+
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        };
+    });
 
     return (
         <TabContext.Provider value={{ activeTab, tabHistory, setActiveTab: handleSetActiveTab, goBack: handleGoBack }}>
