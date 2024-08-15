@@ -1,3 +1,4 @@
+import Loader from '@/components/loader/loader';
 import { router, useFocusEffect } from 'expo-router';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BackHandler } from 'react-native';
@@ -7,6 +8,8 @@ interface TabContextType {
     tabHistory: string[];
     setActiveTab: (tab: string) => void;
     goBack: () => void;
+    activeLoader: () => void;
+    desactiveLoader: () => void;
 }
 
 const TabContext = createContext<TabContextType>({
@@ -14,6 +17,8 @@ const TabContext = createContext<TabContextType>({
     tabHistory: [],
     setActiveTab: () => {},
     goBack: () => {},
+    activeLoader: () => {},
+    desactiveLoader: () => {}
 });
 
 export const useTab = () => useContext(TabContext);
@@ -21,6 +26,7 @@ export const useTab = () => useContext(TabContext);
 export const TabProvider = ({ children }: { children: React.ReactNode }) => {
     const [activeTab, setActiveTab] = useState<string>('');
     const [tabHistory, setTabHistory] = useState<string[]>([]);
+    const [isLoader, setIsLoader] = useState(false);
 
     const handleSetActiveTab = (newTab: string) => {
         if (newTab !== activeTab) {
@@ -38,6 +44,14 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const handleLoaderActive = () => {
+        setIsLoader(true);
+    }
+
+    const handleLoaderDesactive = () => {
+        setIsLoader(false);
+    }
+
     useFocusEffect(() => {
         const onBackPress = () => {
             if (activeTab !== '/') {
@@ -53,10 +67,14 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
             BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         };
     });
-
     return (
-        <TabContext.Provider value={{ activeTab, tabHistory, setActiveTab: handleSetActiveTab, goBack: handleGoBack }}>
-            {children}
-        </TabContext.Provider>
+        <>
+            <TabContext.Provider value={{ activeTab, tabHistory, setActiveTab: handleSetActiveTab, goBack: handleGoBack, activeLoader: handleLoaderActive ,desactiveLoader: handleLoaderDesactive}}>
+                {children}
+            </TabContext.Provider>
+            {isLoader &&(
+                <Loader/>
+            )}
+        </>
     );
 };

@@ -21,9 +21,11 @@ import Loader from "@/components/loader/loader";
 import BasicInfoJuridica from "@/components/forms/register/basicInfoJuridica/basicInfoJuridica";
 import AuthorizationJuridica from "@/components/forms/register/authorizationsJuridica/authorizationJuridica";
 import { transformData, transformDataJuridica } from "@/utils/validationForms";
+import { encryptIdWithSecret } from "@/utils/fomatDate";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
+const secretKey = process.env.EXPO_SECRET_KEY;
 
 interface List {
     name: string;
@@ -153,19 +155,15 @@ export default function Page() {
             const savedData = await getData('registrationForm');
 
             if (savedData) {
-                console.log(savedData);
-                
                 const body = type === '1' ? transformDataJuridica(savedData) : transformData(savedData);            
-                console.log('body', body);
                     
-                
                 setIsLoading(true);
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                     .then(response => {
                         const data = response.data.data;
                         if(data.idRegistro) {
                             setTypeResponse('success');
-                            setIdResponse(data.idRegistro);
+                            setIdResponse(encryptIdWithSecret(data.idRegistro, secretKey));
                         } else {
                             setTypeResponse('error');
                         }

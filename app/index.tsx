@@ -19,7 +19,7 @@ const { primaryBold, primaryRegular } = extra.text;
 
 export default function Page() {
   const { authenticate, documentNumber, password } = useAuth();
-  const [inputDocument, setInputDocument] = useState('');
+  const [inputDocument, setInputDocument] = useState(`${documentNumber ? documentNumber : ''}`);
   const [showAlertAuth, setShowAlertAuth] = useState(false);
 
   const router = useRouter();

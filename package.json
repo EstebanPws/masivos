@@ -21,6 +21,7 @@
     "@react-native-community/datetimepicker": "8.0.1",
     "@react-navigation/native": "^6.0.2",
     "axios": "^1.7.2",
+    "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "expo": "~51.0.20",
     "expo-blur": "~13.0.2",
