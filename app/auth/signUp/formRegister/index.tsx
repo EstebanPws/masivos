@@ -20,7 +20,7 @@ import { getData } from "@/utils/storageUtils";
 import Loader from "@/components/loader/loader";
 import BasicInfoJuridica from "@/components/forms/register/basicInfoJuridica/basicInfoJuridica";
 import AuthorizationJuridica from "@/components/forms/register/authorizationsJuridica/authorizationJuridica";
-import { transformData, transformDataJuridica } from "@/utils/validationForms";
+import { transformData, transformDataDbm, transformDataJuridica } from "@/utils/validationForms";
 import { encryptIdWithSecret } from "@/utils/fomatDate";
 
 const extra = Constants.expoConfig?.extra || {};
@@ -42,7 +42,6 @@ export default function Page() {
     const [showError, setShowError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('info');
-    const [idResponse, setIdResponse] = useState('');
     const { type } = useLocalSearchParams();
  
     const timeOut = 600;
@@ -155,27 +154,43 @@ export default function Page() {
             const savedData = await getData('registrationForm');
 
             if (savedData) {
-                const body = type === '1' ? transformDataJuridica(savedData) : transformData(savedData);            
-                    
+                const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);    
+
                 setIsLoading(true);
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
-                    .then(response => {
+                    .then(async response => {
                         const data = response.data.data;
                         if(data.idRegistro) {
                             setTypeResponse('success');
-                            setIdResponse(encryptIdWithSecret(data.idRegistro, secretKey));
+                            if(type !== '8'){
+                                const idRegistro = await encryptIdWithSecret(data.idRegistro, secretKey);
+                                router.push({
+                                    pathname: '/auth/signUp/validateRegister/',
+                                    params: { 
+                                        type: type,
+                                        idRegister: idRegistro
+                                    }
+                                });
+                            } else {
+                                setTypeResponse('success');
+                                setMessageError('Usuario creado con éxito.');
+                                setShowError(true);
+                            }
                         } else {
                             setTypeResponse('error');
+                            setMessageError(data.respuesta);
+                            setShowError(true);
                         }
-
-                        setMessageError(data.respuesta);
-                        setShowError(true);
                         setIsLoading(false);
                     })
                     .catch(err => {
-                        console.log(err);
-                        
-                        setMessageError("Ha ocurrido un error al intentar enviar el formulario.");
+                        if(err.response){
+                            const error = err.response.data.message;
+                            const message = error.split('-');
+                            setMessageError(`${message[1]} - ${message[2]}`);
+                        } else {
+                            setMessageError("Hubo un error al intentar enviar el formulario");
+                        }
                         setShowError(true);
 
                         setIsLoading(false);

@@ -32,8 +32,105 @@ export const validateNumber = (value) => {
     return Number(numberValue);
 };
 
+export function transformDataDbm(input) {
+    const output = {
+        operacion: "C",
+        entidad: input.entidad,
+        oficina: input.oficina,
+        modalidad: input.modalidad || "0",
+        tipo_pers: input.tipo_pers,
+        fecha_vincul_client: input.fecha_vincul_client,
+        ciud_muni: input.ciud_muni,
+        nombre1: input.nombre1,
+        nombre2: input.nombre2 || "",
+        apellido1: input.apellido1,
+        apellido2: input.apellido2 || "",
+        genero: input.genero,
+        tipo_doc: input.tipo_doc,
+        no_docum: input.no_docum,
+        expedida_en: input.expedida_en,
+        fecha_exp: input.fecha_exp,
+        estado_civil: "1",
+        niv_edu: "8",
+        lug_nac: input.lug_nac,
+        fecha_nac: input.fecha_nac,
+        zon_ubi: 'U',
+        dire_domi: input.dire_domi,
+        barrio: input.barrio,
+        numero_celular: input.numero_celular,
+        correo: input.correo,
+        ocupacion: null,
+        extrenjero: null,
+        tip_vivien: "4",
+        acti_CIIU: "0010",
+        desc_CIIU: "0010 - asalariados",
+        Nom_empre_neg: null,
+        Tipo_emp_neg: null,
+        cargo: null,
+        dire_empre_neg: null,
+        ciu_empre_neg: null,
+        tel_empre_neg: null,
+        Expu_publi: null,
+        Reco_publi: null,
+        fam_peps_nombres: null,
+        fam_peps_paren: null,
+        mes_info_finan: null,
+        declarante: "N",
+        ingre_mes: 1300000,
+        otro_ingre: 0,
+        total_ingre: 1300000,
+        total_engreso: 0,
+        dire_esta_PEPS: null,
+        ciu_esta_PEPS: null,
+        tel_esta_PEPS: null,
+        fami_PEP: null,
+        nomb_PEP: null,
+        impues_sob_vent: null,
+        impues_renta: null,
+        nomb_ref_pers: null,
+        direc_ref_pers: null,
+        tel_ref_pers: null,
+        tipo_bien_raices: null,
+        direc_bien_raices: null,
+        ciud_bien_raices: null,
+        valor_comer_propi: null,
+        marca_vehicu: null,
+        mode_vehicu: null,
+        no_placa: null,
+        Valor_comer_vehicu: null,
+        tipo_opera: null,
+        num_cta_operint: null,
+        ciud_opera_extr: null,
+        pais_opera_extr: null,
+        moneda: null,
+        monto: null,
+        env_extractos: "C",
+        env_cert_costos: "C",
+        auta_env_sms: input.auta_env_sms,
+        aut_env_email: input.aut_env_email,
+        nomb_entidad: input.nomb_entidad || "",
+        fec_est_finan: null,
+        des_otros_ingresos: null,
+        ingre_adic: 0,
+        total_activo: 1300000,
+        total_pasivo: 0,
+        reseeeuu: null,
+        nacion_americana: null,
+        rel_contractual: null,
+        permFatca: null,
+        profesion: null,
+        id_usuario: input.entidad,
+        opera_moneda_extr:  null,
+        contrasena: input.pin || "",
+        departamento: input.ciud_muni.substring(0, 2)
+    };
+
+    return output;
+}
+
 export function transformData(input) {
     const output = {
+        operacion: "C",
         entidad: input.entidad,
         oficina: input.oficina,
         modalidad: input.modalidad || "0",
@@ -120,7 +217,8 @@ export function transformData(input) {
         profesion: parseInt(input.profesion, 10),
         id_usuario: input.entidad,
         opera_moneda_extr: input.opera_moneda_extr,
-        contrasena: input.pin || ""
+        contrasena: input.pin || "",
+        departamento: input.ciud_muni.substring(0, 2)
     };
 
     return output;
@@ -128,6 +226,7 @@ export function transformData(input) {
 
 export function transformDataJuridica(input) {
     const output = {
+        operacion: "C",
         entidad: input.entidad,
         oficina: input.oficina,
         modalidad: input.modalidad || "0",
@@ -242,7 +341,8 @@ export function transformDataJuridica(input) {
         sigla: input.sigla || "",
         terms: input.terms || "true",
         tipo_emp_jur: input.tipo_emp_jur || "N",
-        tipo_sociedad: input.tipo_sociedad || "9"
+        tipo_sociedad: input.tipo_sociedad || "9",
+        departamento: input.ciud_muni.substring(0, 2)
     };
 
     return output;
