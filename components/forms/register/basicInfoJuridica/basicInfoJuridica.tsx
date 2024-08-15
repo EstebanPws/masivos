@@ -37,6 +37,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
     const [numeroOficina, setNumeroOficina] = useState('');
     const [actiCiiu, setActiCiiu] = useState('');
     const [tipoSociedad, setTipoSociedad] = useState('');
+    const [majoDineroEstado, setMajoDineroEstado] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
@@ -45,7 +46,6 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
         entidad: '9011569983',
         oficina: '73',
         tipo_pers: '1',
-        fecha_vincul_client: formatDate(new Date()),
         nombre_razon_juridico: '',
         sigla: '',
         nit: '',
@@ -55,7 +55,8 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
         tel_empre_neg: '',
         numero_oficina: '',
         acti_CIIU: '',
-        tipo_sociedad: ''
+        tipo_sociedad: '',
+        majo_dinero_estado: ''
     });
 
     const optionsEmp = [
@@ -89,6 +90,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                 setNumeroOficina(savedData.numero_oficina);
                 setActiCiiu(savedData.acti_CIIU);
                 setTipoSociedad(savedData.tipo_sociedad);
+                setMajoDineroEstado(savedData.majo_dinero_estado);
                 setIsVisible(true);
             }
         };
@@ -121,7 +123,8 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
             tel_empre_neg: telEmpreNeg,
             numero_oficina: numeroOficina,
             acti_CIIU: actiCiiu,
-            tipo_sociedad: tipoSociedad
+            tipo_sociedad: tipoSociedad,
+            majo_dinero_estado: majoDineroEstado
         };
 
         const fetchFormData = async () => {
@@ -144,6 +147,9 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
         switch (type) {
           case 'tipoEmp': 
             setTipoEmpJur(value);
+            break;
+          case 'mjoDinero': 
+            setMajoDineroEstado(value);
             break;
           default:
             break;
@@ -268,8 +274,8 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                                 label="¿Maneja Dinero del Estado?"
                                 isRequired
                                 options={options}
-                                onSelect={handleSelectCheckBox('tipoEmp')}
-                                selectedValue={tipoEmpJur}
+                                onSelect={handleSelectCheckBox('mjoDinero')}
+                                selectedValue={majoDineroEstado}
                             />
                         </View>
                         <View style={styles.mV2}>

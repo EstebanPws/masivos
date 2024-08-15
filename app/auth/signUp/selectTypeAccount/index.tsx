@@ -39,6 +39,7 @@ export default function Page() {
         const updatedFormData = {...formData, modalidad: type !== 8 ? String(0) : String(type) };
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
+            
             if (savedData) {
                 const newFormData = {...savedData, ...updatedFormData };
                 await setData('registrationForm', newFormData);

@@ -88,12 +88,10 @@ export default function Page() {
     useEffect(() => {
       if (validateAfterSettingPin) {
         if (firstPin === otpValues.join('')) {    
-          const updatedFormData = { ...formData, pin: otpValues.join('')};
-          setFormData(updatedFormData);
-
+          const updatedFormData = {...formData, pin: otpValues.join('')};
           const fetchFormData = async () => {
-            await setData('registrationForm', formData);
-            router.push('auth/signUp/videoIdentification');
+            await setData('registrationForm', updatedFormData);
+            router.push('auth/signUp/selectTypeAccount/');
           };
 
           fetchFormData();

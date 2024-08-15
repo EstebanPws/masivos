@@ -20,6 +20,7 @@ import { getData } from "@/utils/storageUtils";
 import Loader from "@/components/loader/loader";
 import BasicInfoJuridica from "@/components/forms/register/basicInfoJuridica/basicInfoJuridica";
 import AuthorizationJuridica from "@/components/forms/register/authorizationsJuridica/authorizationJuridica";
+import { transformData, transformDataJuridica } from "@/utils/validationForms";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
@@ -38,8 +39,10 @@ export default function Page() {
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('info');
+    const [idResponse, setIdResponse] = useState('');
     const { type } = useLocalSearchParams();
-
+ 
     const timeOut = 600;
     const totalSteps = type === '8' ? 3 : 6;
     const progress = (Math.ceil((step / totalSteps) * 100) / 100) + (type === '8' ? (step === 0 ? 0 : step === 1 ? 0.15 : 0.3) : (step === 0 ? 0 : 0.09) );
@@ -152,15 +155,22 @@ export default function Page() {
             if (savedData) {
                 console.log(savedData);
                 
+                const body = type === '1' ? transformDataJuridica(savedData) : transformData(savedData);            
+                console.log('body', body);
+                    
+                
                 setIsLoading(true);
-                instanceWallet.post('createNat', savedData)
+                instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                     .then(response => {
-                        const data = response.data;
-                        console.log(data);
-                        
-                        const code = extractErrorCode(data.message);
+                        const data = response.data.data;
+                        if(data.idRegistro) {
+                            setTypeResponse('success');
+                            setIdResponse(data.idRegistro);
+                        } else {
+                            setTypeResponse('error');
+                        }
 
-                        setMessageError(data.message);
+                        setMessageError(data.respuesta);
                         setShowError(true);
                         setIsLoading(false);
                     })
@@ -239,7 +249,7 @@ export default function Page() {
             {showError && (
                 <InfoModal
                     isVisible={showError}
-                    type="info"
+                    type={typeResponse}
                     message={messageError}
                     onPress={() => setShowError(false)}
                 />

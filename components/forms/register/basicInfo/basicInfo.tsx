@@ -43,11 +43,12 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const today = new Date();
     const [formData] = useState({
         entidad: '9011569983',
         oficina: '73',
         tipo_pers: '3',
-        fecha_vincul_client: formatDate(new Date()),
+        fecha_vincul_client: formatDate(today).replaceAll('/', ''),
         nombre1: '',
         nombre2: '',
         apellido1: '',
