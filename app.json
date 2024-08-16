@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Payments Way",
-    "slug": "Payments Way",
+    "slug": "paymentsway-way",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -22,7 +22,13 @@
       },
       "colorPrimary": "#FF0042",
       "colorSecondary": "#800021",
-      "colorSecondaryDark": "#333333"
+      "colorSecondaryDark": "#333333",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "48d4c8bd-b909-439e-9296-ba6151806373"
+      }
     },
     "splash": {
       "image": "./assets/images/splash.png",
@@ -36,7 +42,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.paymentsWay.payments_way_consumer"
     },
     "web": {
       "bundler": "metro",
@@ -75,6 +82,7 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "owner": "baqueromorenoj"
   }
 }

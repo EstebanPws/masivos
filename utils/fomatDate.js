@@ -20,8 +20,19 @@ export const formatCardNumber = (number) => {
 };
 
 export function encryptIdWithSecret(id, secretKey) {
-    const data = id + secretKey;
-    const hash = CryptoJS.MD5(data).toString();
+    try {
+        const key = CryptoJS.enc.Hex.parse(secretKey);
+        const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000');
 
-    return hash;
+        const encrypted = CryptoJS.AES.encrypt(id, key, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+
+        return encrypted.toString();
+    } catch (error) {
+        console.log(error.message);
+        return "";
+    }
 }

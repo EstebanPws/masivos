@@ -25,7 +25,7 @@ import { encryptIdWithSecret } from "@/utils/fomatDate";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
-const secretKey = process.env.EXPO_SECRET_KEY;
+const secretKey = '4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e';
 
 interface List {
     name: string;
@@ -155,39 +155,51 @@ export default function Page() {
 
             if (savedData) {
                 const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);    
-
+                
                 setIsLoading(true);
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                     .then(async response => {
                         const data = response.data.data;
-                        if(data.idRegistro) {
-                            setTypeResponse('success');
-                            if(type !== '8'){
-                                const idRegistro = await encryptIdWithSecret(data.idRegistro, secretKey);
-                                router.push({
-                                    pathname: '/auth/signUp/validateRegister/',
-                                    params: { 
-                                        type: type,
-                                        idRegister: idRegistro
-                                    }
-                                });
-                            } else {
+                        
+                        if (data) {
+                            if(data.idRegistro) {
                                 setTypeResponse('success');
-                                setMessageError('Usuario creado con éxito.');
+                                
+                                if(type !== '8'){
+                                    const idRegistro = await encryptIdWithSecret(data.idRegistro, secretKey);      
+                                    
+                                    router.push({
+                                        pathname: '/auth/signUp/validateRegister/',
+                                        params: { 
+                                            type: type,
+                                            idRegister: idRegistro
+                                        }
+                                    });
+                                } else {
+                                    setTypeResponse('success');
+                                    setMessageError('Usuario creado con éxito.');
+                                    setShowError(true);
+                                }
+                            } else {
+                                setTypeResponse('error');
+                                setMessageError(data.respuesta);
                                 setShowError(true);
                             }
                         } else {
                             setTypeResponse('error');
-                            setMessageError(data.respuesta);
+                            setMessageError(response.data.message);
                             setShowError(true);
                         }
                         setIsLoading(false);
                     })
                     .catch(err => {
+                        console.log(err);
                         if(err.response){
-                            const error = err.response.data.message;
-                            const message = error.split('-');
-                            setMessageError(`${message[1]} - ${message[2]}`);
+                            if(err.response.data.message){
+                                const error = err.response.data.message;
+                                const message = error.split('-');
+                                setMessageError(`${message[1]} - ${message[2]}`);
+                            }
                         } else {
                             setMessageError("Hubo un error al intentar enviar el formulario");
                         }

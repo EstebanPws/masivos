@@ -12,6 +12,7 @@ import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
 import DateSelect from "../../select/dateSelect/dateSelect";
 import { formatDate } from "@/utils/fomatDate";
+import InfoModal from "@/components/modals/infoModal/infoModal";
 
 interface List {
     name: string;
@@ -47,14 +48,12 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     const [ingreAdic, setIngreAdic] = useState('');
     const [totalActivo, setTotalActivo] = useState('');
     const [totalPasivo, setTotalPasivo] = useState('');
+    const [messageError, setMessageError] = useState('');
+    const [showError, setShowError] = useState(false);
     const [formData] = useState({
-        acti_CIIU: '',
-        desc_CIIU: '',
         profesion: '',
         Nom_empre_neg: '',
         Tipo_emp_neg: '',
-        ciu_empre_neg: '',
-        dire_empre_neg: '',
         cargo: '',
         mes_info_finan: '',
         declarante: '',
@@ -120,6 +119,18 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     }, []);
 
     const handleSubmit = () => {
+        if(parseInt(totalIngre.replace(/[^0-9]/g, ''), 10) < 650000){
+            setMessageError('El total de ingresos no puede ser menor a $ 650.000');
+            setShowError(true);
+            return;
+        }
+
+        if(parseInt(totalActivo.replace(/[^0-9]/g, ''), 10) < 650000){
+            setMessageError('El total de los activos no puede ser menor a $ 650.000');
+            setShowError(true);
+            return;
+        }
+
         setIsVisible(false);
 
         const updatedFormData = type !== 1 ? { 
@@ -398,6 +409,14 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                             />
                         </View>
                     </View>
+                    {showError && (
+                        <InfoModal
+                            isVisible={showError}
+                            type="info"
+                            message={messageError}
+                            onPress={() => setShowError(false)}
+                        />
+                    )}
                 </FadeInOut>
             )}
         </AnimatePresence>

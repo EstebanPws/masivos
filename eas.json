@@ -1,0 +1,37 @@
+{
+  "cli": {
+    "version": ">= 10.2.3"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://aavancegetwaypayvalidaprod-217417823.us-east-1.elb.amazonaws.com",
+        "EXPO_PUBLIC_ID": "df0b8ebf-1849-4949-9b64-fa38f7511bcd",
+        "EXPO_PUBLIC_URL_ADO": "adocolombia-qa.ado-tech.com/CoopcentralQA",
+        "EXPO_SECRET_KEY": "4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://aavancegetwaypayvalidaprod-217417823.us-east-1.elb.amazonaws.com",
+        "EXPO_PUBLIC_ID": "df0b8ebf-1849-4949-9b64-fa38f7511bcd",
+        "EXPO_PUBLIC_URL_ADO": "adocolombia-qa.ado-tech.com/CoopcentralQA",
+        "EXPO_SECRET_KEY": "4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e"
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://aavancegetwaypayvalidaprod-217417823.us-east-1.elb.amazonaws.com",
+        "EXPO_PUBLIC_ID": "df0b8ebf-1849-4949-9b64-fa38f7511bcd",
+        "EXPO_PUBLIC_URL_ADO": "adocolombia-qa.ado-tech.com/CoopcentralQA",
+        "EXPO_SECRET_KEY": "4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

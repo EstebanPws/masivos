@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { styles } from "./validateRegister.styles";
@@ -20,6 +20,12 @@ export default function Page() {
     const [messageResponse, setMessageResponse] = useState<string | null>();
     const [idStateResponse, setIdStateResponse] = useState<number | null>();
     const { type, idRegister } = useLocalSearchParams();
+
+    useEffect(() => {
+        const url = `https://registrobilletera.paymentsway.co/${type === '0' ? 'vinculacionpersonanatural' : 'vinculacionpersonajuridica'}?id=${idRegister}`;
+       console.log(url);
+       
+    }, []);
 
     const handleCloseAlert = (type: number) => {
         if(type === 0 || type === 1){

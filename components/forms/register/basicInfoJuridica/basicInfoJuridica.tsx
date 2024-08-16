@@ -4,10 +4,9 @@ import { styles } from "./basicInfoJuridica.styles";
 import Inputs from "../../inputs/inputs";
 import SearchSelect from "../../select/searchSelect/select";
 import { listAssociationType } from "@/utils/listUtils";
-import { formatDate, formatDateWithoutSlash, formatNames } from "@/utils/fomatDate";
 import ButtonsPrimary from "../../buttons/buttonPrimary/button";
 import { getData, setData } from "@/utils/storageUtils";
-import { validateEmail, validatePhone, validateDocumentNumber} from "@/utils/validationForms";
+import { validatePhone} from "@/utils/validationForms";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
@@ -36,6 +35,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
     const [telEmpreNeg, setTelEmpreNeg] = useState('');
     const [numeroOficina, setNumeroOficina] = useState('');
     const [actiCiiu, setActiCiiu] = useState('');
+    const [descCiiu, setDescCiiu] = useState('');
     const [tipoSociedad, setTipoSociedad] = useState('');
     const [majoDineroEstado, setMajoDineroEstado] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -79,6 +79,8 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
     useEffect(() => {  
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
+            console.log(savedData);
+            
             if (savedData) {
                 setNombreRazonJuridico(savedData.nombre_razon_juridico);
                 setSigla(savedData.sigla);
@@ -89,6 +91,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                 setTelEmpreNeg(savedData.tel_empre_neg);
                 setNumeroOficina(savedData.numero_oficina);
                 setActiCiiu(savedData.acti_CIIU);
+                setDescCiiu(savedData.desc_CIIU);
                 setTipoSociedad(savedData.tipo_sociedad);
                 setMajoDineroEstado(savedData.majo_dinero_estado);
                 setIsVisible(true);
@@ -101,6 +104,12 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
     const handleSelect = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
         setter(item.value);
     };
+
+    const handleSelectCiiu = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
+        setDescCiiu(item.name);
+        setter(item.value);
+    };
+
 
     const handleSubmit = () => {
         if (!validatePhone(numeroOficina)) {
@@ -123,6 +132,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
             tel_empre_neg: telEmpreNeg,
             numero_oficina: numeroOficina,
             acti_CIIU: actiCiiu,
+            desc_CIIU: descCiiu,
             tipo_sociedad: tipoSociedad,
             majo_dinero_estado: majoDineroEstado
         };
@@ -255,7 +265,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                                 label="Actividad economica"
                                 data={listCiiu}
                                 placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setActiCiiu)}
+                                onSelect={handleSelectCiiu(setActiCiiu)}
                                 selectedValue={actiCiiu}
                             />
                         </View>
