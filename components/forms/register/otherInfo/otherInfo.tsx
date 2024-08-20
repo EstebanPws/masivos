@@ -45,6 +45,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
     const [nombRefPers, setNombRefPers] = useState('');
     const [direcRefPers, setDirecRefPers] = useState('');
     const [telRefPers, setTelRefPers] = useState('');
+    const [ciuRefPers, setCiuRefPers] = useState('');
     const [isAuto, setIsAuto] = useState('');
     const [isInitial, setIsInitial] = useState(false);
     const [formData] = useState({
@@ -99,6 +100,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                 setNombRefPers(savedData.nomb_ref_pers);
                 setDirecRefPers(savedData.direc_ref_pers);
                 setTelRefPers(savedData.tel_ref_pers);
+                setCiuRefPers(savedData.ciud_opera_extr);
                 setIsAuto(savedData.isAuto);
                 setIsVisible(true);
             }
@@ -109,7 +111,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
 
     useEffect(() => {        
         const checkAllFieldsFilled = () => {
-            let allFieldsFilled = tipoBienRaices && isAuto && operaMonedaExtr && nombRefPers && direcRefPers && telRefPers;
+            let allFieldsFilled = tipoBienRaices && isAuto && operaMonedaExtr && nombRefPers && ciuRefPers &&direcRefPers && telRefPers;
 
             if (tipoBienRaices && tipoBienRaices !== '5') {
                 allFieldsFilled = allFieldsFilled && direcBienRaices && ciudBienRaices && valorComerPropi;
@@ -127,7 +129,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
         };
 
         setIsButtonEnabled(!!checkAllFieldsFilled());
-    }, [tipoBienRaices, isAuto, operaMonedaExtr, nombRefPers, direcBienRaices, ciudBienRaices, valorComerPropi, marcaVehicu, modeVehicu, noPlaca, valorcomerVehicu, tipoOpera, nombEntidad, numctaOperint, ciudOperaextr, paisOperaextr, moneda, monto, direcRefPers, telRefPers]);
+    }, [tipoBienRaices, isAuto, operaMonedaExtr, nombRefPers, direcBienRaices, ciudBienRaices, valorComerPropi, marcaVehicu, modeVehicu, noPlaca, valorcomerVehicu, tipoOpera, nombEntidad, numctaOperint, ciudOperaextr, paisOperaextr, moneda, monto, ciuRefPers, direcRefPers, telRefPers]);
 
     useEffect(() => {
         if (isInitial) {
@@ -178,6 +180,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
             moneda: moneda,
             monto: monto,
             nomb_ref_pers: nombRefPers,
+            ciu_ref_pers: ciuRefPers,
             direc_ref_pers: direcRefPers,
             tel_ref_pers: telRefPers,
             isAuto: isAuto
@@ -429,6 +432,16 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                                 keyboardType="default"
                                 onChangeText={setNombRefPers}
                                 value={nombRefPers}
+                            />
+                        </View>
+                        <View style={styles.mb5}>
+                            <SearchSelect
+                                isRequired
+                                label="Ciudad"
+                                data={listMunicipios}
+                                placeholder="Seleccione una opción"
+                                onSelect={handleSelect(setCiuRefPers)}
+                                selectedValue={ciuRefPers}
                             />
                         </View>
                         <View style={styles.mb5}>

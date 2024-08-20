@@ -123,9 +123,10 @@ export function transformData(input) {
         nomb_PEP: input.nomb_PEP || "",
         impues_sob_vent: input.impues_sob_vent,
         impues_renta: parseInt(input.impues_renta, 10),
-        nomb_ref_pers: input.nomb_ref_pers,
+        r_l_ref_per_nombres: input.nomb_ref_pers,
+        r_l_ref_per_ciudad: input.ciu_ref_pers.trim(),
         direc_ref_pers: input.direc_ref_pers.trim(),
-        tel_ref_pers: input.tel_ref_pers,
+        r_l_ref_per_tel: input.tel_ref_pers,
         tipo_bien_raices: parseInt(input.tipo_bien_raices, 10),
         direc_bien_raices: input.direc_bien_raices || "",
         ciud_bien_raices: input.ciud_bien_raices || "",
@@ -158,7 +159,8 @@ export function transformData(input) {
         id_usuario: input.entidad,
         opera_moneda_extr: input.opera_moneda_extr,
         contrasena: input.pin || "",
-        departamento: input.ciud_muni.substring(0, 2)
+        departamento: input.ciud_muni.substring(0, 2),
+        orig_fondos: ""
     };
 
     return output;
@@ -177,8 +179,8 @@ export function transformDataJuridica(input) {
         no_docum: input.nit,
         acti_CIIU: input.acti_CIIU || "",
         desc_CIIU: input.desc_CIIU || "",
-        dire_empre_neg: input.dire_empre_neg?.trim() || "",
-        ciu_empre_neg: input.ciu_empre_neg || "",
+        dire_domi: input.dire_empre_neg?.trim() || "",
+        ciud_muni: input.ciu_empre_neg || "",
         tel_empre_neg: input.tel_empre_neg || "",
         Expu_publi: input.Expu_publi || "N",
         Reco_publi: input.Reco_publi || "N",
@@ -257,6 +259,8 @@ export function transformDataJuridica(input) {
         r_l_pri_ape: input.r_l_pri_ape || "",
         r_l_seg_ape: input.r_l_seg_ape || "",
         r_l_tel: input.r_l_tel || "",
+        r_l_ciu: input.r_l_ciu || "",
+        r_l_dir:  input.r_l_dir || "",
         r_l_tipo_doc: input.r_l_tipo_doc || "",
         r_l_vr_tot_acti: parseInt(input.r_l_vr_tot_acti.replace(/[^0-9]/g, ''), 10) || 0,
         r_l_vr_tot_pasi: parseInt(input.r_l_vr_tot_pasi.replace(/[^0-9]/g, ''), 10) || 0,
@@ -266,7 +270,14 @@ export function transformDataJuridica(input) {
         terms: input.terms || "true",
         tipo_emp_jur: input.tipo_emp_jur || "N",
         tipo_sociedad: input.tipo_sociedad || "9",
-        departamento: input.ciu_empre_neg.substring(0, 2)
+        departamento: input.ciu_empre_neg.substring(0, 2),
+        barrio: input.barrio?.trim() || "",
+        zon_ubi: "U",
+        numero_celular: input.r_l_tel || "",
+        tipo_acc_aso: 1,
+        correo: input.r_l_email || "",
+        orig_fondos_jur: "",
+        indTinFatca: input.reseeeuu
     };
 
     return output;

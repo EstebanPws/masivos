@@ -14,6 +14,7 @@ import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
 import TitleLine from "@/components/titleLine/titleLine";
 import CheckboxCustom from "../../checkbox/checkbox";
+import AddressDian from "../../addressDian/addressDian";
 
 interface List {
     name: string;
@@ -37,17 +38,20 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
     const [placeBirthDateDoc, setPlaceBirthDateDoc] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
+    const [ciudMuniJur, setCiudMuniJur] = useState('');
+    const [neighborhoodJur, setNeighborhoodJur] = useState('');
+    const [addressJur, setAddressJur] = useState('');
     const [autaEnvSms, setAutaEnvSms] = useState('');
     const [autEnvEmail, setAutEnvEmail] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [tipoPer, setTipoPer] = useState('');
     const today = new Date();
     const [formData] = useState({
         entidad: '9011569983',
         oficina: '73',
-        tipo_pers: '3',
         fecha_vincul_client: formatDate(today).replaceAll('/', ''),
         nombre1: '',
         nombre2: '',
@@ -71,7 +75,7 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
     ];
 
     useEffect(() => {
-        const allFieldsFilled = names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
+        const allFieldsFilled = type === 1 ? names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur : names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
         
         setIsButtonEnabled(!!allFieldsFilled);
     }, [names, surnames, birthDate, placeBirthDate, typeDocument, inputDocument, birthDateDoc, placeBirthDateDoc, phone, email]);
@@ -90,6 +94,12 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                 setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.fecha_exp);
                 setPhone(type === 1 ? savedData.r_l_tel : savedData.numero_celular);
                 setEmail(type === 1 ? savedData.r_l_email : savedData.correo);
+                if(type === 1){
+                    setCiudMuniJur(savedData.r_l_ciu);
+                    setNeighborhoodJur(savedData.barrio);
+                    setAddressJur(savedData.r_l_dir);
+                }
+                setTipoPer(savedData.tipo_pers);
                 setAutaEnvSms(savedData.auta_env_sms);
                 setAutEnvEmail(savedData.aut_env_email);
                 setIsVisible(true);
@@ -148,6 +158,9 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
             r_l_expedida: placeBirthDateDoc,
             r_l_tel: phone,
             r_l_email: email,
+            r_l_ciu: ciudMuniJur,
+            barrio: neighborhoodJur,
+            r_l_dir: addressJur,
             auta_env_sms: autaEnvSms,
             aut_env_email: autEnvEmail
         } : {
@@ -165,7 +178,8 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
             numero_celular: phone,
             correo: email,
             auta_env_sms: autaEnvSms,
-            aut_env_email: autEnvEmail
+            aut_env_email: autEnvEmail,
+            tipo_pers: '3',
         };
 
         const fetchFormData = async () => {
@@ -284,6 +298,40 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                                 selectedValue={placeBirthDateDoc}
                             />
                         </View>
+                        {tipoPer === '1' &&(
+                            <>
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Ciudad de residencia"
+                                        data={listMunicipios}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setCiudMuniJur)}
+                                        selectedValue={ciudMuniJur}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Barrio"
+                                        placeholder="Escribe el barrio donde resides"
+                                        isSecureText={false}
+                                        isRequired={true}
+                                        keyboardType="default"
+                                        onChangeText={setNeighborhoodJur}
+                                        value={neighborhoodJur}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <AddressDian 
+                                        label="Dirección de residencia" 
+                                        placeholder="Escribe tu dirección" 
+                                        onSelect={handleSelect(setAddressJur)} 
+                                        selectedValue={addressJur}
+                                        isRequired
+                                    />
+                                </View>
+                            </>
+                        )}
                         <View style={styles.mb5}>
                             <Inputs
                                 label="Número de celular"

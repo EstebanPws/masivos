@@ -81,10 +81,10 @@ export default function AuthorizationJuridica({type, listPaises, onSubmit }: Aut
     ];
 
     const optionsLaft = [
-        { label: 'SIPLAFT', value: '1' },
-        { label: 'SARLAFT', value: '2' },
-        { label: 'SAGRILAFT', value: '3' },
-        { label: 'NINGUNA', value: '4' }
+        { label: 'SIPLAFT', value: 'P' },
+        { label: 'SARLAFT', value: 'R' },
+        { label: 'SAGRILAFT', value: 'C' },
+        { label: 'NINGUNA', value: 'O' }
     ];
 
     const optionsTerms = [
