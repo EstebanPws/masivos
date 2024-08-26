@@ -5,7 +5,7 @@ import { styles } from "./dateSelect.styles";
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Icon, MD2Colors } from 'react-native-paper';
-import { formatDate } from '@/utils/fomatDate';
+import { formatDate, formatDateValue } from '@/utils/fomatDate';
 import ButtonsPrimary from '../../buttons/buttonPrimary/button';
 
 const extra = Constants.expoConfig?.extra || {};
@@ -18,12 +18,13 @@ interface DateSelectProps {
     placeholder: string;
     icon?: boolean; 
     onSelect: (date: Date) => void;
+    value: string;
 }
 
-export default function DateSelect({ isRequired = false, label, placeholder, icon = true, onSelect }: DateSelectProps) {
+export default function DateSelect({ isRequired = false, label, placeholder, icon = true, onSelect, value}: DateSelectProps) {
     const today = new Date();
     const [isPickerVisible, setPickerVisible] = useState(false);
-    const [selectedDate, setSelectedDate] = useState<Date>(today);
+    const [selectedDate, setSelectedDate] = useState<Date>(formatDateValue(value));
     const [tempDate, setTempDate] = useState<Date>(today);
 
     const colorScheme = Appearance.getColorScheme();

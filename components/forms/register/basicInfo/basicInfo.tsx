@@ -13,7 +13,6 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
 import TitleLine from "@/components/titleLine/titleLine";
-import CheckboxCustom from "../../checkbox/checkbox";
 import AddressDian from "../../addressDian/addressDian";
 
 interface List {
@@ -41,8 +40,6 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
     const [ciudMuniJur, setCiudMuniJur] = useState('');
     const [neighborhoodJur, setNeighborhoodJur] = useState('');
     const [addressJur, setAddressJur] = useState('');
-    const [autaEnvSms, setAutaEnvSms] = useState('');
-    const [autEnvEmail, setAutEnvEmail] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
@@ -65,14 +62,9 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
         expedida_en: '',
         numero_celular: '',
         correo: '',
-        auta_env_sms: '',
-        aut_env_email: ''
+        auta_env_sms: 'S',
+        aut_env_email: 'S'
     });
-
-    const options = [
-        { label: 'SI', value: 'S' },
-        { label: 'NO', value: 'N' }
-    ];
 
     useEffect(() => {
         const allFieldsFilled = type === 1 ? names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur : names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
@@ -84,14 +76,14 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
             if (savedData) {
-                setNames(`${savedData.nombre1} ${savedData.nombre2}`);
-                setSurnames(`${savedData.apellido1} ${savedData.apellido2}`);
+                setNames(type === 1 ? savedData.r_l_nombres : `${savedData.nombre1} ${savedData.nombre2}`);
+                setSurnames(type === 1 ?`${savedData.r_l_pri_ape} ${savedData.r_l_seg_ape}` : `${savedData.apellido1} ${savedData.apellido2}`);
                 setBirthDate(type === 1 ? savedData.r_l_fecnacimie : savedData.fecha_nac);
                 setPlaceBirthDate(type === 1 ? savedData.r_l_ciu_nacimiento : savedData.lug_nac);
                 setTypeDocument(type === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc);
                 setInputDocument(type === 1 ? savedData.r_l_ced : savedData.no_docum);
                 setBirthDateDoc(type === 1 ? savedData.r_l_fecha_expdoc : savedData.expedida_en);
-                setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.fecha_exp);
+                setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.expedida_en);
                 setPhone(type === 1 ? savedData.r_l_tel : savedData.numero_celular);
                 setEmail(type === 1 ? savedData.r_l_email : savedData.correo);
                 if(type === 1){
@@ -100,8 +92,6 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                     setAddressJur(savedData.r_l_dir);
                 }
                 setTipoPer(savedData.tipo_pers);
-                setAutaEnvSms(savedData.auta_env_sms);
-                setAutEnvEmail(savedData.aut_env_email);
                 setIsVisible(true);
             }
         };
@@ -134,12 +124,6 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
             return;
         }
 
-        if (autaEnvSms !== 'S' && autEnvEmail !== 'S') {
-            setMessageError("Por favor autorice el envío de SMS o el envío de información a su correo electrónico.");
-            setShowError(true);
-            return;
-        }
-
         setIsVisible(false);
 
         const newNames = formatNames(names);
@@ -160,9 +144,7 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
             r_l_email: email,
             r_l_ciu: ciudMuniJur,
             barrio: neighborhoodJur,
-            r_l_dir: addressJur,
-            auta_env_sms: autaEnvSms,
-            aut_env_email: autEnvEmail
+            r_l_dir: addressJur
         } : {
             ...formData, 
             nombre1: newNames[0], 
@@ -177,8 +159,6 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
             expedida_en: placeBirthDateDoc,
             numero_celular: phone,
             correo: email,
-            auta_env_sms: autaEnvSms,
-            aut_env_email: autEnvEmail,
             tipo_pers: '3',
         };
 
@@ -197,19 +177,6 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
     
         fetchFormData();
     };
-
-    const handleSelectCheckBox = (type: string) => (value: string) => {
-        switch (type) {
-          case 'autaEnvSms':
-            setAutaEnvSms(value);
-            break;
-          case 'autEnvEmail':
-            setAutEnvEmail(value);
-            break;
-          default:
-            break;
-        }
-      };
 
     return (
         <AnimatePresence>
@@ -247,6 +214,7 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                                 label="Fecha de nacimiento"
                                 placeholder="Seleccione una opción"
                                 onSelect={handleDateSelect(setBirthDate)}
+                                value={birthDate}
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -286,6 +254,7 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                                 label="Fecha de expedicón"
                                 placeholder="Seleccione una opción"
                                 onSelect={handleDateSelect(setBirthDateDoc)}
+                                value={birthDateDoc}
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -354,24 +323,6 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                                 onChangeText={setEmail}
                                 value={email}
                             />
-                        </View>
-                        <View style={styles.mb5}>
-                            <CheckboxCustom 
-                                label="¿Autoriza el envio de mensajes de texto a su celular?"
-                                options={options}
-                                onSelect={handleSelectCheckBox('autaEnvSms')}
-                                selectedValue={autaEnvSms}
-                                isRequired
-                            />    
-                        </View>
-                        <View style={styles.mb5}>
-                            <CheckboxCustom 
-                                label="¿Autoriza el envio de mensajes a su correo electrónico?"
-                                options={options}
-                                onSelect={handleSelectCheckBox('autEnvEmail')}
-                                selectedValue={autEnvEmail}
-                                isRequired
-                            />    
                         </View>
                         <View style={styles.mV2}>
                             <ButtonsPrimary 

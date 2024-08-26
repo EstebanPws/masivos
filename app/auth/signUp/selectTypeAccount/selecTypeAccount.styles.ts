@@ -1,5 +1,9 @@
+import Constants from "expo-constants";
 import { StyleSheet } from "react-native";
 import { MD2Colors } from "react-native-paper";
+
+const extra = Constants.expoConfig?.extra || {};
+const { colorPrimary } = extra;
 
 export const styles = StyleSheet.create({
     mt5: {
@@ -95,4 +99,19 @@ export const styles = StyleSheet.create({
         borderBottomWidth: 2,
         marginBottom: 20,
     },
+    mb5:{
+        marginBottom: 20
+    },
+    link: {
+        color: colorPrimary,
+        textAlign: 'center',
+        fontSize: 16,
+        textDecorationColor: colorPrimary,
+        textDecorationLine: 'underline'
+    },
+    image:{
+        maxWidth: 200,
+        maxHeight: 100,
+        marginHorizontal: 'auto'
+    }
  });

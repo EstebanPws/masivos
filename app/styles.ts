@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
       flex: 1,
     },
     image: {
-      height: 500,
+      maxHeight: '100%',
       paddingBottom: 50,
       borderBottomEndRadius: 30,
       borderBottomStartRadius: 30,

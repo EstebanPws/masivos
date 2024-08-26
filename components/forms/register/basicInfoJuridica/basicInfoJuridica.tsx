@@ -79,7 +79,6 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
     useEffect(() => {  
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
-            console.log(savedData);
             
             if (savedData) {
                 setNombreRazonJuridico(savedData.nombre_razon_juridico);

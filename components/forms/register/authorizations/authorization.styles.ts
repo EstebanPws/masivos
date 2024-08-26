@@ -2,8 +2,8 @@ import Constants from "expo-constants";
 import {StyleSheet} from "react-native";
 
 const extra = Constants.expoConfig?.extra || {};
-
 const { colorPrimary } = extra;
+
 export const styles = StyleSheet.create({
     containerForm: {
       marginVertical: 30,

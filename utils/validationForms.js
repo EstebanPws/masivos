@@ -14,7 +14,8 @@ export const validateDocumentNumber = (documentNumber) => {
 };
 
 export const formatCurrency = (value) => {
-    const newValue = value.replace(/^\$/, '');
+    const stringValue = value?.toString() ?? '';
+    const newValue = stringValue.replace(/^\$/, '');
     const numberValue = parseFloat(newValue.replaceAll('.', ''));
     if (isNaN(numberValue)) return '';
     return numberValue.toLocaleString('es-CO', {
@@ -62,7 +63,10 @@ export function transformDataDbm(input) {
         aut_env_email: input.aut_env_email,
         id_usuario: input.entidad,
         contrasena: input.pin || "",
-        departamento: input.ciud_muni.substring(0, 2)
+        departamento: input.ciud_muni.substring(0, 2),
+        terms: true,
+        autorizacion: true,
+        tdTerms: true
     };
 
     return output;
@@ -160,7 +164,10 @@ export function transformData(input) {
         opera_moneda_extr: input.opera_moneda_extr,
         contrasena: input.pin || "",
         departamento: input.ciud_muni.substring(0, 2),
-        orig_fondos: ""
+        orig_fondos: "",
+        pais_nacimiento: input.pais_nacimiento || "169",
+        terms: true,
+        autorizacion: true
     };
 
     return output;
@@ -277,7 +284,10 @@ export function transformDataJuridica(input) {
         tipo_acc_aso: 1,
         correo: input.r_l_email || "",
         orig_fondos_jur: "",
-        indTinFatca: input.reseeeuu
+        indTinFatca: input.reseeeuu,
+        pais_nacimiento: input.pais_nacimiento || "169",
+        terms: true,
+        autorizacion: true
     };
 
     return output;

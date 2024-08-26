@@ -8,8 +8,14 @@ export const styles = StyleSheet.create({
         backgroundColor: "#00000029",
         borderRadius: 10,
         marginTop: 20,
+        paddingHorizontal: 12
+    },
+    code: {
+        width: "15%",
+        height:  40,
+    },
+    noCode: {
         width: "18%",
         height:  55,
-        paddingHorizontal: 12
     }
 });

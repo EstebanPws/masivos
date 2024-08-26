@@ -41,7 +41,7 @@ export default function Page() {
   }
 
   return (
-    <ViewFadeIn>
+    <ViewFadeIn isWidthFull>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.container}
         enableOnAndroid={true}

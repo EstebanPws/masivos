@@ -13,6 +13,7 @@ import TitleLine from "@/components/titleLine/titleLine";
 import DateSelect from "../../select/dateSelect/dateSelect";
 import { formatDate } from "@/utils/fomatDate";
 import InfoModal from "@/components/modals/infoModal/infoModal";
+import { formatCurrency, validateNumber } from "@/utils/validationForms";
 
 interface List {
     name: string;
@@ -50,6 +51,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     const [totalPasivo, setTotalPasivo] = useState('');
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
+    const [showCiiu, setShowCiiu] = useState(false);
     const [formData] = useState({
         profesion: '',
         Nom_empre_neg: '',
@@ -89,8 +91,10 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     useEffect(() => {  
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
+            
             if (savedData) {
                 if(type !== 1) {
+                    setShowCiiu(savedData.acti_CIIU === "" ? true : false);
                     setActiCiiu(savedData.acti_CIIU);
                     setDescCiiu(savedData.desc_CIIU);
                     setProfesion(savedData.profesion);
@@ -117,6 +121,14 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
 
         fetchFormData();
     }, []);
+
+    useEffect(() => {       
+        const formatIngreMes = validateNumber(ingreMes ? ingreMes : '$ 0');
+        const formatOtroIngre = validateNumber(otroIngre ? otroIngre : '$ 0');
+        const total = Number(formatIngreMes) + Number(formatOtroIngre);
+        
+        setTotalIngre(formatCurrency(total ? total : "$0"));
+    }, [ingreMes, otroIngre]);
 
     const handleSubmit = () => {
         if(parseInt(totalIngre.replace(/[^0-9]/g, ''), 10) < 650000){
@@ -214,16 +226,18 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                 <TitleLine 
                                     label="Infomarción laboral"
                                 />
-                                <View style={styles.mb5}>
-                                    <SearchSelect
-                                        isRequired
-                                        label="Actividad economica"
-                                        data={listCiiu}
-                                        placeholder="Seleccione una opción"
-                                        onSelect={handleSelectCiiu(setActiCiiu)}
-                                        selectedValue={actiCiiu}
-                                    />
-                                </View>
+                                {(showCiiu) && (
+                                    <View style={styles.mb5}>
+                                        <SearchSelect
+                                            isRequired
+                                            label="Actividad economica"
+                                            data={listCiiu}
+                                            placeholder="Seleccione una opción"
+                                            onSelect={handleSelectCiiu(setActiCiiu)}
+                                            selectedValue={actiCiiu}
+                                        />
+                                    </View>
+                                )}
                                 <View style={styles.mb5}>
                                     <SearchSelect
                                         isRequired
@@ -295,6 +309,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                 label="Mes y año de corte de la información financiera suministradas"
                                 placeholder="Seleccione una opción"
                                 onSelect={handleDateSelect(setMesInfoFinan)}
+                                value={mesInfoFinan}
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -340,6 +355,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                 onChangeText={setTotalIngre}
                                 value={totalIngre}
                                 isCurrency
+                                readonly
                             />
                         </View>
                         <View style={styles.mb5}>

@@ -6,11 +6,13 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "extra": {
       "contacto": {
         "nit": "901156998-3",
-        "correo": "sac@paymentsway.com.co"
+        "correo": "sac@paymentsway.com.co",
+        "ciudad": "Bogotá D.C",
+        "departamento": "Bogotá D.C"
       },
       "text": {
         "primaryBold": {

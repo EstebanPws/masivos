@@ -15,7 +15,9 @@ interface AuthContextType {
     logout: () => Promise<void>;
     documentNumber: string | null;
     password: string | null;
-    modalidad: string | null
+    modalidad: string | null;
+    activeLoader: () => void;
+    desactiveLoader: () => void;
 }
 
 interface AuthContextProps {
@@ -29,7 +31,9 @@ const AuthenticationContext = createContext<AuthContextType>({
     logout: async () => {},
     documentNumber: null,
     password: null,
-    modalidad: null
+    modalidad: null,
+    activeLoader: () => {},
+    desactiveLoader: () => {}
 });
 
 export const useAuth = () => useContext(AuthenticationContext);
@@ -135,11 +139,19 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         router.replace('/');
     };
 
+    const handleLoaderActive = () => {
+        setIsLoading(true);
+    }
+
+    const handleLoaderDesactive = () => {
+        setIsLoading(false);
+    }
+
    
 
     return (
         <>
-            <AuthenticationContext.Provider value={{ isAuthenticated, authenticate, authenticateWithoutFaceId, logout, documentNumber, password, modalidad }}>
+            <AuthenticationContext.Provider value={{ isAuthenticated, authenticate, authenticateWithoutFaceId, logout, documentNumber, password, modalidad, activeLoader: handleLoaderActive ,desactiveLoader: handleLoaderDesactive}}>
                 {children}
             </AuthenticationContext.Provider>
             {showErrorModal && (

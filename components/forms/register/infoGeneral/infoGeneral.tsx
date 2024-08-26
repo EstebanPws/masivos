@@ -19,11 +19,12 @@ interface List {
 
 interface InfoGeneralProps{
     listMunicipios: List[] | null;
+    listPaises: List[] | null;
     type: string | string[] | undefined;
     onSubmit: (data: any) => void;
 }
 
-export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGeneralProps) {
+export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit }: InfoGeneralProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [gender, setGender] = useState('');
@@ -36,6 +37,7 @@ export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGener
     const [neighborhood, setNeighborhood] = useState('');
     const [address, setAddress] = useState('');
     const [isExtranjero, setIsExtranjero] = useState('');
+    const [paisNacimiento, setPaisNacimiento] = useState('');
     const [formData] = useState({
         genero: '',
         estado_civil: '',
@@ -54,11 +56,17 @@ export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGener
         { label: 'NO', value: '2' },
     ];
 
-    useEffect(() => {
-        const allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && housing && ciudMuni && neighborhood && address && isExtranjero :  ciudMuni && neighborhood && address;
-        
+    useEffect(() => {        
+        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && housing && ciudMuni && neighborhood && address && isExtranjero : ciudMuni && neighborhood && address;     
+
+        if(isExtranjero === '1'){
+            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && housing && ciudMuni && neighborhood && address && isExtranjero && paisNacimiento : ciudMuni && neighborhood && address;
+        } else {
+            setPaisNacimiento('');
+        }
+
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [gender, civilStatus, education, ocupation, ubicationZone, housing, ciudMuni, neighborhood, address, isExtranjero]);
+    }, [gender, civilStatus, education, ocupation, ubicationZone, housing, ciudMuni, neighborhood, address, isExtranjero, paisNacimiento]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
@@ -74,6 +82,10 @@ export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGener
                 setNeighborhood(savedData.barrio);
                 setAddress(savedData.dire_domi);
                 setIsExtranjero(savedData.extrenjero);
+                
+                if(savedData.extrenjero === '1'){
+                    setPaisNacimiento(savedData.pais_nacimiento);
+                }
 
                 setIsVisible(true);
             }
@@ -83,10 +95,12 @@ export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGener
     }, []);
 
     const handleSubmit = () => {
+
         setIsVisible(false);
 
         const updatedFormData = { 
             ...formData, 
+            acti_CIIU: ocupation === "1" ? "8522" : ocupation === "3" ?  "0010" : ocupation === "4" ?  "9700" : ocupation === "5" ?  "0020" : "",
             genero: gender,
             estado_civil: civilStatus,
             niv_edu: education,
@@ -96,7 +110,8 @@ export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGener
             ciud_muni: ciudMuni,
             barrio: neighborhood,
             dire_domi: address,
-            extrenjero: isExtranjero
+            extrenjero: isExtranjero,
+            pais_nacimiento: paisNacimiento
         };
 
         const fetchFormData = async () => {
@@ -226,15 +241,29 @@ export default function InfoGeneral({type, listMunicipios, onSubmit }: InfoGener
                             />
                         </View>
                         {type !== '8' && (
-                            <View style={styles.mb5}>
-                                <CheckboxCustom 
-                                    label="¿Es usted extrajero?"
-                                    isRequired
-                                    options={options}
-                                    onSelect={handleSelectCheckBox}
-                                    selectedValue={isExtranjero}
-                                />
-                            </View>
+                            <>
+                                <View style={styles.mb5}>
+                                    <CheckboxCustom 
+                                        label="¿Es usted extrajero?"
+                                        isRequired
+                                        options={options}
+                                        onSelect={handleSelectCheckBox}
+                                        selectedValue={isExtranjero}
+                                    />
+                                </View>
+                                {isExtranjero === '1' && (
+                                    <View style={styles.mb5}>
+                                        <SearchSelect
+                                            isRequired
+                                            label="Pais de nacimiento"
+                                            data={listPaises}
+                                            placeholder="Seleccione una opción"
+                                            onSelect={handleSelect(setPaisNacimiento)}
+                                            selectedValue={paisNacimiento}
+                                        />
+                                    </View>
+                                )}
+                            </>
                         )}
                         <View style={styles.mV2}>
                             <ButtonsPrimary 

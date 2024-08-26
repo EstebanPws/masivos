@@ -11,6 +11,7 @@ import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
 import { listAutoTypes, listBienesType, listCurrencyType, listOperationType } from "@/utils/listUtils";
+import InfoModal from "@/components/modals/infoModal/infoModal";
 
 interface List {
     name: string;
@@ -47,6 +48,8 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
     const [telRefPers, setTelRefPers] = useState('');
     const [ciuRefPers, setCiuRefPers] = useState('');
     const [isAuto, setIsAuto] = useState('');
+    const [messageError, setMessageError] = useState('');
+    const [showError, setShowError] = useState(false);
     const [isInitial, setIsInitial] = useState(false);
     const [formData] = useState({
         tipo_bien_raices: '0',
@@ -159,6 +162,19 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
     }, [isInitial]);
 
     const handleSubmit = () => {
+
+        if (tipoBienRaices && tipoBienRaices !== '5' && parseInt(valorComerPropi.replace(/[^0-9]/g, ''), 10) < 2600000) {
+            setMessageError('El valor comercial de la propiedad no puede ser menor a 2 SMMLV.');
+            setShowError(true);
+            return;
+        }
+
+        if (isAuto === 'S' && parseInt(valorcomerVehicu.replace(/[^0-9]/g, ''), 10) < 2600000) {
+            setMessageError('El valor comercial del vehiculo no puede ser menor a 2 SMMLV.');
+            setShowError(true);
+            return;
+        }
+
         setIsVisible(false);
 
         const updatedFormData = { 
@@ -473,6 +489,14 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                             />
                         </View>
                     </View>
+                    {showError && (
+                        <InfoModal
+                            isVisible={showError}
+                            type="info"
+                            message={messageError}
+                            onPress={() => setShowError(false)}
+                        />
+                    )}
                 </FadeInOut>
             )}
         </AnimatePresence>

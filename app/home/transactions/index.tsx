@@ -158,6 +158,7 @@ export default function Page() {
                                         placeholder={"Selecione una fecha"} 
                                         icon={false}
                                         onSelect={handleDateSelect(setStartDate)}
+                                        value={startDate}
                                     />
                                 </View>
                                 <View style={styles.mb5}>
@@ -166,6 +167,7 @@ export default function Page() {
                                         placeholder={"Selecione una fecha"} 
                                         icon={false}
                                         onSelect={handleDateSelect(setEndDate)}
+                                        value={endDate}
                                     />
                                 </View>
                             </View>

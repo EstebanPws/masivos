@@ -6,14 +6,23 @@ export const formatDate = (date) => {
     return format(date, 'yyyy/MM/dd');
 };
 
+export const formatDateValue = (date) => {
+    if (!date) return new Date();
+    const year = date.substring(0, 4);
+    const month = date.substring(4, 6) - 1; 
+    const day = date.substring(6, 8);
+    const datFinal = new Date(year, month, day);
+    return datFinal;
+};
+
 export const formatNames = (names) => {
     const nameWithoutSpaces = names.trim();
     return nameWithoutSpaces.split(' ');
-} 
+};
 
 export const formatDateWithoutSlash = (date) => {
     return date.replaceAll('/', '');
-}
+};
 
 export const formatCardNumber = (number) => {
     return number.replace(/(.{4})/g, '$1 ');
@@ -35,4 +44,4 @@ export function encryptIdWithSecret(id, secretKey) {
         console.log(error.message);
         return "";
     }
-}
+};

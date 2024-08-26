@@ -16,16 +16,52 @@ export const stateMessages = {
     18: "Tu número de identificación ha sido bloqueado temporalmente. \n\nPor favor, contacta con soporte para más detalles."
 };
 
+export const errorMessageRegister = {
+    "01": "La modalidad ingresada no es válida.",
+    "02": "Esta modalidad no está disponible en nuestro sistema.",
+    "03": "El código de oficina ingresado no es válido.",
+    "04": "El tipo de persona ingresado no es válido.",
+    "05": "El tipo de documento ingresado no es válido.",
+    "06": "El documento del cliente no puede estar vacío.",
+    "07": "La fecha de expedición del documento no puede estar vacía.",
+    "08": "La ciudad de expedición del documento no es válida.",
+    "09": "El primer apellido no puede estar vacío o contiene caracteres no permitidos.",
+    "10": "El nombre del cliente no puede estar vacío o contiene caracteres no permitidos.",
+    "11": "El número de celular ingresado no es válido.",
+    "12": "La dirección de correo electrónico ingresada no es válida.",
+    "13": "Error al validar si el cliente tiene un depósito electrónico o si el correo o el celular ya están en uso.",
+    "14": "El cliente está en una lista restrictiva.",
+    "15": "No se puede crear el depósito. \n\n El cliente ya tiene un depósito de bajo monto registrado con el Banco Cooperativo Coopcentral.",
+    "16": "La dirección de correo electrónico ya está registrada para otro cliente.",
+    "17": "El número de celular ya está registrado para otro cliente.",
+    "18": "El segundo apellido contiene caracteres no permitidos.",
+    "19": "La opción de exención de GMF ingresada no es válida.",
+    "20": "El tipo de género ingresado no es válido.",
+    "21": "El cliente no existe en el sistema o no ha actualizado su información.",
+    "22": "El cliente lleva más de 330 días sin actualizar su información. Por favor, actualízala primero.",
+    "23": "El tipo de persona ingresado no coincide con el tipo de documento del cliente.",
+    "24": "El cliente se encuentra en listas PEPS.",
+    "25": "La información del cliente está incompleta o desactualizada. Por favor, actualízala primero.",
+    "26": "La fecha de nacimiento no puede estar vacía o es inválida.",
+    "27": "La fecha de nacimiento no puede ser mayor a la fecha actual.",
+    "28": "La fecha de expedición del documento no puede ser mayor a la fecha actual.",
+    "29": "La fecha de nacimiento no puede ser posterior a la fecha de expedición del documento.",
+    "30": "El tipo de documento del tutor no es válido.",
+    "31": "El documento del tutor no puede estar vacío o es inválido.",
+    "32": "El nombre del tutor no puede estar vacío o contiene caracteres no permitidos.",
+    "33": "El tutor está en una lista restrictiva.",
+    "34": "El tutor se encuentra en listas PEPS."
+}
+
+
 export const documentType = {
     1: 'C',
     2: 'P',
-    5: 'T',
     17: 'V'
 };
 
 export const listDocumentType = [
     {name: 'Cédula Ciudadanía', value: 'C'},
-    {name: 'Tarjeta Identidad', value: 'T'},
     {name: 'Pasaporte', value: 'P'},
     {name: 'PPT',value: 'V'}
 ];
@@ -60,8 +96,7 @@ export const listOcupationType = [
     {name: 'Independiente', value: '2'},
     {name: 'Empleado', value: '3'},
     {name: 'Ama de casa', value: '4'},
-    {name: 'Jubilado', value: '5'},
-    {name: 'Menor de edad', value: '6'}
+    {name: 'Jubilado', value: '5'}
 ];
 
 export const listUbicationZoneType = [

@@ -9,22 +9,24 @@ import Constants from "expo-constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import InfoGeneral from "@/components/forms/register/infoGeneral/infoGeneral";
 import instanceMunicipios from "@/services/instanceMunicipio";
-import instanceCompliance from "@/services/instanceCompliance";
 import instanceWallet from "@/services/instanceWallet";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import InfoWorking from "@/components/forms/register/infoWorking/infoWorking";
 import InfoPep from "@/components/forms/register/infoPep/infoPep";
 import OtherInfo from "@/components/forms/register/otherInfo/otherInfo";
 import Authorization from "@/components/forms/register/authorizations/authorization";
-import { getData } from "@/utils/storageUtils";
-import Loader from "@/components/loader/loader";
+import { getData, setData } from "@/utils/storageUtils";
 import BasicInfoJuridica from "@/components/forms/register/basicInfoJuridica/basicInfoJuridica";
 import AuthorizationJuridica from "@/components/forms/register/authorizationsJuridica/authorizationJuridica";
 import { transformData, transformDataDbm, transformDataJuridica } from "@/utils/validationForms";
 import { encryptIdWithSecret } from "@/utils/fomatDate";
+import OtpValidationModal from "@/components/modals/otpValidationModal/otpValidationModal";
+import { useAuth } from "@/components/auth/context/authenticationContext";
+import { errorMessageRegister } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
+const { colorPrimary } = extra;
 const secretKey = '4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e';
 
 interface List {
@@ -33,6 +35,7 @@ interface List {
 }
 
 export default function Page() {
+    const {activeLoader, desactiveLoader} = useAuth();
     const [step, setStep] = useState(0);
     const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
     const [listCiiu, setListCiiu] = useState<List[] | null>(null);
@@ -40,8 +43,9 @@ export default function Page() {
     const [listPaises, setListPaises] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
     const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('info');
+    const [validationModal, setValidationModal] = useState(false);
+    const [finishRegister, setFinishRegister] = useState(0);
     const { type } = useLocalSearchParams();
  
     const timeOut = 600;
@@ -51,6 +55,7 @@ export default function Page() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                activeLoader();
                 const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
                 const municipiosData = municipiosResponse.data;
 
@@ -71,12 +76,12 @@ export default function Page() {
 
                 setListMunicipios(transformedMunicipios);
 
-                const ciiuResponse = await instanceCompliance.get('GetAllCodigosCIIU');
-                const ciiuData = ciiuResponse.data;
+                const ciiuResponse = await instanceWallet.get('obtenerCiiu');
+                const ciiuData = ciiuResponse.data.message;
 
                 const transformedCiiu: List[] = ciiuData.map((item: any) => {
-                    const nombre = item.Nombre;
-                    const codigo = item.Codigo;
+                    const nombre = item.DESCRIPCION;
+                    const codigo = item.CIIU;
 
                     return {
                         name: `${codigo} - ${nombre}`,
@@ -114,7 +119,7 @@ export default function Page() {
                 setMessageError("Ha ocurrido un error al intentar cargar los datos.");
                 setShowError(true);
             } finally {
-                setIsLoading(false);
+                desactiveLoader();
             }
         };
 
@@ -126,6 +131,10 @@ export default function Page() {
             setTimeout(() => {
                 setStep(1);
             }, timeOut);
+
+            if(type !== '1'){
+                setValidationModal(true);
+            }
         } else if (type !== '8' && step === 5) {
             handleSend();
         } else if (type === '8' && step === 2){
@@ -135,6 +144,10 @@ export default function Page() {
             setTimeout(() => {
                 setStep(next);
             }, timeOut);
+
+            if(type === '1' && step === 1){
+                setValidationModal(true);
+            }
         }
     };
 
@@ -156,7 +169,7 @@ export default function Page() {
             if (savedData) {
                 const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);    
                 
-                setIsLoading(true);
+                activeLoader();
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                     .then(async response => {
                         const data = response.data.data;
@@ -164,7 +177,7 @@ export default function Page() {
                         if (data) {
                             if(data.idRegistro) {
                                 setTypeResponse('success');
-                                
+                                setFinishRegister(1);
                                 if(type !== '8'){
                                     const idRegistro = await encryptIdWithSecret(data.idRegistro, secretKey);      
                                     
@@ -176,8 +189,7 @@ export default function Page() {
                                         }
                                     });
                                 } else {
-                                    setTypeResponse('success');
-                                    setMessageError('Usuario creado con éxito.');
+                                    setMessageError('Cliente creado con éxito.\n\nSe ha creado un Depósito de Bajo Monto en el Banco Cooperativo Coopcentral.');
                                     setShowError(true);
                                 }
                             } else {
@@ -190,31 +202,63 @@ export default function Page() {
                             setMessageError(response.data.message);
                             setShowError(true);
                         }
-                        setIsLoading(false);
+                        desactiveLoader();
                     })
                     .catch(err => {
-                        console.log(err);
                         if(err.response){
                             if(err.response.data.message){
                                 const error = err.response.data.message;
-                                const message = error.split('-');
-                                setMessageError(`${message[1]} - ${message[2]}`);
+                                const errorCode = extractErrorCode(error);
+                                if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
+                                    setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
+                                } else {
+                                    setMessageError("Hubo un error al intentar enviar el formulario");
+                                }
                             }
                         } else {
                             setMessageError("Hubo un error al intentar enviar el formulario");
                         }
+                        setTypeResponse('error');
                         setShowError(true);
 
-                        setIsLoading(false);
-                    });
+                        desactiveLoader();
+                    }
+                );
             }
         };
 
         fetchFormData();
     }
 
-    if (isLoading) {
-        return <Loader />;
+    const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
+        setMessageError(message);
+        setTypeResponse(type);
+        setShowError(true);
+    };
+
+
+    const handleOnViewOtp = () => {
+        setValidationModal(false);
+        setStep(type === '1' ? 1 : 0);
+    }
+
+    const handleFinishOtp = () => {
+        setValidationModal(false);
+        setStep(type === '1' ? 2 : 1);
+    }
+
+    const handleFinishRegister = (type: number) => {
+        if(type !== 0){
+            setShowError(false);
+            router.replace('/');
+            const fetchClearData = async () => {
+                await setData('registrationForm', ''); 
+            }
+
+            fetchClearData();
+        } else {
+            setShowError(false);
+        }
     }
 
     const renderStep = (step: number) => {
@@ -222,7 +266,7 @@ export default function Page() {
             case 0:
                 return type === '1' ? <BasicInfoJuridica listMunicipios={listMunicipios}  listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <BasicInfo type={0}listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
             case 1:
-                return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+                return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 2:
                 return type === '1' ? <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : type === '0' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} listProfesiones={listProfesiones} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 3:
@@ -242,12 +286,12 @@ export default function Page() {
             <View style={{ flex: 1 }}>
                 <View style={styles.ph2}>
                     <View style={styles.containerProgressBar}>
-                        <ProgressBar progress={progress} color={MD3Colors.error50} />
+                        <ProgressBar progress={progress} color={colorPrimary} />
                         <View style={styles.stepsContainer}>
                             {Array.from({ length: totalSteps }, (_, index) => (
                                 <View
                                     key={index}
-                                    style={{ ...styles.step, backgroundColor: step >= index ? MD3Colors.error50 : MD2Colors.grey500 }}
+                                    style={{ ...styles.step, backgroundColor: step >= index ? colorPrimary : MD2Colors.grey500 }}
                                 >
                                     <Text variant="labelLarge" style={{ ...primaryBold, ...styles.textStep }}>
                                         {index + 1}
@@ -271,12 +315,20 @@ export default function Page() {
                     </ScrollView>
                 </KeyboardAwareScrollView>
             </View>
+            {validationModal && (
+                <OtpValidationModal
+                    onClose={handleOtpValidationResponse}
+                    onView={handleOnViewOtp}
+                    onFinish={handleFinishOtp}
+                    typePerson={Number(type)}
+                />
+            )}
             {showError && (
                 <InfoModal
                     isVisible={showError}
                     type={typeResponse}
                     message={messageError}
-                    onPress={() => setShowError(false)}
+                    onPress={() => handleFinishRegister(finishRegister)}
                 />
             )}
         </>
