@@ -7,7 +7,8 @@ import { styles } from "./balance.styles";
 import { useAuth } from "../auth/context/authenticationContext";
 import { useTab } from "../auth/tabsContext/tabsContext";
 import instanceWallet from "@/services/instanceWallet";
-import { getNumberAccount, setNumberAccount } from "@/utils/storageUtils";
+import { getBalance, getNumberAccount, setBalance, setNumberAccount } from "@/utils/storageUtils";
+import { usePathname } from "expo-router";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -15,58 +16,68 @@ const {colorPrimary, colorSecondary} = extra;
 
 interface BalanceProps {
     isWelcome?: boolean;
+    refresh?: number;
 }
 
 export default function Balance({isWelcome = true}: BalanceProps) {
     const { documentNumber, modalidad } = useAuth();
     const { activeLoader , desactiveLoader } = useTab();
-    const [myNumberAccount, setMyNumberAccount] = useState('');
     const [viewSaldo, setViewSaldo] = useState('0');
+    const pathname = usePathname();
 
     const fetchComplianceData = async () => {
-        activeLoader();
-        try {
-            const existNumber = await getNumberAccount();
-
-            if(!existNumber){
-                const bodyAccount = {
-                    no_doc : documentNumber,
-                    modalidad : modalidad,
-                    oficina: "73",
-                    estado: "T"
-                }
-                
-                const account = await instanceWallet.post('getAccounts', bodyAccount);
-                const cuenta = account.data.data.cuenta;
-
-                setNumberAccount(cuenta);
-                setMyNumberAccount(cuenta);
-            }
-
+        if(pathname === '/home') {
+            activeLoader();
             try {
-                const bodySaldo = {
-                    entidad: "9011569983",
-                    no_cuenta: existNumber ? existNumber : myNumberAccount,
-                    no_docum: documentNumber,
-                    valor_comision: 0
+                const existNumber = await getNumberAccount();
+                let myNumberAccount;
+                
+                if(!existNumber || existNumber === ""){
+                    const bodyAccount = {
+                        no_doc : documentNumber,
+                        modalidad : modalidad,
+                        oficina: "73",
+                        estado: "T"
+                    }
+
+                    const account = await instanceWallet.post('getAccounts', bodyAccount);
+                    const cuenta = account.data.data.cuenta;
+
+                    setNumberAccount(cuenta);
+                    myNumberAccount = cuenta
                 }
 
-                const response = await instanceWallet.post('getBalance', bodySaldo);
-                
-                const data = response.data.message;
-                if(data.includes('Saldo:')){
-                    const saldo = data.split(',');
-                    const saldoFinal = saldo[1].replace('Saldo: ', '');
-                    setViewSaldo(saldoFinal)
+                try {
+                    const bodySaldo = {
+                        entidad: "9011569983",
+                        no_cuenta: existNumber ? existNumber : myNumberAccount,
+                        no_docum: documentNumber,
+                        valor_comision: 0
+                    }
+
+                    const response = await instanceWallet.post('getBalance', bodySaldo);
+                    
+                    const data = response.data.message;
+                    if(data.includes('Saldo:')){
+                        const saldo = data.split(',');
+                        const saldoFinal = saldo[1].replace('Saldo: ', '');
+                        await setBalance(saldoFinal);
+                        setViewSaldo(saldoFinal);
+                    }
+                    desactiveLoader();
+                } catch (error) {
+                    desactiveLoader();
+                    console.log('Error fetching compliance data account:', error);
                 }
-                desactiveLoader();
             } catch (error) {
                 desactiveLoader();
-                console.log('Error fetching compliance data account:', error);
+                console.log('Error fetching compliance data:', error);
+            }   
+        } else {
+            const existBalance = await getBalance();
+            if (existBalance) {
+                setViewSaldo(existBalance!);
             }
-        } catch (error) {
-            desactiveLoader();
-            console.log('Error fetching compliance data:', error);
         }
     };
 

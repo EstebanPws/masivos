@@ -51,3 +51,20 @@ export const getNumberAccount = async () => {
     console.error('Error retrieving numberAccount:', e);
   }
 };
+
+export const setBalance = async (balance) => {
+  try {
+    await AsyncStorage.setItem('balance', String(balance));
+  } catch (e) {
+    console.error('Error saving balance:', e);
+  }
+};
+
+export const getBalance = async () => {
+  try {
+    const balance = await AsyncStorage.getItem('balance');
+    return balance !== null ? balance : null;
+  } catch (e) {
+    console.error('Error retrieving balance:', e);
+  }
+};

@@ -71,7 +71,7 @@ export default function Page() {
             />
           </View>
           <View style={{...styles.row, ...styles.mt5}}>
-            {documentNumber  ? (
+            {password  ? (
               <TouchableOpacity onPress={handleAuthenticate}>
                 <View style={styles.row}>
                   <View style={styles.icon}>

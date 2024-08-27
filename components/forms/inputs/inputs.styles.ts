@@ -3,12 +3,13 @@ import Constants from "expo-constants";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
+const { primaryRegular } = extra.text;
 
 export const styles = StyleSheet.create({
     inputCustom: {
         backgroundColor: '#F5F5F5',
         fontSize: 14,
-        fontFamily: 'Montserrat_400Regular',
+        fontFamily: primaryRegular,
         borderRadius: 20,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20

@@ -40,8 +40,10 @@ export default function TypeTransaction ({merchant, amount, date, type}: TypeTra
                         <Text  variant='bodySmall' style={[primaryRegular]}>{date}</Text>
                     </View>
                     <View>
-                        <Text  variant='bodySmall' style={[primaryRegular]}>{formatCurrency('1000')} COP</Text>
-                        <Text  variant='bodySmall' style={[primaryRegular, type === 'recibido' ? styles.success : styles.error]}>{type}</Text>
+                        <Text variant='bodySmall' style={[primaryRegular]}>{formatCurrency('1000')} COP</Text>
+                        <View style={[type === 'recibido' ? styles.success : styles.error]}>
+                            <Text  variant='bodySmall' style={[primaryRegular, styles.textCenter]}>{type}</Text>
+                        </View>
                     </View>
                 </View>
             </View>

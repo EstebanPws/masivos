@@ -28,21 +28,20 @@ export const styles = StyleSheet.create({
         backgroundColor: MD2Colors.lightGreen500,
         borderRadius: 50,
         padding: 5,
-        color: 'white',
-        textAlign: 'center',
-        marginTop: 2,
-        textTransform: 'lowercase'
+        marginTop: 2
     },
     error: {
         backgroundColor: MD2Colors.red700,
         borderRadius: 50,
         padding: 5,
-         color: 'white',
-         textAlign: 'center',
-         marginTop: 2,
-         textTransform: 'lowercase'
+        marginTop: 2
     },
     text: {
         width: '50%',
+    },
+    textCenter: {
+        color: 'white',
+        textAlign: 'center',
+        textTransform: 'lowercase'
     }
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View } from "moti";
 import { Image, ImageSourcePropType } from "react-native";
 import { styles } from "./home.styles";
@@ -22,11 +22,19 @@ interface BntOptions {
 export default function Page() {
   const { setActiveTab } = useTab();
   const [showOperationsRecharge, setShowOperationsRecharge] = useState(false);
+  const [shouldRefresh, setShouldRefresh] = useState(false);
   const { type } = useLocalSearchParams();
 
-  useFocusEffect(() => {
-    setActiveTab('/home/');
-  });
+  useFocusEffect(
+    useCallback(() => {
+      setActiveTab('/home/');
+      setShouldRefresh(true);
+
+      return () => {
+        setShouldRefresh(false);
+      };
+    }, [])
+  );
 
   const handleCloseModal = () => {
     setShowOperationsRecharge(false);
@@ -59,7 +67,7 @@ export default function Page() {
             <Image source={require('@/assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
             <ButtonLogOut />
           </View>
-          <Balance />
+          {shouldRefresh && <Balance />}
           <View style={styles.options}>
             <OptionsMain
               onRecharge={() => setShowOperationsRecharge(true)}

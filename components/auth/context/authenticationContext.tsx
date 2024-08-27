@@ -5,8 +5,9 @@ import InfoModal from '@/components/modals/infoModal/infoModal';
 import { router } from 'expo-router';
 import instanceWallet from '@/services/instanceWallet';
 import Loader from '@/components/loader/loader';
-import { setSessionToken } from '@/utils/storageUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OtpValidationRegisterModal from '@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal';
+import { setSessionToken } from '@/utils/storageUtils';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -44,6 +45,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
     const [modalidad, setModalidad] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+    const [showOtpValidation, setShowOtpValidation] = useState(false);
+    const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('error');
     const [message, setMessage] = useState("Hubo un error al intentar autenticarse, por favor intentelo de nuevo.");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -81,10 +84,14 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     await SecureStore.setItemAsync('password', password);
                     setDocumentNumber(docWithOtp);
                     setPassword(password);
-                    setSessionToken(response.data.message);
-                    setModalidad(response.data.data.modalidad);
+                    if(response.data.message.startsWith('ey')){
+                        setSessionToken(response.data.message);
+                        setModalidad(response.data.data.modalidad);
+                        router.replace('/home/');
+                    } else {
+                        setShowOtpValidation(true);
+                    }
                     setIsAuthenticated(true);
-                    router.replace('/home/');
                 } else {
                     setMessage('Usuario o contraseña incorrectos.');
                     setShowErrorModal(true);
@@ -110,13 +117,18 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             };
 
             setIsLoading(true);
+
             const response = await instanceWallet.post('LoginCliente', body);
-            
             if (response.status === 200) {
                 setIsAuthenticated(true);
-                setSessionToken(response.data.message);
-                setModalidad(response.data.data.modalidad);
-                router.replace('/home/');
+                setDocumentNumber(docWithOtp);
+                if(response.data.message.startsWith('ey')){
+                    setSessionToken(response.data.message);
+                    setModalidad(response.data.data.modalidad);
+                    router.replace('/home/');
+                } else {
+                    setShowOtpValidation(true);
+                }
                 setIsLoading(false);
             } else {
                 setMessage('Usuario o contraseña incorrectos.');
@@ -134,6 +146,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         await SecureStore.deleteItemAsync('documentNumber');
         await SecureStore.deleteItemAsync('password');
         await AsyncStorage.removeItem('session_token');
+        await AsyncStorage.removeItem('number_account');
+        await AsyncStorage.removeItem('balance');
         setIsAuthenticated(false);
         setModalidad(null);
         router.replace('/');
@@ -147,17 +161,35 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         setIsLoading(false);
     }
 
-   
+    const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
+        setMessage(message);
+        setTypeResponse(type);
+        setShowErrorModal(true);
+    };
+
+    const handleOnFinish = (modalidad:string) => {
+        setModalidad(modalidad);
+        setShowOtpValidation(false);
+        router.replace('/home/');
+    }
 
     return (
         <>
             <AuthenticationContext.Provider value={{ isAuthenticated, authenticate, authenticateWithoutFaceId, logout, documentNumber, password, modalidad, activeLoader: handleLoaderActive ,desactiveLoader: handleLoaderDesactive}}>
                 {children}
             </AuthenticationContext.Provider>
+             {showOtpValidation && (
+                <OtpValidationRegisterModal 
+                    numberDocument={documentNumber!}
+                    onClose={handleOtpValidationResponse} 
+                    onView={()  =>  setShowOtpValidation(false)} 
+                    onFinish={handleOnFinish}                    
+                />
+            )}
             {showErrorModal && (
                 <InfoModal
                     isVisible={showErrorModal}
-                    type="error"
+                    type={typeResponse}
                     message={message}
                     onPress={() => setShowErrorModal(false)}
                 />

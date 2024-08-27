@@ -66,6 +66,8 @@ export default function Page() {
 
                     if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
                         codigoDane = `0${codigoDane}`;
+                    } else if (codigoDane === '2529') {
+                        codigoDane = `${codigoDane}0`;
                     }
 
                     return {
@@ -168,7 +170,6 @@ export default function Page() {
 
             if (savedData) {
                 const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);    
-                
                 activeLoader();
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                     .then(async response => {
@@ -188,14 +189,18 @@ export default function Page() {
                                             idRegister: idRegistro
                                         }
                                     });
-                                } else {
-                                    setMessageError('Cliente creado con éxito.\n\nSe ha creado un Depósito de Bajo Monto en el Banco Cooperativo Coopcentral.');
-                                    setShowError(true);
                                 }
                             } else {
-                                setTypeResponse('error');
-                                setMessageError(data.respuesta);
-                                setShowError(true);
+                                if (type === '8') {
+                                    setFinishRegister(1);
+                                    setTypeResponse('success');
+                                    setMessageError('Cliente creado con éxito.\n\nSe ha creado un Depósito de Bajo Monto en el Banco Cooperativo Coopcentral.');
+                                    setShowError(true);
+                                } else {
+                                    setTypeResponse('error');
+                                    setMessageError(data.respuesta);
+                                    setShowError(true);
+                                }
                             }
                         } else {
                             setTypeResponse('error');
