@@ -91,7 +91,7 @@ export default function Page() {
           const updatedFormData = {...formData, pin: otpValues.join('')};
           const fetchFormData = async () => {
             await setData('registrationForm', updatedFormData);
-            router.push('auth/signUp/videoIdentification/');
+            router.push('/auth/signUp/videoIdentification');
           };
 
           fetchFormData();

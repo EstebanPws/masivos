@@ -14,7 +14,7 @@ export default function OptionsSecondary() {
     return(
         <View style={styles.row}>
             <View>
-                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/services/')}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/services')}>
                     <Icon 
                         source={'home-assistant'}
                         size={28}
@@ -24,7 +24,7 @@ export default function OptionsSecondary() {
                 <Text variant="labelSmall" style={[primaryBold, styles.text]}>Servicios</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/transactions/')}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/transactions')}>
                     <Icon 
                         source={'shopping'}
                         size={28}

@@ -24,6 +24,7 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [filteredData, setFilteredData] = useState(data);
+    const [errorOptionSelected, setErrorOptionSelected] = useState('');
 
     useEffect(() => {
         if (data) {
@@ -38,8 +39,28 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
         }
     }, [data, selectedValue]);
 
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
+    const toggleModal = (type: number) => {
+        if(type === 0){
+            let isMatch;
+            if(filteredData){
+                isMatch = filteredData.some((item: { name: string }) => item.name === searchQuery);
+            }
+
+            if (isMatch || !isModalVisible) {
+                setModalVisible(!isModalVisible);
+            } else {
+                setErrorOptionSelected('Debe seleccionar una opción.');
+                setTimeout(() => {
+                    setErrorOptionSelected(''); 
+                }, 5000);
+            }
+        } else {
+                setModalVisible(!isModalVisible);
+        }
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
     };
 
     const onChangeSearch = (query: string) => {
@@ -52,7 +73,7 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
     return (
         <View>
             <Text style={{ ...styles.label, ...primaryBold }}>{isRequired ? `${label} *` : label}</Text>
-            <TouchableOpacity onPress={toggleModal} style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => toggleModal(1)} style={styles.inputContainer}>
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>{searchQuery || placeholder}</Text>
                 <LinearGradient
                     colors={[colorPrimary, colorSecondary]}
@@ -65,7 +86,7 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
                     />
                 </LinearGradient>
             </TouchableOpacity>
-            <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+            <Modal isVisible={isModalVisible} onBackdropPress={() => toggleModal(0)}>
                 <View style={styles.modalContainer}>
                     <TextInput
                         style={styles.searchInput}
@@ -83,16 +104,19 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
                                 onPress={() => {
                                     setSearchQuery(item.name);
                                     onSelect(item);
-                                    toggleModal();
+                                    closeModal();
                                 }}
                             >
-                                <Text style={styles.itemText}>{item.name}</Text>
+                                <Text style={[styles.itemText, primaryRegular]}>{item.name}</Text>
                             </TouchableOpacity>
                         )}
                     />
+                    {errorOptionSelected && (
+                        <Text style={[primaryRegular, {color: colorPrimary}]}>{errorOptionSelected}</Text>
+                    )}
                     <ButtonsPrimary
                         label='Cerrar'
-                        onPress={toggleModal}
+                        onPress={() => toggleModal(0)}
                         style={styles.closeButton}
                     />
                 </View>

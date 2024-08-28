@@ -1,5 +1,5 @@
 import Loader from '@/components/loader/loader';
-import { router, useFocusEffect } from 'expo-router';
+import { Href, router, useFocusEffect } from 'expo-router';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BackHandler } from 'react-native';
 
@@ -40,7 +40,9 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
             const lastTab = tabHistory[tabHistory.length - 1];
             setTabHistory(prev => prev.slice(0, -1));
             setActiveTab(lastTab);
-            router.replace(lastTab === "" ? '/home/' : lastTab);
+            
+            const back = lastTab === "" ? "/home" : lastTab;
+            router.replace(back as Href<string | object>);
         }
     };
 

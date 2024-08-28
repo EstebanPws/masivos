@@ -66,7 +66,7 @@ export default function Page() {
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Listado de tarjetas</Text>
             <OptionsProfile
-              onPress={() => router.replace('/home/cards/')}
+              onPress={() => router.replace('/home/cards')}
               title="Gestión de tarjetas"
             />
           </View>
@@ -110,7 +110,7 @@ export default function Page() {
               title="Tarifas"
             />
             <OptionsProfile
-              onPress={() => router.replace('/home/profile/')}
+              onPress={() => router.replace('/home/profile')}
               title={`Darse de baja de ${expo}`}
             />
           </View>

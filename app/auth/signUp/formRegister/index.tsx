@@ -183,7 +183,7 @@ export default function Page() {
                                     const idRegistro = await encryptIdWithSecret(data.idRegistro, secretKey);      
                                     
                                     router.push({
-                                        pathname: '/auth/signUp/validateRegister/',
+                                        pathname: '/auth/signUp/validateRegister',
                                         params: { 
                                             type: type,
                                             idRegister: idRegistro

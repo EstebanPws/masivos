@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     inputCustom: {
         backgroundColor: '#F5F5F5',
         fontSize: 14,
-        fontFamily: primaryRegular,
+        fontFamily: 'Montserrat_400Regular',
         borderRadius: 20,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20

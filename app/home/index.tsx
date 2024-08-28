@@ -45,7 +45,7 @@ export default function Page() {
     name: 'Solicitar Recarga',
     image: require('@/assets/images/general/bolsa-de-dinero.png'),
     onPress: () => router.push({
-      pathname: '/home/recharge/',
+      pathname: '/home/recharge',
       params: { type: 0 }
     })
   };
@@ -54,7 +54,7 @@ export default function Page() {
     name: 'PSE',
     image: require('@/assets/images/general/pse-logo.png'),
     onPress: () => router.push({
-      pathname: '/home/recharge/',
+      pathname: '/home/recharge',
       params: { type: 1 }
     })
   };
@@ -79,7 +79,7 @@ export default function Page() {
           <ButtonsPrimary
             label="Solicitar tarjeta"
             style={styles.mt5}
-            onPress={() => router.replace('/home/cards/')}
+            onPress={() => router.replace('/home/cards')}
           />
         </View>
         <OptionsSecondary />
