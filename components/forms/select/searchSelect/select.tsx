@@ -18,9 +18,10 @@ interface SearchSelectProps {
     placeholder: string;
     onSelect: (item: any) => void;
     selectedValue: any;
+    disabled?: boolean;
 }
 
-export default function SearchSelect({ isRequired = false, label = '', data, placeholder, onSelect, selectedValue = '' }: SearchSelectProps) {
+export default function SearchSelect({ isRequired = false, label = '', data, placeholder, onSelect, selectedValue = '', disabled = false}: SearchSelectProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [filteredData, setFilteredData] = useState(data);
@@ -36,6 +37,9 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
         if (data) {
             const itemSelected = data.find((item: { value: any; }) => item.value === selectedValue) || { name: '', value: '' };
             setSearchQuery(itemSelected.name);
+            setFilteredData(
+                data.filter((item: { name: string }) => item.name.toLowerCase().includes(itemSelected.name.toLowerCase()))
+            );
         }
     }, [data, selectedValue]);
 
@@ -73,7 +77,7 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
     return (
         <View>
             <Text style={{ ...styles.label, ...primaryBold }}>{isRequired ? `${label} *` : label}</Text>
-            <TouchableOpacity onPress={() => toggleModal(1)} style={styles.inputContainer}>
+            <TouchableOpacity disabled={disabled} onPress={() => toggleModal(1)} style={[styles.inputContainer, disabled ? {opacity:  .7} : null]}>
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>{searchQuery || placeholder}</Text>
                 <LinearGradient
                     colors={[colorPrimary, colorSecondary]}

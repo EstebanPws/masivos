@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { BlurView } from "expo-blur";
 import { Icon, MD2Colors } from "react-native-paper";
 import { styles } from "./infoModal.styles";
@@ -8,7 +8,7 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { MotiView, AnimatePresence } from 'moti';
 
 const extra = Constants.expoConfig?.extra || {};
-const { primaryRegular } = extra.text;
+const { primaryRegular, primaryBold } = extra.text;
 
 interface InfoModalProps {
     title?: string;
@@ -44,7 +44,12 @@ export default function InfoModal({ title, type, message, onPress, isVisible }: 
                         style={styles.modalContainer}
                     >
                         <Icon source={iconMap[type]} size={50} color={type === 'error' ? `${MD2Colors.red700}` : type === 'success' ? `${MD2Colors.green700}` : `${MD2Colors.blue700}`} />
-                        <Text style={{ ...styles.message, ...primaryRegular }}>{message}</Text>
+                        <ScrollView>
+                            {title && (
+                                <Text style={{ ...styles.message, ...primaryBold }}>{title}</Text>
+                            )}
+                            <Text style={{ ...styles.message, ...primaryRegular }}>{message}</Text>
+                        </ScrollView>
                         <ButtonsPrimary
                             label="OK"
                             onPress={handlePress}

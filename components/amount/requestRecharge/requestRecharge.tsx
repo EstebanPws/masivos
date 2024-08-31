@@ -4,7 +4,6 @@ import { Icon, Text } from "react-native-paper";
 import Inputs from "../../forms/inputs/inputs";
 import { styles } from "./requestRecharge.styles";
 import Constants from "expo-constants";
-import { formatCurrency } from "@/utils/validationForms";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -16,9 +15,10 @@ interface Input {
 
 interface RequestRechargeProps {
     phone: Input;
+    onPress: () => void;
 }
 
-export default function RequestRecharge({ phone}:RequestRechargeProps) {
+export default function RequestRecharge({phone, onPress}:RequestRechargeProps) {
     return(
         <View style={styles.container}>
             <View style={styles.text}>
@@ -35,7 +35,7 @@ export default function RequestRecharge({ phone}:RequestRechargeProps) {
             />
             <Text style={[primaryRegular, styles.text]}>
                 Limites transaccionales 
-                <TouchableOpacity style={styles.touchable}>
+                <TouchableOpacity style={styles.touchable} onPress={onPress}>
                     <Icon
                         source={'help-circle-outline'}
                         size={24}

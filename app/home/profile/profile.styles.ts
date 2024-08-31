@@ -44,7 +44,12 @@ export const styles = StyleSheet.create({
         height:'60%',
         padding: 20
     },
+    centerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     mb5:{
-        marginBottom: 20
+        marginBottom: 20,
+        maxWidth: '100%'
     }
 })

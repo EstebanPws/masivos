@@ -26,6 +26,7 @@ export const styles = StyleSheet.create({
       borderWidth: 2,
       borderColor: colorPrimary,
       alignItems: 'center',
+      maxHeight: '80%'
     },
     message: {
       fontSize: 16,

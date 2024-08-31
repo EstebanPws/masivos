@@ -29,5 +29,10 @@ export const styles = StyleSheet.create({
   containerInfo: {
     padding: 20,
     borderRadius: 10,
-  }
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 230
+  },
 });

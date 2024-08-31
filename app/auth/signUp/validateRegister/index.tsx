@@ -13,12 +13,6 @@ import HeaderForm from "@/components/headers/headerForm/headerForm";
 export default function Page() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [showAlert, setShowAlert] = useState(false);
-    const [showAlerErrorWebView, setShowAlertErrorWebView] = useState(false);
-    const [messageErrorWebView, setMessageErrorWebView] = useState('');
-    const [showAlertMessageResponse, setShowAlertMessageResponse] = useState(false);
-    const [messageResponse, setMessageResponse] = useState<string | null>();
-    const [idStateResponse, setIdStateResponse] = useState<number | null>();
     const { type, idRegister } = useLocalSearchParams();
 
     useEffect(() => {
@@ -27,42 +21,19 @@ export default function Page() {
        
     }, []);
 
-    const handleCloseAlert = (type: number) => {
-        if(type === 0 || type === 1){
-            type === 0 ? setShowAlert(false) : setShowAlertErrorWebView(false) ;
-            router.back();
-        } else {
-            setShowAlertMessageResponse(false);
-            if(idStateResponse === 2 || idStateResponse === 1){
-                const fetchFormData = async () => {
-                    const savedData = await getData('registrationForm');
-                    if (savedData) {
-                      const updatedFormData = { ...savedData};
-                      await setData('registrationForm', updatedFormData);   
-                      router.push('/auth/signUp/selectTypeAccount');
-                    }
-                };
-            
-                fetchFormData();
-            } else {
-                router.back();
-            }
-        }
-    };
-
     const handleShouldStartLoadWithRequest = (request: ShouldStartLoadRequest) => { 
-        if (request.url.startsWith('https://url_ok')) {
-            const urlParams = request.url.split('?')[1].replace("_Response=", "");
-            console.log(urlParams);
-            
-            return false;
+        if (request.url.split('?')) {
+            const urlParams = request.url.split('?')[1];
+            if(urlParams) {
+                router.push('/');
+            }
         }
         return true;
     };
 
     const handleError = (syntheticEvent: WebViewErrorEvent) => {
         const { nativeEvent } = syntheticEvent;
-        setMessageErrorWebView(nativeEvent.description);
+        console.log(nativeEvent);
     };
 
     const handleSslError = (event: { preventDefault: any; }) => {
@@ -118,22 +89,6 @@ export default function Page() {
                     onSslError={(event: { preventDefault: () => void; }) => handleSslError(event)}
                 />
             </MotiView>
-            {showAlerErrorWebView && (
-                <InfoModal
-                    isVisible={showAlerErrorWebView}
-                    type="info"
-                    message={messageErrorWebView}
-                    onPress={() => handleCloseAlert(1)}
-                />
-            )}
-            {showAlertMessageResponse && (
-                <InfoModal
-                    isVisible={showAlertMessageResponse}
-                    type={idStateResponse === 2 || idStateResponse === 1 ? "success" : "error"}
-                    message={messageResponse!}
-                    onPress={() => handleCloseAlert(2)}
-                />
-            )}
         </>
     );
 }

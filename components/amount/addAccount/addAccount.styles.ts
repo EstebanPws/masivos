@@ -13,7 +13,8 @@ export const styles = StyleSheet.create({
         marginBottom: 10
     },
     text:{
-        color: 'white'
+        color: 'white',
+        width: '100%'
     },
     accountContainer:{
         padding: 20,
@@ -29,11 +30,16 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
+    rowButtons: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     touchable:{
         backgroundColor: 'white',
         padding: 5,
         borderRadius: 5,
-        marginHorizontal: 10
+        marginHorizontal: 5
     },
     center: {
         justifyContent: 'center',

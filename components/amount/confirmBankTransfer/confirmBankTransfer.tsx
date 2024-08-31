@@ -35,7 +35,7 @@ export default function ConfirmBankTransfer({amount, comision, names, document, 
                 </View>
                 <View style={[styles.row, styles.line]}>
                     <Text style={primaryBold}>Titular:</Text>
-                    <Text style={primaryRegular}>{cleanNames}</Text>
+                    <Text numberOfLines={2} style={[primaryRegular, styles.text]}>{cleanNames}</Text>
                 </View>
                 {document && (
                     <View style={[styles.row, styles.line]}>

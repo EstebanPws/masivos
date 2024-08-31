@@ -13,6 +13,7 @@ import Pse from "@/components/amount/pse/pse";
 import RequestRecharge from "@/components/amount/requestRecharge/requestRecharge";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { validateNumber } from "@/utils/validationForms";
+import Constants from "expo-constants";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -23,6 +24,8 @@ interface Select {
     onSelect: (item: any) => void;
     selectedValue: any;
 }
+
+const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
     const { setActiveTab, goBack } = useTab();
@@ -40,6 +43,8 @@ export default function Page() {
     const { type } = useLocalSearchParams();
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
+    const [typeModal, setTypeModal] = useState<'error' | 'info' | 'success'>('error');
+    const [titleModal, setTitleModal] = useState<string | null>(null);
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -104,39 +109,70 @@ export default function Page() {
                     if (supported) {
                         return Linking.openURL(url);
                     } else {
+                        setTitleModal(null);
                         setMessageError('No se puede abrir WhatsApp.');
+                        setTypeModal('error');
                         setShowError(true);
                     }
                 })
                 .catch(err => console.error('Error al abrir WhatsApp:', err));
         } else {
+            setTitleModal(null);
             setMessageError('Por favor, ingresa un número de teléfono válido.');
             setShowError(true);
+            setTypeModal('error');
         }
     };
 
-    const handleNext = () => {
+    const handleNext = (type: number) => {
+       if(type === 0){
         const valueFinal = validateNumber(valRecharge);
         
         if(!valRecharge){
+            setTitleModal(null);
             setMessageError('Por favor ingresa un monto valido.');
             setShowError(true);
+            setTypeModal('error');
             return;
         } 
 
         if(valueFinal > valMax){
+            setTitleModal(null);
             setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
             setShowError(true);
+            setTypeModal('error');
             return;
         } 
 
         if(valueFinal < valMin){
+            setTitleModal(null);
             setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
             setShowError(true);
+            setTypeModal('error');
             return;
         }
         
-        setShowPse(true)
+        setShowPse(true);
+       } else {
+            if(inputNames.value == '' || inputSurnames.value === '' || inputDocument.value === '' || inputEmail.value === '' || inputAddress.selectedValue === '' || inputPhone.value === '' || inputBanks.selectedValue == ''){
+                setTitleModal(null);
+                setMessageError('Por favor ingrese todos los datos');
+                setShowError(true);
+                return;
+            }
+
+            setTitleModal(null);
+            setMessageError('Hubo un error al intetar realizar la transacción.');
+            setTypeModal('error');
+            setShowError(true);
+       }
+    }
+
+    const handleLimits = () => {
+        setTitleModal('Límites transaccionales');
+        setMessageError(`¿Cuáles son los topes y límites transaccionales?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, el saldo máximo como el monto acumulado de las operaciones (entradas y salidas) no podrán exceder en ningún momento los $9,907,182, es decir, 210.50 UVT.\n\n Estos topes no son establecidos por ${expo} ni por el Banco Cooperativo Coopcentral, son establecidos por normatividad legal, según el decreto 222 del 2020 Por ser un depósito de bajo monto (DBM) con ${expo} puedes realizar transacciones acumuladas por mes de 210.5 UVT.\n\n ¿Mi depósito está exento de 4xmil (Gravamen a los movimientos financieros- GMF)? Con ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,000 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas`);
+        setShowError(true);
+        setTypeModal('info');
     }
     
     return(
@@ -165,6 +201,7 @@ export default function Page() {
                                         comision="0"
                                         amount={inputAmount}
                                         type={0}
+                                        onShowLimits={handleLimits}
                                     />
                                 )}
                                 {showPse &&(
@@ -183,6 +220,7 @@ export default function Page() {
                        {type == '0' && (
                         <RequestRecharge 
                             phone={inputPhone}
+                            onPress={handleLimits}
                         />
                        )}
                     </ScrollView>
@@ -192,7 +230,7 @@ export default function Page() {
                             {!showPse ? (
                                 <ButtonsPrimary 
                                     label={'Continuar'}
-                                    onPress={handleNext}
+                                    onPress={() => handleNext(0)}
                                 />
                             ): (
                                 <View style={styles.row}>
@@ -202,7 +240,7 @@ export default function Page() {
                                     />
                                     <ButtonsPrimary 
                                         label={'Continuar'}
-                                        onPress={() => setShowPse(true)}
+                                        onPress={() => handleNext(1)}
                                     />
                                 </View>
                             )}
@@ -218,7 +256,8 @@ export default function Page() {
             </View>
             {showError &&(
                 <InfoModal 
-                    type={"error"} 
+                    title={titleModal!}
+                    type={typeModal} 
                     message={messageError} 
                     onPress={() => setShowError(false)} 
                     isVisible={showError}                    

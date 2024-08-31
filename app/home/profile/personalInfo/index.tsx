@@ -1,22 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styles } from "./personalInfo.styles";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { useFocusEffect } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
-import Constants from "expo-constants";
 import { ScrollView, View } from "react-native";
 import Inputs from "@/components/forms/inputs/inputs";
-
-const extra = Constants.expoConfig?.extra || {};
+import { getData } from "@/utils/storageUtils";
+import DateSelect from "@/components/forms/select/dateSelect/dateSelect";
 
 export default function Page() {
   const { setActiveTab, goBack } = useTab();
-  const [names] = useState('Juan Sebastian');
-  const [surnames] = useState('Baquero Moreno');
-  const [birthDate] = useState('2002/07/03');
-  const [phone] = useState('3214915456');
-  const [email] = useState('test@gmail.com');
+  const [info, setInfo] = useState<any>();
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const infoClient = await getData('infoClient');
+      setInfo(infoClient);
+    }
+
+    fetchInfo();
+  }, [])
   
   useFocusEffect(() => {
     setActiveTab('/home/profile/personalInfo/');
@@ -41,7 +45,7 @@ export default function Page() {
                   isSecureText={false}
                   isRequired={false}
                   keyboardType="default"
-                  value={names}
+                  value={info ? info.names : 'Cargando..'}
                   readonly
                 />
               </View>
@@ -52,19 +56,18 @@ export default function Page() {
                   isSecureText={false}
                   isRequired={false}
                   keyboardType="default"
-                  value={surnames}
+                  value={info ? info.surnames : 'Cargando..'}
                   readonly
                 />
               </View>
               <View style={styles.mb5}>
-                <Inputs
-                  label="Fecha de nacimiento"
-                  placeholder="Escribe tus nombres completos"
-                  isSecureText={false}
-                  isRequired={false}
-                  keyboardType="default"
-                  value={birthDate}
-                  readonly
+                <DateSelect
+                    isRequired
+                    label="Fecha de nacimiento"
+                    placeholder="Seleccione una opción"
+                    value={info ? info.birthDate : ''}
+                    onSelect={() => {}}
+                    readonly
                 />
               </View>
               <View style={styles.mb5}>
@@ -74,7 +77,7 @@ export default function Page() {
                   isSecureText={false}
                   isRequired={false}
                   keyboardType="default"
-                  value={phone}
+                  value={info ? info.phoneNumber : 'Cargando...'}
                   readonly
                 />
               </View>
@@ -85,7 +88,7 @@ export default function Page() {
                   isSecureText={false}
                   isRequired={false}
                   keyboardType="default"
-                  value={email}
+                  value={info ? info.email : 'Cargando..'}
                   readonly
                 />
               </View>

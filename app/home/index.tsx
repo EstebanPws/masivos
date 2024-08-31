@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View } from "moti";
 import { Image, ImageSourcePropType } from "react-native";
 import { styles } from "./home.styles";
@@ -12,6 +12,8 @@ import OptionsSecondary from "@/components/options/optionsSecondary/optionsSecon
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import OperationsModal from "@/components/modals/operationsModal/operationsModal";
+import instanceWallet from "@/services/instanceWallet";
+import { getData, setData } from "@/utils/storageUtils";
 
 interface BntOptions {
   name: string;
@@ -24,6 +26,45 @@ export default function Page() {
   const [showOperationsRecharge, setShowOperationsRecharge] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const { type } = useLocalSearchParams();
+
+  const fetchInfoAccount = async (account: string): Promise<string | null> => {
+    const existInfoClient = await getData('infoClient');
+  
+    if (!existInfoClient) {
+      try {
+        const body = { id: account };
+        const response = await instanceWallet.post('formView', body);
+        const data = response.data;
+  
+        const infoClient = {
+          infoClient: true,
+          id: data.id,
+          numDoc: data.cliente.docCli,
+          tipoDoc: data.tipo_doc,
+          firstName: data.cliente.nombres1,
+          names: `${data.cliente.nombres1} ${data.cliente.nombres2}`,
+          surnames: `${data.cliente.apellido1} ${data.cliente.apellido2}`,
+          birthDate: data.cliente.fechaNac,
+          phoneNumber: data.numero_celular,
+          email: data.correo,
+          ciudadRes: data.cliente.ciudadRes,
+          barrio: data.barrio,
+          direRes: data.cliente.dirRes.trim()
+        };
+        
+        await setData('infoClient', infoClient);
+  
+        return data.cliente.nombres1;
+      } catch (error) {
+        const infoClient = { infoClient: false };
+        await setData('infoClient', infoClient);
+  
+        return null; 
+      }
+    }
+  
+    return existInfoClient.firstName;
+  };  
 
   useFocusEffect(
     useCallback(() => {
@@ -67,7 +108,7 @@ export default function Page() {
             <Image source={require('@/assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
             <ButtonLogOut />
           </View>
-          {shouldRefresh && <Balance />}
+          {shouldRefresh && <Balance onMount={fetchInfoAccount}/>}
           <View style={styles.options}>
             <OptionsMain
               onRecharge={() => setShowOperationsRecharge(true)}

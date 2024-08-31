@@ -19,13 +19,14 @@ interface DateSelectProps {
     icon?: boolean; 
     onSelect: (date: Date) => void;
     value: string;
+    readonly?: boolean;
 }
 
-export default function DateSelect({ isRequired = false, label, placeholder, icon = true, onSelect, value}: DateSelectProps) {
+export default function DateSelect({ isRequired = false, label, placeholder, icon = true, onSelect, value, readonly = false}: DateSelectProps) {  
     const today = new Date();
     const [isPickerVisible, setPickerVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState<Date>(formatDateValue(value));
-    const [tempDate, setTempDate] = useState<Date>(today);
+    const [tempDate, setTempDate] = useState<Date | null>(readonly ? null : today);
 
     const colorScheme = Appearance.getColorScheme();
     const backgroundColor = colorScheme === 'dark' ? `${MD2Colors.grey800}` : `${MD2Colors.grey800}`;
@@ -45,14 +46,18 @@ export default function DateSelect({ isRequired = false, label, placeholder, ico
       setPickerVisible(false);
       if (date) {
           setSelectedDate(date);
-          onSelect(date);
+          if(onSelect){
+            onSelect(date);
+          }
       }
   };
 
     const confirmDate = () => {
         if (tempDate) {
             setSelectedDate(tempDate);
-            onSelect(tempDate);
+            if(onSelect){
+              onSelect(tempDate);
+            }
         }
         setPickerVisible(false);
     };
@@ -67,7 +72,7 @@ export default function DateSelect({ isRequired = false, label, placeholder, ico
             <Text style={{ ...styles.label, ...primaryBold }}>
                 {isRequired ? `${label} *` : label}
             </Text>
-            <TouchableOpacity onPress={showPicker} style={styles.inputContainer}>
+            <TouchableOpacity disabled={readonly} onPress={showPicker} style={[styles.inputContainer, readonly ? {opacity: .6 } : null]}>
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>
                   {selectedDate ? formatDate(selectedDate) : placeholder}
                 </Text>

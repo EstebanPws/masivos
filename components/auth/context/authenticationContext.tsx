@@ -148,6 +148,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         await AsyncStorage.removeItem('session_token');
         await AsyncStorage.removeItem('number_account');
         await AsyncStorage.removeItem('balance');
+        await AsyncStorage.removeItem('infoClient');
+        await AsyncStorage.removeItem('listBanks');
         setIsAuthenticated(false);
         setModalidad(null);
         router.replace('/');

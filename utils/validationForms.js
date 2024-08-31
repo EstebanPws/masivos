@@ -33,7 +33,7 @@ export const validateNumber = (value) => {
     return Number(numberValue);
 };
 
-export function transformDataDbm(input) {
+export const transformDataDbm = (input) => {
     const output = {
         operacion: "C",
         entidad: input.entidad,
@@ -72,7 +72,7 @@ export function transformDataDbm(input) {
     return output;
 }
 
-export function transformData(input) {
+export const transformData = (input) => {
     const output = {
         operacion: "C",
         entidad: input.entidad,
@@ -173,7 +173,7 @@ export function transformData(input) {
     return output;
 }
 
-export function transformDataJuridica(input) {
+export const transformDataJuridica = (input) => {
     const output = {
         operacion: "C",
         entidad: input.entidad,

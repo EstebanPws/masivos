@@ -53,6 +53,20 @@ export const errorMessageRegister = {
     "34": "El tutor se encuentra en listas PEPS."
 }
 
+export const errorCancelAccount = {
+    "01": "El tipo de documento no es válido.",
+    "02": "El tipo o número de documento no es válido, o el cliente no existe en el sistema.",
+    "03": "El número de cuenta no puede estar vacío.",
+    "04": "El tamaño de la cuenta no es válido.",
+    "05": "El documento del cliente no puede estar vacío.",
+    "06": "La cuenta que intentas consultar no existe.",
+    "07": "El documento no pertenece al titular de la cuenta.",
+    "08": "La cuenta ha sido cancelada.",
+    "09": "El tipo de operación a realizar sobre la cuenta no es válido.",
+    "10": "La cuenta ya está bloqueada. No se puede realizar esta operación.",
+    "11": "La cuenta ya está desbloqueada. No se puede realizar esta operación.",
+    "12": "Para cancelar la cuenta, debe tener un saldo de cero."
+}
 
 export const documentType = {
     1: 'C',

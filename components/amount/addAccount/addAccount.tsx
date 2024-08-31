@@ -1,13 +1,15 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper"; 
 import Inputs from "../../forms/inputs/inputs";
 import { styles } from "./addAccount.styles";
 import Constants from "expo-constants";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
-import { listGenderType } from "@/utils/listUtils";
 import { LinearGradient } from "expo-linear-gradient";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
+import instanceExternal from "@/services/instanceExternal";
+import { useTab } from "@/components/auth/tabsContext/tabsContext";
+import { getData, setData } from "@/utils/storageUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -21,6 +23,7 @@ interface Input {
 interface Select {
     onSelect: (item: any) => void;
     selectedValue: any;
+    name?: any
 }
 
 interface ListAccounts {
@@ -28,7 +31,12 @@ interface ListAccounts {
     name: string;
     alias: string;
     numberAccount: string;
-    bank: string
+    bank: string;
+    bankName: string;
+}
+interface List {
+    name: string;
+    value: string
 }
 
 interface addAccountProps {
@@ -44,21 +52,84 @@ interface addAccountProps {
 }
 
 export default function addAccount({names, surnames,  alias, accountNumber, document, banks, typeBank, isDisabled =false, selectAccount}:addAccountProps) {
+    const {activeLoader, desactiveLoader} = useTab();
     const [addAccount, setAddAccount] = useState(false);
     const [listAccounts, setListAccounts] = useState<ListAccounts[]>([]);
+    const [listBanksComplete, setListBanksComplete] = useState<any>();
+    const [listBanks, setListBanks] = useState<List[]>([]);
+    const [listTypeBank, setListTypeBank] = useState<List[]>([]);
+
+    const fetchBankList = async () => {
+        const existListBanks = await getData('listBanks');
+
+        if (existListBanks) {
+            const banks = existListBanks.map((bank: any) => {
+                const item: List = {
+                    name: bank.name,
+                    value: bank.code
+                };
+
+                return item;
+            });
+
+            setListBanksComplete(existListBanks);
+            setListBanks(banks);
+        } else {
+            activeLoader();
+            await instanceExternal.get('banks/list')
+            .then(async (response) => {
+                const data = response.data;
+                const banks = data.data.map((bank: any) => {
+                    const item: List = {
+                        name: bank.name,
+                        value: bank.code
+                    };
+
+                    return item;
+                });
+
+                await setData('listBanks', data.data);
+                setListBanksComplete(data.data);
+                setListBanks(banks);
+                desactiveLoader();
+            })
+            .catch((error) => {
+                console.log(error.response.data);
+                desactiveLoader();
+            });
+        }
+        
+    }
+
+    useEffect(() => {
+        fetchBankList();
+    }, []);
 
     const handleAddAccount = () => {
-
         const addAccount: ListAccounts = {
             id: 0,
             name: names.value,
             alias: alias.value,
             numberAccount: accountNumber.value,
-            bank: banks.selectedValue
+            bank: banks.selectedValue,
+            bankName: banks.name
         }
 
         setListAccounts([addAccount])
         setAddAccount(false);
+    }
+
+    const handleSelectedOption = (item: any) => {
+        banks.onSelect(item);
+        const selectedBank = listBanksComplete.find((bank: any) => bank.code === item.value);
+        
+        if (selectedBank) {
+            const filteredTypeBank = selectedBank.accountTypes.map((type: any) => ({
+                name: type === 'CURRENT' ? 'Corriente' : type === 'ELECTRONIC' ? 'Eletrónico' : 'Ahorros',
+                value: type
+            }));
+            setListTypeBank(filteredTypeBank);
+        }
     }
 
     return(
@@ -92,28 +163,28 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                                 style={styles.accountContainer}
                             >
                             <View style={styles.row}>
-                                    <View>
-                                        <Text style={[primaryBold, styles.text]}>{account.name}</Text>
-                                        <Text style={[primaryBold, styles.text]}>{account.alias}</Text>
-                                        <Text style={[primaryBold, styles.text]}>{account.numberAccount}</Text>
-                                        <Text style={[primaryBold, styles.text]}>{account.bank}</Text>
-                                    </View>
-                                    <View style={styles.row}>
-                                        <TouchableOpacity style={[styles.touchable, isDisabled ? {opacity: .7} : null]} disabled={isDisabled}>
-                                            <Icon
-                                                source={'content-save-edit'}
-                                                size={24}
-                                                color={colorPrimary}
-                                            />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={[styles.touchable, isDisabled ? {opacity: .7} : null]} disabled={isDisabled}>
-                                            <Icon
-                                                source={'trash-can'}
-                                                size={24}
-                                                color={colorPrimary}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
+                                <View>
+                                    <Text style={[primaryBold, styles.text]}>{account.name}</Text>
+                                    <Text style={[primaryBold, styles.text]}>{account.alias}</Text>
+                                    <Text style={[primaryBold, styles.text]}>{account.numberAccount}</Text>
+                                    <Text numberOfLines={2} style={[primaryBold, styles.text]}>{account.bankName}</Text>
+                                </View>
+                                <View style={styles.rowButtons}>
+                                    <TouchableOpacity style={[styles.touchable, isDisabled ? {opacity: .7} : null]} disabled={isDisabled}>
+                                        <Icon
+                                            source={'content-save-edit'}
+                                            size={24}
+                                            color={colorPrimary}
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.touchable, isDisabled ? {opacity: .7} : null]} disabled={isDisabled}>
+                                        <Icon
+                                            source={'trash-can'}
+                                            size={24}
+                                            color={colorPrimary}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -190,9 +261,9 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                         <SearchSelect
                             isRequired
                             label="Bancos"
-                            data={listGenderType}
+                            data={listBanks}
                             placeholder="Seleccione una opción"
-                            onSelect={banks.onSelect}
+                            onSelect={handleSelectedOption}
                             selectedValue={banks.selectedValue}
                         />
                     </View>
@@ -200,10 +271,11 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                         <SearchSelect
                             isRequired
                             label="Tipo de cuenta"
-                            data={listGenderType}
+                            data={listTypeBank}
+                            disabled={listTypeBank.length !== 0 ? false : true}
                             placeholder="Seleccione una opción"
                             onSelect={typeBank.onSelect}
-                            selectedValue={typeBank.selectedValue}
+                            selectedValue={''}
                         />
                     </View>
                     <ButtonsPrimary

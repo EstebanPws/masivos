@@ -13,6 +13,7 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 import { validateNumber } from "@/utils/validationForms";
 import AddAccount from "@/components/amount/addAccount/addAccount";
 import ConfirmBankTransfer from "@/components/amount/confirmBankTransfer/confirmBankTransfer";
+import Constants from "expo-constants";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -22,10 +23,13 @@ interface Input {
 interface Select {
     onSelect: (item: any) => void;
     selectedValue: any;
+    name?: string;
 }
 
+const expo = Constants.expoConfig?.name || '';
+
 export default function Page() {
-    const { setActiveTab, goBack } = useTab();
+    const { setActiveTab, goBack, activeLoader, desactiveLoader } = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [concepto, setConcepto] = useState('');
     const [valMax] = useState('2000000');
@@ -41,9 +45,12 @@ export default function Page() {
     const [accountNumber, setAccountNumber] = useState('');
     const [typeBank, setTypeBank] = useState('');
     const [banks, setBanks] = useState('');
+    const [bankName, setBankName] = useState('');
     const [disableContinue, setDisableContinue] = useState(true);
     const [step, setStep] = useState(0);
     const [confirmInfo, setConfirmInfo] = useState(false);
+    const [typeModal, setTypeModal] = useState<'error' | 'info' | 'success'>('error');
+    const [titleModal, setTitleModal] = useState<string | null>(null);
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -80,13 +87,19 @@ export default function Page() {
         value: document
     }
 
+    const handleSelectBank = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
+        setBankName(item.name)
+        setter(item.value);
+    };
+
     const handleSelect = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
         setter(item.value);
     };
 
     const inputBanks: Select = {
-        onSelect: handleSelect(setBanks),
-        selectedValue: banks
+        onSelect: handleSelectBank(setBanks),
+        selectedValue: banks,
+        name: bankName
     }
 
     const inputTypeBank: Select = {
@@ -106,18 +119,24 @@ export default function Page() {
         const valueFinal = validateNumber(valRecharge);
         
         if(!valRecharge){
+            setTypeModal('error');
+            setTitleModal(null);
             setMessageError('Por favor ingresa un monto valido.');
             setShowError(true);
             return;
         } 
 
         if(valueFinal > valMax){
+            setTypeModal('error');
+            setTitleModal(null);
             setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
             setShowError(true);
             return;
         } 
 
         if(valueFinal < valMin){
+            setTypeModal('error');
+            setTitleModal(null);
             setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
             setShowError(true);
             return;
@@ -139,6 +158,16 @@ export default function Page() {
     }
 
     const handleFinal = () => {
+        activeLoader();
+        setMessageError('Hubo un error al intentar realizar la transacción.');
+        setShowError(true);
+        setTypeModal('error');
+        setTitleModal(null);
+        desactiveLoader();
+        /**setShowAddAccount(false);
+        setDisableContinue(true);
+        setConfirmInfo(false);
+        setStep(0);
         setValRecharge('');
         setConcepto('');
         setNames('');
@@ -147,13 +176,15 @@ export default function Page() {
         setAccountNumber('');
         setDocument('');
         setBanks('');
-        setTypeBank('');
-    
-        setShowAddAccount(false);
-        setDisableContinue(true);
-        setConfirmInfo(false);
-        setStep(0);
+        setTypeBank('');*/
     };
+
+    const handleLimits = () => {
+        setTitleModal('Límites transaccionales');
+        setMessageError(`¿Cuáles son los topes y límites transaccionales?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, el saldo máximo como el monto acumulado de las operaciones (entradas y salidas) no podrán exceder en ningún momento los $9,907,182, es decir, 210.50 UVT.\n\n Estos topes no son establecidos por ${expo} ni por el Banco Cooperativo Coopcentral, son establecidos por normatividad legal, según el decreto 222 del 2020 Por ser un depósito de bajo monto (DBM) con ${expo} puedes realizar transacciones acumuladas por mes de 210.5 UVT.\n\n ¿Mi depósito está exento de 4xmil (Gravamen a los movimientos financieros- GMF)? Con ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,000 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas`);
+        setShowError(true);
+        setTypeModal('info');
+    }
     
     return(
         <ViewFadeIn isWidthFull>
@@ -183,6 +214,7 @@ export default function Page() {
                                 concepto={inputConcepto}
                                 amount={inputAmount}
                                 type={1}
+                                onShowLimits={handleLimits}
                             />
                         )}
                         {(showAddAccount && disableContinue) &&(
@@ -237,7 +269,8 @@ export default function Page() {
             </View>
             {showError &&(
                 <InfoModal 
-                    type={"error"} 
+                    title={titleModal!}
+                    type={typeModal} 
                     message={messageError} 
                     onPress={() => setShowError(false)} 
                     isVisible={showError}                    

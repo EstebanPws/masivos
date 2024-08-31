@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper"; 
 import Inputs from "../../forms/inputs/inputs";
 import { styles } from "./selectAmount.styles";
 import Constants from "expo-constants";
 import { formatCurrency } from "@/utils/validationForms";
+import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -22,9 +23,12 @@ interface SelectAmountProps {
     amount: Input;
     concepto?: Input;
     type: number;
+    onShowLimits: () => void;
 }
 
-export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto = { onChangeText: () => {}, value: '' }, type}:SelectAmountProps) {
+export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto = { onChangeText: () => {}, value: '' }, type, onShowLimits}:SelectAmountProps) {
+    const [showLimiits, setShowLimits] = useState(false);
+
     return(
         <View style={styles.container}>
             {(valMax || valMin) &&(
@@ -55,7 +59,7 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
             )}
             <Text style={[primaryRegular, styles.text]}>
                 Limites transaccionales 
-                <TouchableOpacity style={styles.touchable}>
+                <TouchableOpacity style={styles.touchable} onPress={onShowLimits}>
                     <Icon
                         source={'help-circle-outline'}
                         size={24}

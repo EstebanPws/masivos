@@ -76,7 +76,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                 correo: "",
                 numero_celular: ""
             }
-
+            
             if (type === 0) { 
                 if (typePerson === 1 ? savedData.r_l_email === '' : savedData.correo === '') {
                     message = 'El correo electrónico no es valido.';
@@ -85,11 +85,13 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                     body.correo = typePerson === 1 ? savedData.r_l_email : savedData.correo;
                 }
             } else {
-                if (typePerson === 1 ? savedData.r_l_tel : savedData.numero_celular === '') {
+                const tel = typePerson === 1 ? savedData.r_l_tel : savedData.numero_celular;
+                
+                if (tel === '') {
                     message = 'El número de celular no es valido.';
                     responseType = "error";
                 } else {
-                    body.numero_celular = typePerson === 1 && type === 0 ? savedData.r_l_tel : savedData.numero_celular;
+                    body.numero_celular = typePerson === 1 ? savedData.r_l_tel : savedData.numero_celular;
                 }
             }
 
@@ -114,7 +116,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
 
         const bodyValidate = {
             tipo_doc: typePerson === 1 ? data.r_l_tipo_doc : data.tipo_doc,
-            no_doc: typePerson === 1 ? data.r_l_ceds : data.no_docum,
+            no_doc: typePerson === 1 ? data.r_l_ced : data.no_docum,
             codeVer: code
         }
 
@@ -122,7 +124,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
             const codeEmailValidateResponse = await instanceWallet.post('VerficacionOTP', bodyValidate);
             message = codeEmailValidateResponse.data.message;
             responseType = "success";
-        } catch (error) {      
+        } catch (error) {               
             message = "Hubo un error al intentar verificar el código";
             responseType =  "error";
         }

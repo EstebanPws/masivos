@@ -34,7 +34,7 @@ export default function OptionsSecondary() {
                 <Text variant="labelSmall" style={[primaryBold, styles.text]}>Transacciones</Text>
             </View>
             <View>
-                <TouchableOpacity style={styles.containerBtn}>
+                <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/profile/canalAttention')}>
                     <Icon 
                         source={'face-agent'}
                         size={28}

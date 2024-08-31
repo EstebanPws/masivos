@@ -38,7 +38,7 @@ export default function Page() {
               </View>
               <View style={styles.mb5}>
                 <Text variant="titleSmall" style={[primaryBold]}>Correo electrónico:</Text>
-                <Link href={`mailto:${correo}`} style={{...styles.link, ...primaryRegular}}>{correo}</Link>
+                <Link href={`mailto:sac@coopcentral.com.co`} style={{...styles.link, ...primaryRegular}}>sac@coopcentral.com.co</Link>
                 <Text variant="titleSmall" style={[primaryRegular]}>PBX: 6017431088</Text>
                 <Text variant="titleSmall" style={[primaryRegular]}>Celular: 3213213213</Text>
                 <Text variant="titleSmall" style={[primaryRegular]}>Página Web:<Link href={'https://www.coopcentral.com.co/app_web/pqrs/'} style={{...styles.link, ...primaryRegular}}>{'\n'}https://www.coopcentral.com.co/app_web/pqrs/</Link></Text>

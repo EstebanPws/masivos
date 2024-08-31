@@ -12,6 +12,7 @@ import SearchSelect from "@/components/forms/select/searchSelect/select";
 import instanceMunicipios from "@/services/instanceMunicipio";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import Loader from "@/components/loader/loader";
+import { getData } from "@/utils/storageUtils";
 
 interface List {
   name: string;
@@ -19,18 +20,29 @@ interface List {
 }
 
 export default function Page() {
-  const { setActiveTab, goBack } = useTab();
+  const { setActiveTab, goBack, activeLoader, desactiveLoader } = useTab();
   const [address, setAddress] = useState('CL 17 21 32 S');
   const [neighborhood, setNeighborhood] = useState('Ciudad Verde');
   const [ciudMuni, setCiudMuni] = useState('05001');
   const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
   const [messageError, setMessageError] = useState('');
   const [showError, setShowError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const infoClient = await getData('infoClient');
+      setCiudMuni(infoClient.ciudadRes);
+      setNeighborhood(infoClient.barrio);
+      setAddress(infoClient.direRes);
+    }
+
+    fetchInfo();
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
         try {
+            activeLoader();
             const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
             const municipiosData = municipiosResponse.data;
 
@@ -54,7 +66,7 @@ export default function Page() {
             setMessageError("Ha ocurrido un error al intentar cargar los datos.");
             setShowError(true);
         } finally {
-            setIsLoading(false);
+           desactiveLoader();
         }
     };
 
@@ -72,10 +84,6 @@ export default function Page() {
   const handleSelect = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
     setter(item.value);
   };
-
-  if (isLoading) {
-    return <Loader />;
-  }
 
   return (
     <ViewFadeIn isWidthFull>

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper"; 
 import Inputs from "../../forms/inputs/inputs";
@@ -8,6 +8,9 @@ import { formatCurrency } from "@/utils/validationForms";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import { listGenderType } from "@/utils/listUtils";
+import { getData, setData } from "@/utils/storageUtils";
+import { useTab } from "@/components/auth/tabsContext/tabsContext";
+import instanceExternal from "@/services/instanceExternal";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -22,6 +25,11 @@ interface Select {
     selectedValue: any;
 }
 
+interface List {
+    name: string;
+    value: string
+}
+
 interface PseProps {
     names: Input;
     surnames: Input;
@@ -33,6 +41,53 @@ interface PseProps {
 }
 
 export default function Pse({names, surnames,  document, email, address, phone, banks}:PseProps) {
+    const {activeLoader, desactiveLoader} = useTab();
+    const [listBanks, setListBanks] = useState<List[]>([]);
+    
+    const fetchBankList = async () => {
+        const existListBanks = await getData('listBanks');
+
+        if (existListBanks) {
+            const banks = existListBanks.map((bank: any) => {
+                const item: List = {
+                    name: bank.name,
+                    value: bank.code
+                };
+
+                return item;
+            });
+
+            setListBanks(banks);
+        } else {
+            activeLoader();
+            await instanceExternal.get('banks/list')
+            .then(async (response) => {
+                const data = response.data;
+                const banks = data.data.map((bank: any) => {
+                    const item: List = {
+                        name: bank.name,
+                        value: bank.code
+                    };
+
+                    return item;
+                });
+
+                await setData('listBanks', data.data);
+                setListBanks(banks);
+                desactiveLoader();
+            })
+            .catch((error) => {
+                console.log(error.response.data);
+                desactiveLoader();
+            });
+        }
+        
+    }
+
+    useEffect(() => {
+        fetchBankList();
+    }, []);
+    
     return(
         <View style={styles.container}>
             <View style={styles.mb5}>
@@ -96,14 +151,15 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     isRequired 
                     onChangeText={phone.onChangeText}
                     value={phone.value}  
-                    keyboardType="numeric"          
+                    keyboardType="numeric"    
+                    maxLength={10}      
                 />
             </View>
             <View style={styles.mb5}>
                 <SearchSelect
                     isRequired
                     label="Bancos"
-                    data={listGenderType}
+                    data={listBanks}
                     placeholder="Seleccione una opción"
                     onSelect={banks.onSelect}
                     selectedValue={banks.selectedValue}

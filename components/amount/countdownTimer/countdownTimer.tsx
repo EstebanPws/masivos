@@ -4,22 +4,73 @@ import { Text } from 'react-native-paper';
 import { styles } from './countdownTimer.styles';
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
+import { validateNumber } from '@/utils/validationForms';
+import { getData, getNumberAccount } from '@/utils/storageUtils';
+import instanceWallet from '@/services/instanceWallet';
+import { useTab } from '@/components/auth/tabsContext/tabsContext';
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
 const {colorPrimary, colorSecondary} = extra;
 
 interface CountdownTimerProps{
+    onError?: (response: any) => void;
+    onFinish: () => void;
     amount: string;
 }
 
-export default function CountdownTimer({amount}: CountdownTimerProps) {
+export default function CountdownTimer({onError, onFinish, amount}: CountdownTimerProps) {
+  const {activeLoader, desactiveLoader} = useTab();
   const [timeLeft, setTimeLeft] = useState(30 * 60);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 0));
-    }, 1000);
+  const [otp, setOtp] = useState('');
 
+  const fetchCashout = async () => {
+    activeLoader();
+    const infoClient = await getData('infoClient');
+    const account = await getNumberAccount();
+    const body = {
+      cuenta: account,
+      no_doc: infoClient.numDoc,
+      valor_tx: validateNumber(amount)
+    }
+
+    try {
+      const response = await instanceWallet.post('getOtp', body);
+      const data = response.data.message;
+      const otp = data.split(' ');
+      setOtp(otp[3]);
+      desactiveLoader();
+    } catch (error) {
+      if(onError){
+        const response = {
+          message: 'Hubo un error al intentar generar el código.\n\nPor favor intentelo de nuevo en unos minutos.',
+          type: 'error'
+        }
+        onError(response);
+      }
+      desactiveLoader();
+      console.log(error);  
+    }
+    
+  }
+  
+  useEffect(() => {
+    const fetchOtp = async () => {
+      await fetchCashout();
+    }
+    fetchOtp();
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          onFinish();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  
     return () => clearInterval(timer);
   }, []);
 
@@ -43,7 +94,7 @@ export default function CountdownTimer({amount}: CountdownTimerProps) {
                 style={styles.caontainerCode}
             >
                 <Text variant='titleMedium' style={[primaryBold, styles.textNameCode]}>Código de retiro</Text>
-                <Text variant='headlineSmall' style={[primaryBold, styles.textCode]}>123456</Text>
+                <Text variant='headlineSmall' style={[primaryBold, styles.textCode]}>{otp}</Text>
             </LinearGradient>
         </View>
         <View style={styles.mv1}>

@@ -28,7 +28,7 @@ export const formatCardNumber = (number) => {
     return number.replace(/(.{4})/g, '$1 ');
 };
 
-export function encryptIdWithSecret(id, secretKey) {
+export const encryptIdWithSecret = (id, secretKey) => {
     try {
         const key = CryptoJS.enc.Hex.parse(secretKey);
         const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000');
@@ -45,3 +45,20 @@ export function encryptIdWithSecret(id, secretKey) {
         return "";
     }
 };
+
+const generateRandomChars = (length) =>{
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charsLength = chars.length;
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * charsLength));
+    }
+    return result;
+  }
+
+export const generateUniqueId = () => {
+    const nowUtc = new Date();
+    const formattedDate = format(nowUtc, "yyyyMMddHHmmss");
+    const randomChars = generateRandomChars(8);
+    return `${formattedDate}${randomChars}`;
+}

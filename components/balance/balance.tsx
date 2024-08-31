@@ -7,7 +7,7 @@ import { styles } from "./balance.styles";
 import { useAuth } from "../auth/context/authenticationContext";
 import { useTab } from "../auth/tabsContext/tabsContext";
 import instanceWallet from "@/services/instanceWallet";
-import { getBalance, getNumberAccount, setBalance, setNumberAccount } from "@/utils/storageUtils";
+import { getBalance, getData, getNumberAccount, setBalance, setNumberAccount } from "@/utils/storageUtils";
 import { usePathname } from "expo-router";
 
 const extra = Constants.expoConfig?.extra || {};
@@ -16,13 +16,14 @@ const {colorPrimary, colorSecondary} = extra;
 
 interface BalanceProps {
     isWelcome?: boolean;
-    refresh?: number;
+    onMount?: (account: string) => Promise<string | null>;
 }
 
-export default function Balance({isWelcome = true}: BalanceProps) {
+export default function Balance({isWelcome = true, onMount}: BalanceProps) {
     const { documentNumber, modalidad } = useAuth();
     const { activeLoader , desactiveLoader } = useTab();
     const [viewSaldo, setViewSaldo] = useState('0');
+    const [name, setName] = useState<string | null>('');
     const pathname = usePathname();
 
     const fetchComplianceData = async () => {
@@ -45,6 +46,22 @@ export default function Balance({isWelcome = true}: BalanceProps) {
 
                     setNumberAccount(cuenta);
                     myNumberAccount = cuenta
+                }
+
+                if (onMount) {
+                    const existFirstName = await getData('infoClient');
+
+                    if(existFirstName) {
+                        setName(existFirstName.firstName);
+                    } else {
+                        onMount(existNumber ? existNumber : myNumberAccount)
+                        .then(firstName => {
+                            setName(firstName);
+                        })
+                        .catch(error => {
+                            setName('Nuevo usuario');
+                        });
+                    }
                 }
 
                 try {
@@ -94,7 +111,7 @@ export default function Balance({isWelcome = true}: BalanceProps) {
         >
             {isWelcome && (
                 <Text variant="titleSmall" style={[primaryRegular, styles.text]}>¡Bienvenido 
-                    <Text variant="titleSmall" style={[primaryBold, styles.text]}> Juan!</Text>
+                    <Text variant="titleSmall" style={[primaryBold, styles.text]}> {name}!</Text>
                 </Text>
             )}
             <LinearGradient

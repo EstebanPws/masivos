@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { validateNumber } from "@/utils/validationForms";
 import CountdownTimer from "@/components/amount/countdownTimer/countdownTimer";
+import Constants from "expo-constants";
 
 
 interface Input {
@@ -19,10 +20,7 @@ interface Input {
     value: string;
 }
 
-interface Select {
-    onSelect: (item: any) => void;
-    selectedValue: any;
-}
+const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
     const { setActiveTab, goBack } = useTab();
@@ -34,6 +32,9 @@ export default function Page() {
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [step, setStep] = useState(0);
+    const [typeModal, setTypeModal] = useState<'error' | 'info' | 'success'>('error');
+    const [titleModal, setTitleModal] = useState<string | null>(null);
+    const [typeCloseModal, setTypeCloseModal] = useState(1);
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -45,6 +46,7 @@ export default function Page() {
     });
     
     const handleBack = () => {
+        handleBackStep();
         goBack();
     }; 
 
@@ -54,18 +56,27 @@ export default function Page() {
         if(!valRecharge){
             setMessageError('Por favor ingresa un monto valido.');
             setShowError(true);
+            setTypeModal('error');
+            setTypeCloseModal(1);
+            setTitleModal(null);
             return;
         } 
 
         if(valueFinal > valMax){
             setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
             setShowError(true);
+            setTypeModal('error');
+            setTypeCloseModal(1);
+            setTitleModal(null);
             return;
         } 
 
         if(valueFinal < valMin){
             setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
             setShowError(true);
+            setTypeModal('error');
+            setTypeCloseModal(1);
+            setTitleModal(null);
             return;
         }
 
@@ -74,9 +85,31 @@ export default function Page() {
     }
 
     const handleBackStep = () => {
-        setShowCountDown(false);
         setValRecharge('');
         setStep(0);
+        setShowCountDown(false);
+    }
+
+    const handleErrorCode = (response: any) => {
+        setTypeModal(response.type);
+        setMessageError(response.message);
+        setShowError(true);
+        setTypeCloseModal(0);
+    }
+
+    const handelCloseModal = (type: number) => {
+        if(type === 0){
+            handleBackStep();
+        }
+        setShowError(false);
+    }
+
+    const handleLimits = () => {
+        setTitleModal('Límites transaccionales');
+        setMessageError(`¿Cuáles son los topes y límites transaccionales?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, el saldo máximo como el monto acumulado de las operaciones (entradas y salidas) no podrán exceder en ningún momento los $9,907,182, es decir, 210.50 UVT.\n\n Estos topes no son establecidos por ${expo} ni por el Banco Cooperativo Coopcentral, son establecidos por normatividad legal, según el decreto 222 del 2020 Por ser un depósito de bajo monto (DBM) con ${expo} puedes realizar transacciones acumuladas por mes de 210.5 UVT.\n\n ¿Mi depósito está exento de 4xmil (Gravamen a los movimientos financieros- GMF)? Con ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,000 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas`);
+        setShowError(true);
+        setTypeCloseModal(1);
+        setTypeModal('info');
     }
     
     return(
@@ -103,11 +136,14 @@ export default function Page() {
                                 comision={comision}
                                 amount={inputAmount}
                                 type={3}
+                                onShowLimits={handleLimits}
                             />
                         )}
                         {(showCountDown) &&(
                            <CountdownTimer
                                 amount={valRecharge}
+                                onError={handleErrorCode}
+                                onFinish={handleBackStep}
                            />
                         )}
                     </ScrollView>
@@ -127,9 +163,10 @@ export default function Page() {
             </View>
             {showError &&(
                 <InfoModal 
-                    type={"error"} 
+                    title={titleModal!}
+                    type={typeModal} 
                     message={messageError} 
-                    onPress={() => setShowError(false)} 
+                    onPress={() => handelCloseModal(typeCloseModal)} 
                     isVisible={showError}                    
                 />
             )}

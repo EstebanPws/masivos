@@ -8,6 +8,19 @@ export const styles = StyleSheet.create({
     mb5:{
         marginBottom: 20
     },
+    mb5Form:{
+        marginBottom: 20,
+        width: Platform.OS === 'ios' ? 300 : '100%',
+    },
+    mV5:{
+        marginTop: 10
+    },
+    view: {
+        width: '95%'
+    },
+    pH5:{
+        paddingHorizontal: 10
+    },
     services:{
         backgroundColor: 'white',
         borderRadius: 27,
@@ -42,6 +55,39 @@ export const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 5,
         marginBottom: 10
+    },
+    rowPackage: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    containerBtnPackage: {
+        borderRadius: 20,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        marginBottom: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 10
+    },
+    text: {
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '100%',
+        paddingTop: 20
+    },
+    textPackage: {
+        textAlign: 'right',
+        flexWrap: 'wrap',
+        width: '85%',
+        marginLeft: 5
     },
     back: {
         paddingTop: 20,
