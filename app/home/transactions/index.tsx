@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { useFocusEffect } from "expo-router";
-import { Button, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { styles } from "./transactions.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import TypeTransaction from "@/components/amount/typeTransaction/typeTransaction";
@@ -14,84 +14,105 @@ import { formatDate } from "@/utils/fomatDate";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 import TitleLine from "@/components/titleLine/titleLine";
+import { getData, getNumberAccount } from "@/utils/storageUtils";
+import instanceWallet from "@/services/instanceWallet";
+import InfoTransaction from "@/components/amount/infoTransaction/infoTransaction";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
 
-const transactions = [
-    {
-        "merchant": "Tienda 1",
-        "amount": "50000",
-        "date": "2024/08/13",
-        "type": "recibido"
-    },
-    {
-        "merchant": "Supermercado ABC",
-        "amount": "150000",
-        "date": "2024/08/12",
-        "type": "enviado"
-    },
-    {
-        "merchant": "Restaurante La Esquina",
-        "amount": "80000",
-        "date": "2024/08/11",
-        "type": "recibido"
-    },
-    {
-        "merchant": "Cafetería Delicias",
-        "amount": "12000",
-        "date": "2024/08/10",
-        "type": "enviado"
-    },
-    {
-        "merchant": "Panadería Mi Pan",
-        "amount": "25000",
-        "date": "2024/08/09",
-        "type": "recibido"
-    },
-    {
-        "merchant": "Librería Estudio",
-        "amount": "42000",
-        "date": "2024/08/08",
-        "type": "enviado"
-    },
-    {
-        "merchant": "Farmacia Salud",
-        "amount": "30000",
-        "date": "2024/08/07",
-        "type": "recibido"
-    },
-    {
-        "merchant": "Gasolinera Fuelle",
-        "amount": "60000",
-        "date": "2024/08/06",
-        "type": "enviado"
-    },
-    {
-        "merchant": "Zapatería El Paso",
-        "amount": "75000",
-        "date": "2024/08/05",
-        "type": "recibido"
-    },
-    {
-        "merchant": "Tienda de Ropa Modas",
-        "amount": "120000",
-        "date": "2024/08/04",
-        "type": "enviado"
-    }
-]; 
-
+interface Transaction {
+    merchant: string;
+    amount: string;
+    date: string;
+    time: string;
+    type: string;
+    onPress: () => void;
+}
 
 export default function Page() {
-    const { setActiveTab, goBack } = useTab();
+    const today = new Date();
+    const todayFormat = formatDate(today);
+    const todayFinal = todayFormat.replaceAll('/', '');
+    const pastDate = new Date(today);
+    pastDate.setDate(today.getDate() - 7);
+    const oldSevenDate = formatDate(pastDate);
+    const oldSevenDateFinal = oldSevenDate.replaceAll('/', '');
+
+    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [startDate, setStartDate] = useState(''); 
     const [endDate, setEndDate] = useState('');
-    const [filteredTransactions, setFilteredTransactions] = useState(transactions);
+    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+    const [initialTransactions, setInitialTransactions] = useState<Transaction[]>([]);
     const [showFilter, setShowFilter] = useState(true);
- 
+    const [transactionSelected, setTransactionSelected] = useState<any>(null);
+
+    const fetchGetTransactions = async () => {
+        activeLoader();
+        const account = await getNumberAccount();
+        const infoClient = await getData('infoClient');
+        const body = {
+            entidad: "9011569983",
+            no_cuenta: account?.startsWith('8') ? account : `0${account}`,
+            no_docum: infoClient.numDoc,
+            fecha_inicio: oldSevenDateFinal,
+            fecha_final : todayFinal
+        }
+
+        await instanceWallet.post('getMovements', body)
+        .then((response) => {
+            const data = response.data.data;
+            const sortedTransactions = data.sort((a: any, b: any) => {
+                if (b.fecha_aplicacion_conta === a.fecha_aplicacion_conta) {
+                    return b.hora_tx - a.hora_tx;
+                }
+                return b.fecha_aplicacion_conta - a.fecha_aplicacion_conta;
+            });
     
+
+            const filterTransaction = sortedTransactions.map((transactions: any) => {
+                const date = String(transactions.fecha_aplicacion_conta);
+                const year = date.substring(0, 4);
+                const month = date.substring(4, 6);
+                const day = date.substring(6, 8);
+
+                const time = String(transactions.hora_tx);
+                const hour = time.substring(0, 2);
+                const minutes = time.substring(2, 4);
+                const seconds = time.substring(4, 6);
+                const zoneTime = Number(hour) >= 13 ? 'P.M' : 'A.M';
+
+                const transaction: Transaction = {
+                    merchant: transactions.descri_tx,
+                    amount: String(transactions.valor_tx),
+                    date: `${year}/${month}/${day}`,
+                    time: `${hour}:${minutes}:${seconds} ${zoneTime}`,
+                    type: transactions.tipo_operacion_movi === 'A' ? "Recibido" : "Enviado",
+                    onPress: () => {
+                        setTransactionSelected(transactions);
+                    }
+                };
+
+                return transaction;
+            });
+            setFilteredTransactions(filterTransaction);
+            setInitialTransactions(filterTransaction);
+            desactiveLoader();
+        })
+        .catch((err) => {
+            desactiveLoader();
+            setFilteredTransactions([]);
+        });   
+    }
+ 
+    useEffect(() => {
+       if(activeTab === '/home/transactions/'){
+        fetchGetTransactions();
+       }
+    }, [activeTab])
+
     useFocusEffect(() => {
         setActiveTab('/home/transactions/');
     });
@@ -100,23 +121,79 @@ export default function Page() {
         goBack();
     };
 
-    const handleFilter = () => {
-        const filtered = transactions.filter((transaction) => {
-            const transactionDate = transaction.date;
-            const start = startDate;
-            const end = endDate;
-            
-            if (start && end) {
-                return transactionDate >= start && transactionDate <= end;
-            } else if (start) {
-                return transactionDate >= start;
-            } else if (end) {
-                return transactionDate <= end;
-            }
-            return true;
-        });
+    const handleFilter = async () => {
+        if (!startDate || !endDate) {
+            setMessageError('Por favor, seleccione ambas fechas.');
+            setShowError(true);
+            return;
+        }
 
-        setFilteredTransactions(filtered);
+        const start = new Date(startDate.replaceAll('/', '-'));
+        const end = new Date(endDate.replaceAll('/', '-'));
+
+        if (end < start) {
+            setMessageError('La fecha de fin no puede ser anterior a la fecha de inicio.');
+            setShowError(true);
+            return;
+        }
+
+        const diffDays = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
+        if (diffDays > 7) {
+            setMessageError('El rango de fechas no puede ser mayor a 7 días.');
+            setShowError(true);
+            return;
+        }
+
+        activeLoader();
+        const account = await getNumberAccount();
+        const infoClient = await getData('infoClient');
+        const body = {
+            entidad: "9011569983",
+            no_cuenta: account?.startsWith('8') ? account : `0${account}`,
+            no_docum: infoClient.numDoc,
+            fecha_inicio: startDate.replaceAll('/', ''),
+            fecha_final : endDate.replaceAll('/', '')
+        }
+
+        await instanceWallet.post('getMovements', body)
+        .then((response) => {
+            const data = response.data.data;
+            const sortedTransactions = data.sort((a: any, b: any) => {
+                return b.fecha_aplicacion_conta - a.fecha_aplicacion_conta;
+            });
+
+            const filterTransaction = sortedTransactions.map((transactions: any) => {
+                const date = String(transactions.fecha_aplicacion_conta);
+                const year = date.substring(0, 4);
+                const month = date.substring(4, 6);
+                const day = date.substring(6, 8);
+
+                const time = String(transactions.hora_tx);
+                const hour = time.substring(0, 2);
+                const minutes = time.substring(2, 4);
+                const seconds = time.substring(4, 6);
+                const zoneTime = Number(hour) >= 13 ? 'P.M' : 'A.M';
+
+                const transaction: Transaction = {
+                    merchant: transactions.descri_tx,
+                    amount: String(transactions.valor_tx),
+                    date: `${year}/${month}/${day}`,
+                    time: `${hour}:${minutes}:${seconds} ${zoneTime}`,
+                    type: transactions.tipo_operacion_movi === 'A' ? "Recibido" : "Enviado",
+                    onPress: () => {
+                        setTransactionSelected(transactions);
+                    }
+                };
+
+                return transaction;
+            });
+            setFilteredTransactions(filterTransaction);
+            desactiveLoader();
+        })
+        .catch((err) => {
+            setFilteredTransactions([]);
+            desactiveLoader();
+        });
     };
 
     const handleDateSelect = (setter: { (value: React.SetStateAction<string>): void }) => (date: any) => {
@@ -126,7 +203,7 @@ export default function Page() {
     const handleBorrar = () => {
         setStartDate('');
         setEndDate('');
-        setFilteredTransactions(transactions);
+        setFilteredTransactions(initialTransactions);
     }
 
     return(
@@ -135,75 +212,84 @@ export default function Page() {
                 onBack={() => handleBack()}
                 title="Transacciones"
             />
-            <View style={[styles.container]}>
-                <View style={styles.filter}>
-                    <TouchableOpacity onPress={() => setShowFilter(!showFilter)}>
-                        <View style={styles.row}>
-                            <Text variant='bodyLarge' style={[primaryBold, styles.text]}>Filtros</Text>
-                            
-                                <Icon
-                                    source={!showFilter ? 'eye' : 'eye-off'}
-                                    size={24}
-                                />
-                            
-                        </View>
-                    </TouchableOpacity>
-                    {showFilter && (
-                        <>
-                            <TitleLine/>
+            {!transactionSelected ? (
+                <View style={[styles.container]}>
+                    <View style={styles.filter}>
+                        <TouchableOpacity onPress={() => setShowFilter(!showFilter)}>
                             <View style={styles.row}>
-                                <View style={styles.mb5}>
-                                    <DateSelect 
-                                        label={"Fecha de inicio"} 
-                                        placeholder={"Selecione una fecha"} 
-                                        icon={false}
-                                        onSelect={handleDateSelect(setStartDate)}
-                                        value={startDate}
+                                <Text variant='bodyLarge' style={[primaryBold, styles.text]}>Filtros</Text>
+                                
+                                    <Icon
+                                        source={!showFilter ? 'eye' : 'eye-off'}
+                                        size={24}
+                                    />
+                                
+                            </View>
+                        </TouchableOpacity>
+                        {showFilter && (
+                            <>
+                                <TitleLine/>
+                                <View style={styles.row}>
+                                    <View style={styles.mb5}>
+                                        <DateSelect 
+                                            label={"Fecha de inicio"} 
+                                            placeholder={"Fecha Inicio"} 
+                                            icon={false}
+                                            onSelect={handleDateSelect(setStartDate)}
+                                            value={startDate}
+                                        />
+                                    </View>
+                                    <View style={styles.mb5}>
+                                        <DateSelect 
+                                            label={"Fecha de fin"} 
+                                            placeholder={"Fecha Fin"} 
+                                            icon={false}
+                                            onSelect={handleDateSelect(setEndDate)}
+                                            value={endDate}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={styles.row}>
+                                    <ButtonsPrimary
+                                        label="Filtrar"
+                                        onPress={() => handleFilter()}
+                                    />
+                                    <ButtonsSecondary
+                                        label="Borrar"
+                                        onPress={() => handleBorrar()}
                                     />
                                 </View>
-                                <View style={styles.mb5}>
-                                    <DateSelect 
-                                        label={"Fecha de fin"} 
-                                        placeholder={"Selecione una fecha"} 
-                                        icon={false}
-                                        onSelect={handleDateSelect(setEndDate)}
-                                        value={endDate}
-                                    />
-                                </View>
-                            </View>
-                            <View style={styles.row}>
-                                <ButtonsPrimary
-                                    label="Filtrar"
-                                    onPress={() => handleFilter()}
-                                />
-                                <ButtonsSecondary
-                                    label="Borrar"
-                                    onPress={() => handleBorrar()}
-                                />
-                            </View>
-                        </>
-                    )}
-                </View>
+                            </>
+                        )}
+                    </View>
 
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    {filteredTransactions.length > 0 ? (
-                        filteredTransactions.map((transaction, index) => (
-                            <TypeTransaction
-                                key={index}
-                                merchant={transaction.merchant}
-                                amount={transaction.amount}
-                                date={transaction.date}
-                                type={transaction.type}
-                            />
-                        ))
-                    ) : (
-                        <View style={styles.noResults}>
-                            <Icon source={'toolbox'} size={28} />
-                            <Text style={primaryRegular}>No hay resultados</Text>
-                        </View>
-                    )}
-                </ScrollView>
-            </View>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        {filteredTransactions.length > 0 ? (
+                            filteredTransactions.map((transaction, index) => (
+                                <TypeTransaction
+                                    key={index}
+                                    merchant={transaction.merchant}
+                                    amount={transaction.amount}
+                                    date={transaction.date}
+                                    time={transaction.time}
+                                    type={transaction.type}
+                                    onPress={transaction.onPress}
+                                />
+                            ))
+                        ) : (
+                            <View style={styles.noResults}>
+                                <Icon source={'toolbox'} size={28} />
+                                <Text style={primaryRegular}>No hay resultados</Text>
+                            </View>
+                        )}
+                    </ScrollView>
+                </View>
+            ) : (
+                <InfoTransaction 
+                    transaction={transactionSelected}
+                    onPress={() => setTransactionSelected(null)}
+                />
+            )}
             {showError &&(
                 <InfoModal 
                     type={"error"} 

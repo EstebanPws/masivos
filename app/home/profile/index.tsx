@@ -204,7 +204,7 @@ export default function Page() {
           onCancel={() => setShowModalConfirm(false)}>
             <View style={styles.centerContainer}>
               <Icon source={'information'} size={50} color={`${MD2Colors.blue700}`} />
-              <Text variant="labelLarge" style={primaryRegular}>Esta seguro de eliminar la cuenta?</Text>
+              <Text variant="labelLarge" style={primaryRegular}>¿Esta seguro de eliminar la cuenta?</Text>
             </View>
         </InfoModalConfirm>
       )}

@@ -53,12 +53,18 @@ export default function Page() {
   const [listSubPackages, setListSubPackages] = useState<Option[]>([]);
   const [listProductsFinal, setlistProductsFinal] = useState<Option[]>([]);
   const [listPines, setListPines] = useState<Option[]>([]);
+  const [listInvoices, setListInvoices] = useState<Option[]>([]);
   const [selectedOption, setSelectedOption] = useState<any>();
   const [namePackage, setNamePackage] = useState('');
   const [showError, setShowError] = useState(false);
   const [messageError, setMessageError] = useState('');
   const [typeMessage, setTypeMessage] = useState<"error" | "info" | "success">('error');
   const [typeFinish, setTypeFinish] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loadSearch, setLoadSearch] = useState(false);
+  const [isSearchInvoice, setIsSearchInvoice] = useState(false);
+  const [referenceInvoice, setReferenceInvoice] = useState('');
+  const [typeStepInvoice, setTypeStepInvoice] = useState(0);
 
   const fetchGetServices = async () => {
     activeLoader();
@@ -75,6 +81,13 @@ export default function Page() {
         };
         return item;
       });
+
+      const facturas: ListService = {
+        name: "Pago de facturas",
+        value: String(82)
+      };
+
+      service.push(facturas);
 
       const serviceRecharge = data.message.find((service: any) => service.id === 2);
       const listRecharge = serviceRecharge
@@ -130,8 +143,7 @@ export default function Page() {
       setListServices(service);
       desactiveLoader();
     })
-    .catch((error) => {
-      console.log(error.response);
+    .catch(() => {
       desactiveLoader();
       setTypeMessage('error');
       setMessageError('En este momento no se pueden consultar los servicios disponibles.\n\nPor favor intetalo más tarde.');
@@ -201,11 +213,15 @@ export default function Page() {
     setIsSubPackages(false);
     setIsPackages(false);
     setIsProductsFinalSelected(false);
+    setLoadSearch(false);
+    setSearchQuery('');
     setNamePackage('');
     setValueRecharge('');
     setEmail('');
     setRecharge('');
-      
+    setIsSearchInvoice(false);
+    setReferenceInvoice('');
+    setTypeStepInvoice(0);
     setter(item.value);
   };
 
@@ -234,6 +250,18 @@ export default function Page() {
     }
   }
 
+  const handleBackInvoice = (type: number) => {
+    if(type == 0){
+      setLoadSearch(false);
+      setIsSearchInvoice(false);
+    } else if (type === 1){
+      setLoadSearch(true);
+      setIsSearchInvoice(false);
+    }else {
+      setTypeStepInvoice(0);
+    }
+  }
+
   const fetchSendPay = async () => {
     activeLoader();
     const infoClient = await getData('infoClient');
@@ -242,7 +270,7 @@ export default function Page() {
       prod_orig: account,
       doc_prod_orig: infoClient.numDoc,
       nom_orig: `${infoClient.names} ${infoClient.surnames}`,
-      descrip_tx: packageService === '2' ? 'Pago de recargas' : packageService === '3' ? "Pago de paquete moviles" : "Pago de pines",
+      descrip_tx: packageService === '2' ? 'Pago de recargas' : packageService === '3' ? "Pago de paquetes moviles" : "Pago de pines",
       productId: selectedOption.id,
       amount: packageService === '2' ? validateNumber(valueRecharge) : selectedOption.amount,
       moveTmpBalance: true,
@@ -286,14 +314,154 @@ export default function Page() {
       setIsSubPackages(false);
       setIsPackages(false);
       setIsProductsFinalSelected(false);
+      setLoadSearch(false);
+      setSearchQuery('');
       setNamePackage('');
       setValueRecharge('');
       setEmail('');
       setRecharge('');
+      setIsSearchInvoice(false);
+      setReferenceInvoice('');
+      setTypeStepInvoice(0);
       router.push('/home');
     }
 
     setShowError(false);
+  }; 
+
+  const fetchGetInvoice = async () => {
+    const body = {
+      query: searchQuery.trimStart().trimEnd().toLowerCase()
+    };
+
+    await instanceWallet.post('product/search', body)
+    .then((response) => {
+      const data = response.data;
+      if(data.data.length !== 0){
+        const listInvoices = data.data.map((invoice: any) => {
+          const image = invoice.image ? `https://assets.refacil.co/providers/${invoice.image}` : 'https://cdn-icons-png.flaticon.com/512/15238/15238240.png';
+          const item: Option = {
+            id: String(invoice.productId),
+            icon: image,
+            name: invoice.name,
+            onPress: () => {
+              handleSelectedOption(invoice);
+              setIsSearchInvoice(true);
+              setLoadSearch(false);
+              setTypeStepInvoice(0);
+            }
+          }
+  
+          return item;
+        });
+  
+        setListInvoices(listInvoices);
+      } else {
+        setListInvoices([]);
+      }
+      setLoadSearch(true);
+    })
+    .catch((err) => {
+      setMessageError("No se puede consultar las facturas en este momento.\n\nPor favor intentelo más tarde.");
+      setShowError(true);
+      setTypeMessage('error');
+      setTypeFinish(0);
+      setLoadSearch(false);
+    })
+  }
+
+  const fetchGetInfoInvoice = async () => {
+    const body = {
+      productId: selectedOption.id,
+      queryType: "BILLData",
+      data: {
+        reference: referenceInvoice
+      }
+    };
+
+    await instanceWallet.post('product/query', body)
+    .then((response) => {
+      const data = response.data;
+      
+      if(data.data.payload){
+        const payload = data.data.payload;
+        const item = {
+          id: payload.productId,
+          name: payload.productName,
+          reference: payload.reference,
+          amount: formatCurrency(payload.amount),
+          hashEchoData: payload.hashEchoData,
+          hash: payload.hash
+        };
+
+        setSelectedOption(item);
+        setTypeStepInvoice(1);
+        setIsSearchInvoice(true);
+        setLoadSearch(false);
+      } else {
+        setMessageError("No se encontro la referencia de la factura.");
+        setShowError(true);
+        setTypeMessage('error');
+        setTypeStepInvoice(0);
+        setTypeFinish(0);
+        setLoadSearch(false);
+      }
+    })
+    .catch((err) => {
+      setMessageError("No se encontro la referencia de la factura.");
+      setShowError(true);
+      setTypeMessage('error');
+      setTypeStepInvoice(0);
+      setLoadSearch(false);
+      setTypeFinish(0);
+    })
+  }
+
+  const fetchSendPayInvoice = async () => {
+    activeLoader();
+    const infoClient = await getData('infoClient');
+    const account = await getNumberAccount();
+    const body = {
+      prod_orig: account,
+      doc_prod_orig: infoClient.numDoc,
+      nom_orig: `${infoClient.names} ${infoClient.surnames}`,
+      descrip_tx: `Pago de factura referencia ${selectedOption.reference}`,
+      productId: selectedOption.id,
+      amount: validateNumber(selectedOption.amount),
+      sellType: "Bill",
+      moveTmpBalance: true,
+      hash: selectedOption.hash,
+      data: {
+          reference: selectedOption.reference,
+          cellphone: infoClient.phoneNumber,
+          hashEchoData: selectedOption.hashEchoData
+      }
+    };
+
+    await instanceWallet.post('ventas/PagoFactura', body)
+    .then((response) => {
+      const data = response.data;
+      if(!data.message.includes('[')){
+          setMessageError('Transacción completada con éxito.');
+          setShowError(true);
+          setTypeFinish(1);
+          setTypeMessage('success');
+      } else {
+          setMessageError('La transacción ha sido rechazada. Por favor intetelo de nuevo más tarde.');
+          setShowError(true);
+          setTypeMessage('error');
+          setTypeFinish(0);
+      }
+      desactiveLoader();
+    })
+    .catch((error) => {
+      const message = error.response.data.message;
+      setMessageError(message);
+      setShowError(true);
+      setTypeMessage('error');
+      setTypeFinish(0);
+      desactiveLoader();
+    });
   }
 
   return (
@@ -313,7 +481,26 @@ export default function Page() {
             selectedValue={packageService}
           />
         </View>
-        <View style={styles.services}>
+        {packageService === '82' && (
+          <View style={styles.row}>
+            <View style={styles.viewSearch}>
+              <Inputs 
+                label="ingrese el nombre de la empresa a la que desea realizar el pago de la factura."
+                isSecureText={false} 
+                isRequired={true} 
+                placeholder="Ej: codensa"
+                icon={'clipboard-text-search-outline'}
+                onChangeText={setSearchQuery}
+                value={searchQuery} 
+              />
+            </View>
+            <ButtonsPrimary 
+              label="Buscar"
+              onPress={() => fetchGetInvoice()}
+            />
+          </View>
+        )}
+        <View style={[styles.services, packageService === '82' ? {maxHeight: '58%'} : null]}>
           {(isPackages && isSubPackages && packageService === '3' || isPackages && isSubPackages && packageService === '81') && (
             <Text style={[primaryBold, styles.text]} >Operador: {namePackage}</Text>
           )}
@@ -323,8 +510,18 @@ export default function Page() {
             extraHeight={Platform.select({ ios: 80, android: 120 })}
           >
             <ScrollView showsVerticalScrollIndicator={false}>
+                {(packageService === '' || packageService === '82' && !loadSearch && !isSearchInvoice) &&(
+                  <View style={styles.centerInvoice}>
+                    <Icon
+                      source={'toolbox'}
+                      size={28}
+                    />
+                    <Text style={primaryRegular}>No hay resultados</Text>
+                  </View>
+                )}
+
                 {(!isRecharge && packageService === '2' ) && (
-                  !packageService ? (
+                  listRecharges.length === 0 ? (
                     <View style={styles.center}>
                       <Icon
                         source={'toolbox'}
@@ -338,7 +535,7 @@ export default function Page() {
                 )}
 
                 {(!isPackages && !isSubPackages && packageService === '3' || !isPackages && !isSubPackages && packageService === '81') && (
-                  !packageService ? (
+                  (listPines.length === 0 ||  listPackages.length === 0) ? (
                     <View style={styles.center}>
                       <Icon
                         source={'toolbox'}
@@ -352,7 +549,7 @@ export default function Page() {
                 )}
 
                 {(isPackages && isSubPackages && packageService === '3' && !isProductsFinalSelected || isPackages && isSubPackages && packageService === '81' && !isProductsFinalSelected) && (
-                  !packageService ? (
+                  (isProductsFinal && listProductsFinal.length === 0 || !isProductsFinal && listSubPackages.length === 0) ? (
                     <View style={styles.center}>
                       <Icon
                         source={'toolbox'}
@@ -365,6 +562,65 @@ export default function Page() {
                       <OptionsService isPackage={isProductsFinal ? true : false} options={isProductsFinal ? listProductsFinal : listSubPackages} />
                     </View>
                   )
+                )}
+
+                {(packageService === '82' && loadSearch && !isSearchInvoice) && (
+                  listInvoices.length === 0 ? (
+                    <View style={styles.center}>
+                      <Icon
+                        source={'toolbox'}
+                        size={28}
+                      />
+                      <Text style={primaryRegular}>No hay resultados</Text>
+                    </View>
+                  ) : (
+                    <View>
+                      <OptionsService isInvoice options={listInvoices} />
+                    </View>
+                  )
+                )}
+
+                {(packageService === '82' && !loadSearch && isSearchInvoice) && (
+                  <View style={[isProductsFinalSelected ? styles.pH5 : null]}>
+                    {selectedOption && (
+                      <View style={styles.centerJ}>
+                        <View style={[styles.containerBtnPackage, styles.rowPackage]}>
+                          <Icon
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2611/2611147.png'}}
+                            size={28}
+                          
+                          />
+                          <Text numberOfLines={10} variant="labelSmall" style={[primaryBold, styles.textPackage]}>
+                            {selectedOption.name} {'\n\n'}
+                            {selectedOption.amount && (
+                               <Text variant="labelMedium" style={[primaryBold, styles.textPackage, {color: colorPrimary}]}>{formatCurrency(selectedOption.amount)} COP
+                            </Text>
+                            )}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                    <TitleLine label="Información de la factura"/>
+                    <View style={styles.mb5Form}>
+                      <Inputs
+                        label="Número de referencia de pago (sin guiones)"
+                        placeholder="Escribe la referencia de pago"
+                        isSecureText={false}
+                        isRequired={true}
+                        keyboardType="numeric"
+                        onChangeText={setReferenceInvoice}
+                        value={referenceInvoice}
+                        maxLength={10}
+                        readonly={typeStepInvoice === 0 ? false : true}
+                      />
+                    </View>
+                    <View style={styles.mb5}>
+                      <ButtonsPrimary 
+                        label={typeStepInvoice === 0 ? "Siguiente" : "Enviar"}
+                        onPress={typeStepInvoice === 0  ? fetchGetInfoInvoice : fetchSendPayInvoice}
+                      />
+                    </View>
+                  </View>
                 )}
 
                 {(isRecharge  && packageService === '2' || isProductsFinalSelected && packageService == '3' || isProductsFinalSelected && packageService == '81') && (
@@ -447,11 +703,11 @@ export default function Page() {
                 )}
               </ScrollView>
           </KeyboardAwareScrollView>
-          {(isRecharge || isPackages) &&(
+          {(isRecharge || isPackages || isSearchInvoice) &&(
              <View style={[styles.mV5, styles.view]}>
               <ButtonsPrimary 
                 label="Volver"
-                onPress={() => packageService === '3' || packageService === '81' ? handleBackPackages(isProductsFinalSelected ? 0: isProductsFinal ? 1 : 2) : setIsRecharge(false)}
+                onPress={() => packageService === '3' || packageService === '81' ? handleBackPackages(isProductsFinalSelected ? 0: isProductsFinal ? 1 : 2) : packageService === '82' ? handleBackInvoice(loadSearch && !isSearchInvoice && typeStepInvoice === 0 ? 0 : !loadSearch && isSearchInvoice && typeStepInvoice === 0 ? 1 : 2) : setIsRecharge(false)}
               />
             </View>
           )}

@@ -1,16 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Icon, Text } from "react-native-paper"; 
+import { View } from "react-native";
 import Inputs from "../../forms/inputs/inputs";
 import { styles } from "./pse.styles";
 import Constants from "expo-constants";
-import { formatCurrency } from "@/utils/validationForms";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
-import { listGenderType } from "@/utils/listUtils";
 import { getData, setData } from "@/utils/storageUtils";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
-import instanceExternal from "@/services/instanceExternal";
+import instanceWallet from "@/services/instanceWallet";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -45,13 +42,13 @@ export default function Pse({names, surnames,  document, email, address, phone, 
     const [listBanks, setListBanks] = useState<List[]>([]);
     
     const fetchBankList = async () => {
-        const existListBanks = await getData('listBanks');
-
+        const existListBanks = await getData('listBanksPse');
+        
         if (existListBanks) {
             const banks = existListBanks.map((bank: any) => {
                 const item: List = {
-                    name: bank.name,
-                    value: bank.code
+                    name: bank.nombre,
+                    value: bank.codigoach
                 };
 
                 return item;
@@ -60,19 +57,19 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             setListBanks(banks);
         } else {
             activeLoader();
-            await instanceExternal.get('banks/list')
+            await instanceWallet.get('getBancos')
             .then(async (response) => {
                 const data = response.data;
                 const banks = data.data.map((bank: any) => {
                     const item: List = {
-                        name: bank.name,
-                        value: bank.code
+                        name: bank.nombre,
+                        value: bank.codigoach
                     };
 
                     return item;
                 });
 
-                await setData('listBanks', data.data);
+                await setData('listBanksPse', data.data);
                 setListBanks(banks);
                 desactiveLoader();
             })

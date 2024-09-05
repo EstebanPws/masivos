@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { ScrollView, View, Image, Platform, Linking } from "react-native";
+import { ScrollView, View, Image, Platform, Linking, Alert } from "react-native";
 import { styles } from "./recharge.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -14,6 +14,12 @@ import RequestRecharge from "@/components/amount/requestRecharge/requestRecharge
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { validateNumber } from "@/utils/validationForms";
 import Constants from "expo-constants";
+import { getData, getNumberAccount } from "@/utils/storageUtils";
+import { generateUniqueId } from "@/utils/fomatDate";
+import instanceWallet from "@/services/instanceWallet";
+import { MotiView } from "moti";
+import WebView from "react-native-webview";
+import { ShouldStartLoadRequest, WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -28,7 +34,7 @@ interface Select {
 const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
-    const { setActiveTab, goBack } = useTab();
+    const { setActiveTab, goBack, activeLoader, desactiveLoader} = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [valMax] = useState('2000000');
     const [valMin] = useState('10000');
@@ -40,11 +46,63 @@ export default function Page() {
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
     const [banks, setBanks] = useState('');
+    const [bankName, setBankName] = useState('');
     const { type } = useLocalSearchParams();
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
     const [typeModal, setTypeModal] = useState<'error' | 'info' | 'success'>('error');
     const [titleModal, setTitleModal] = useState<string | null>(null);
+    const [urlPse, setUrlPse] = useState('');
+    const [finalTransaction, setFinalTransaction] = useState(false);
+
+    const fetchInfoClient = async () => {
+        const infoClient = await getData('infoClient');
+        setNames(infoClient.names);
+        setSurnames(infoClient.surnames);
+        setDocument(infoClient.numDoc);
+        setEmail(infoClient.email);
+        setPhone(infoClient.phoneNumber);
+        setAddress(infoClient.direRes);
+    };
+
+    const fetchCrateTransaction = async () => {
+        const account = await getNumberAccount();
+        const body = {
+            amount : validateNumber(valRecharge),
+            no_cuenta: account,
+            identification_type : 4,
+            Documento : document,
+            Correo : email,
+            Nombres : names,
+            Apellidos : surnames,
+            Celular : Number(phone),
+            Direccion : address,
+            external_order : generateUniqueId(),
+            CodigoBanco : banks,
+            NombreBanco : bankName,
+            additionalData : {
+                additionalData : "Recarga PSE"
+            }
+        }
+
+        await instanceWallet.post('PSE', body)
+        .then((response) => {
+            const data = response.data;
+            setUrlPse(data.data);
+        })
+        .catch((err) => {
+            console.log(err.response.data);
+            
+            setTitleModal(null);
+            setMessageError('Hubo un error al intentar realizar la transacción.');
+            setTypeModal('error');
+            setShowError(true);
+        })
+    }
+
+    useEffect(() => {
+        fetchInfoClient();
+    }, []);
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -75,6 +133,11 @@ export default function Page() {
         setter(item.value);
     };
 
+    const handleSelectBanks = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
+        setBankName(item.name);
+        setter(item.value);
+    };
+
     const inputAddress: Select = {
         onSelect: handleSelect(setAddress),
         selectedValue: address
@@ -86,7 +149,7 @@ export default function Page() {
     }
 
     const inputBanks: Select = {
-        onSelect: handleSelect(setBanks),
+        onSelect: handleSelectBanks(setBanks),
         selectedValue: banks
     }
     
@@ -161,10 +224,7 @@ export default function Page() {
                 return;
             }
 
-            setTitleModal(null);
-            setMessageError('Hubo un error al intetar realizar la transacción.');
-            setTypeModal('error');
-            setShowError(true);
+            fetchCrateTransaction();
        }
     }
 
@@ -174,86 +234,157 @@ export default function Page() {
         setShowError(true);
         setTypeModal('info');
     }
-    
+
+    const handleShouldStartLoadWithRequest = (request: ShouldStartLoadRequest) => { 
+        if (request.url) {
+            if(request.url.includes('https://backend.paymentsway.co/pse/response/')) {
+                setFinalTransaction(true);
+            }
+        }
+        return true;
+    };
+
+    const handleError = (syntheticEvent: WebViewErrorEvent) => {
+        const { nativeEvent } = syntheticEvent;
+        console.log(nativeEvent);
+    };
+
+    const handleSslError = (event: { preventDefault: any; }) => {
+        Alert.alert(
+            'SSL Certificate Error',
+            'An SSL error occurred. Do you want to continue anyway?',
+            [
+                { text: 'Cancel', onPress: () => event.preventDefault(), style: 'cancel' },
+                { text: 'Continue', onPress: () => event.preventDefault() },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const handelFinalTransaction = () => {
+        setUrlPse('');
+        setValRecharge('');
+        setShowPse(false);
+        setFinalTransaction(false);
+    }
+
     return(
         <ViewFadeIn isWidthFull>
             <HeaderForm
                 onBack={() => handleBack()}
                 title={`Recargar - ${type === '0'? 'Solicitar recarga' : 'PSE'}`}
             />
-            <View style={styles.mV1}>
-                <Balance
-                    isWelcome={false}
-                />
-            </View>
-            <View style={styles.container}>
-                <KeyboardAwareScrollView
-                    enableOnAndroid={true}
-                    extraHeight={Platform.select({ ios: 100, android: 120 })}
-                >
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                       {type === '1' && (
-                            <>
-                                {!showPse &&(
-                                    <SelectAmount
-                                        valMax={valMax}
-                                        valMin={valMin}
-                                        comision="0"
-                                        amount={inputAmount}
-                                        type={0}
-                                        onShowLimits={handleLimits}
-                                    />
-                                )}
-                                {showPse &&(
-                                    <Pse 
-                                        names={inputNames}
-                                        surnames={inputSurnames}
-                                        document={inputDocument}
-                                        email={inputEmail}
-                                        address={inputAddress}
-                                        phone={inputPhone}
-                                        banks={inputBanks}
-                                    />
-                                )}
-                            </>
-                       )}
-                       {type == '0' && (
-                        <RequestRecharge 
-                            phone={inputPhone}
-                            onPress={handleLimits}
+            {urlPse  === '' && (
+                <>
+                    <View style={styles.mV1}>
+                        <Balance
+                            isWelcome={false}
                         />
-                       )}
-                    </ScrollView>
-                    <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain"/>
-                    {type === '1' && (
-                        <>
-                            {!showPse ? (
-                                <ButtonsPrimary 
-                                    label={'Continuar'}
-                                    onPress={() => handleNext(0)}
-                                />
-                            ): (
-                                <View style={styles.row}>
-                                    <ButtonsPrimary 
-                                        label={'Volver'}
-                                        onPress={() => setShowPse(false)}
-                                    />
-                                    <ButtonsPrimary 
-                                        label={'Continuar'}
-                                        onPress={() => handleNext(1)}
-                                    />
-                                </View>
+                    </View>
+                    <View style={styles.container}>
+                        <KeyboardAwareScrollView
+                            enableOnAndroid={true}
+                            extraHeight={Platform.select({ ios: 100, android: 120 })}
+                        >
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                            {type === '1' && (
+                                    <>
+                                        {!showPse &&(
+                                            <SelectAmount
+                                                valMax={valMax}
+                                                valMin={valMin}
+                                                comision="0"
+                                                amount={inputAmount}
+                                                type={0}
+                                                onShowLimits={handleLimits}
+                                            />
+                                        )}
+                                        {showPse &&(
+                                            <Pse 
+                                                names={inputNames}
+                                                surnames={inputSurnames}
+                                                document={inputDocument}
+                                                email={inputEmail}
+                                                address={inputAddress}
+                                                phone={inputPhone}
+                                                banks={inputBanks}
+                                            />
+                                        )}
+                                    </>
                             )}
-                        </>
-                    )}
-                    {type === '0' &&(
+                            {type == '0' && (
+                                <RequestRecharge 
+                                    phone={inputPhone}
+                                    onPress={handleLimits}
+                                />
+                            )}
+                            </ScrollView>
+                            <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain"/>
+                            {type === '1' && (
+                                <>
+                                    {!showPse ? (
+                                        <ButtonsPrimary 
+                                            label={'Continuar'}
+                                            onPress={() => handleNext(0)}
+                                        />
+                                    ): (
+                                        <View style={styles.row}>
+                                            <ButtonsPrimary 
+                                                label={'Volver'}
+                                                onPress={() => setShowPse(false)}
+                                            />
+                                            <ButtonsPrimary 
+                                                label={'Continuar'}
+                                                onPress={() => handleNext(1)}
+                                            />
+                                        </View>
+                                    )}
+                                </>
+                            )}
+                            {type === '0' &&(
+                                <ButtonsPrimary 
+                                    label={'Enviar'}
+                                    onPress={handleSendWhatsApp}
+                                />
+                            )}
+                        </KeyboardAwareScrollView>
+                    </View>
+                </>
+            )}
+            {urlPse && (
+                <MotiView
+                    from={{ opacity: 0, translateY: -50 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    transition={{ type: 'timing', duration: 500 }}
+                    style={styles.containerPSE}
+                >
+                    <WebView
+                        style={{flex: 1}}
+                        javaScriptEnabled={true}
+                        cacheEnabled={false}
+                        allowFileAccess={true}
+                        javaScriptCanOpenWindowsAutomatically={true}
+                        domStorageEnabled={true}
+                        allowFileAccessFromFileURLs={true}
+                        allowUniversalAccessFromFileURLs={true}
+                        allowsInlineMediaPlayback={true}
+                        originWhitelist={['*']}
+                        mixedContentMode="always"
+                        geolocationEnabled={true}
+                        userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+                        source={{ uri: urlPse }}
+                        onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
+                        onError={(syntheticEvent) => handleError(syntheticEvent)}
+                        onSslError={(event: { preventDefault: () => void; }) => handleSslError(event)}
+                    />
+                    {finalTransaction && (
                         <ButtonsPrimary 
-                            label={'Enviar'}
-                            onPress={handleSendWhatsApp}
+                            label={'Volver'}
+                            onPress={handelFinalTransaction}
                         />
                     )}
-                </KeyboardAwareScrollView>
-            </View>
+                </MotiView>
+            )}
             {showError &&(
                 <InfoModal 
                     title={titleModal!}

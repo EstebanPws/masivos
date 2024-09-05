@@ -57,7 +57,6 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
         Nom_empre_neg: '',
         Tipo_emp_neg: '',
         cargo: '',
-        mes_info_finan: '',
         declarante: '',
         ingre_mes: '',
         otro_ingre: '',
@@ -85,8 +84,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
         const allFieldsFilled = type !== 1 ? actiCiiu && profesion && nomEmpreNeg && tipoEmpNeg && ciuEmpreNeg && direEmpreNeg && cargo && mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo : mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo;
         
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [actiCiiu, profesion, nomEmpreNeg, tipoEmpNeg, ciuEmpreNeg, direEmpreNeg, cargo, mesInfoFinan, declarante, ingreMes, otroIngre, totalIngre, totalEgreso, ingreAdic, totalActivo,
-        totalPasivo]);
+    }, [actiCiiu, profesion, nomEmpreNeg, tipoEmpNeg, ciuEmpreNeg, direEmpreNeg, cargo, mesInfoFinan, declarante, ingreMes, otroIngre, totalIngre, totalEgreso, ingreAdic, totalActivo, totalPasivo]);
 
     useEffect(() => {  
         const fetchFormData = async () => {

@@ -2,27 +2,31 @@ import { StyleSheet } from "react-native";
 import { MD2Colors } from "react-native-paper";
 
 export const styles = StyleSheet.create({
-    touchable: {
-        padding: 15,
-        borderRadius: 15,
+    container: {
+        borderRadius: 20,
         backgroundColor: 'white',
-        marginBottom: 20
+        margin: 20,
+        height: 580,
+        overflow: 'hidden',
+    },
+    touchable: {
+        paddingVertical: 30,
+        paddingHorizontal: 20,
+        height: 580,
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     containerInfo: {
         padding: 15,
-        borderRadius: 15,
+        borderRadius: 15
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%'
-    },
-    row1: {
-        flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
-        width: '80%',
-        paddingHorizontal: 10
+        width: '100%',
+        paddingHorizontal: 10,
+        marginBottom: 20
     },
     success: {
         backgroundColor: MD2Colors.lightGreen500,
@@ -38,12 +42,8 @@ export const styles = StyleSheet.create({
         marginTop: 2,
         width: 100
     },
-    text: {
-        width: '50%',
-    },
     textCenter: {
         color: 'white',
-        textAlign: 'center',
-        textTransform: 'capitalize'
+        textAlign: 'right'
     }
 });

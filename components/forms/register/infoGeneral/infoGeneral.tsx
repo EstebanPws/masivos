@@ -101,6 +101,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
         const updatedFormData = { 
             ...formData, 
             acti_CIIU: ocupation === "1" ? "8522" : ocupation === "3" ?  "0010" : ocupation === "4" ?  "9700" : ocupation === "5" ?  "0020" : "",
+            desc_CIIU: ocupation === "1" ? "EDUCACIÓN MEDIA ACADÉMICA" : ocupation === "3" ?  "ASALARIADOS" : ocupation === "4" ?  "ACTIVIDADES DE LOS HOGARES INDIVIDUALES COMO EMPLEADORES DE PERSONAL D" : ocupation === "5" ?  "PENSIONADOS" : "",
             genero: gender,
             estado_civil: civilStatus,
             niv_edu: education,

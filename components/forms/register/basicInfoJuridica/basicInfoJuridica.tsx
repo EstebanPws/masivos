@@ -105,8 +105,8 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
     };
 
     const handleSelectCiiu = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
+        setActiCiiu(item.value);
         setDescCiiu(item.name);
-        setter(item.value);
     };
 
 

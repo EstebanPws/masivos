@@ -18,6 +18,9 @@ export const styles = StyleSheet.create({
     view: {
         width: '95%'
     },
+    viewSearch: {
+        width: '70%'
+    },
     pH5:{
         paddingHorizontal: 10
     },
@@ -35,6 +38,11 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 500
+    },
+    centerInvoice: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 200
     },
     centerJ: {
         justifyContent: 'center',
@@ -61,6 +69,12 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10
     },
     containerBtnPackage: {
         borderRadius: 20,

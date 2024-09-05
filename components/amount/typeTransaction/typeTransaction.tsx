@@ -15,12 +15,14 @@ interface TypeTransactionProps {
     merchant: string;
     amount: string;
     date: string;
+    time: string;
     type: string;
+    onPress: () => void;
 }
 
-export default function TypeTransaction ({merchant, amount, date, type}: TypeTransactionProps) {
+export default function TypeTransaction ({merchant, amount, date, time, type, onPress}: TypeTransactionProps) {
     return (
-        <TouchableOpacity style={styles.touchable}>
+        <TouchableOpacity style={styles.touchable} onPress={() => onPress()}>
             <View style={styles.row}>
                 <LinearGradient
                     colors={[colorPrimary, colorSecondary]}
@@ -38,10 +40,11 @@ export default function TypeTransaction ({merchant, amount, date, type}: TypeTra
                     <View style={styles.text}>
                         <Text numberOfLines={1} ellipsizeMode='tail'  variant='bodySmall' style={[primaryBold]}>{merchant}</Text>
                         <Text  variant='bodySmall' style={[primaryRegular]}>{date}</Text>
+                        <Text  variant='bodySmall' style={[primaryRegular]}>{time}</Text>
                     </View>
                     <View>
-                        <Text variant='bodySmall' style={[primaryRegular]}>{formatCurrency('1000')} COP</Text>
-                        <View style={[type === 'recibido' ? styles.success : styles.error]}>
+                        <Text variant='bodySmall' style={[primaryRegular, {textAlign: 'right'}]}>{type === 'Recibido' ?  `+ ${formatCurrency(amount)}` : `- ${formatCurrency(amount)}`}</Text>
+                        <View style={[type === 'Recibido' ? styles.success : styles.error]}>
                             <Text  variant='bodySmall' style={[primaryRegular, styles.textCenter]}>{type}</Text>
                         </View>
                     </View>

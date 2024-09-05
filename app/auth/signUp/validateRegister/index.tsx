@@ -4,9 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { styles } from "./validateRegister.styles";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
-import InfoModal from "@/components/modals/infoModal/infoModal";
 import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes";
-import { setData, getData } from "@/utils/storageUtils";
 import Loader from "@/components/loader/loader";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 
@@ -24,8 +22,12 @@ export default function Page() {
     const handleShouldStartLoadWithRequest = (request: ShouldStartLoadRequest) => { 
         if (request.url.split('?')) {
             const urlParams = request.url.split('?')[1];
+            console.log(urlParams);
+            
             if(urlParams) {
-                router.push('/');
+                if(urlParams.startsWith('success')){
+                    router.push('/');
+                }
             }
         }
         return true;

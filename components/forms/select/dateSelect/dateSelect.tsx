@@ -74,7 +74,7 @@ export default function DateSelect({ isRequired = false, label, placeholder, ico
             </Text>
             <TouchableOpacity disabled={readonly} onPress={showPicker} style={[styles.inputContainer, readonly ? {opacity: .6 } : null]}>
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>
-                  {selectedDate ? formatDate(selectedDate) : placeholder}
+                  {value !== '' ? formatDate(selectedDate) : placeholder}
                 </Text>
                 {icon && (
                   <LinearGradient

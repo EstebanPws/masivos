@@ -19,9 +19,10 @@ interface Option {
 interface OptionsServiceProps {
   options: Option[];
   isPackage?: boolean;
+  isInvoice?:boolean;
 }
 
-export default function OptionsService({isPackage = false, options }: OptionsServiceProps) {
+export default function OptionsService({isPackage = false, options, isInvoice = false }: OptionsServiceProps) {
   const rows = [];
 
   for (let i = 0; i < options.length; i += 3) {
@@ -30,7 +31,7 @@ export default function OptionsService({isPackage = false, options }: OptionsSer
 
   return (
     <>
-      {!isPackage ? (
+      {(!isPackage && !isInvoice) && (
         <View>
           {rows.map((row, rowIndex) => (
               <View key={rowIndex} style={styles.row}>
@@ -51,7 +52,9 @@ export default function OptionsService({isPackage = false, options }: OptionsSer
               </View>
           ))}
         </View>
-      ) : (
+      )}
+
+      {isPackage && (
         <View>
           {options.map((option, index) => (
             <View key={index}>
@@ -63,6 +66,25 @@ export default function OptionsService({isPackage = false, options }: OptionsSer
                   />
                   <Text numberOfLines={10} variant="labelSmall" style={[primaryBold, styles.textPackage]}>
                     {option.name}  {'\n\n'} <Text variant="labelMedium" style={[primaryBold, styles.textPackage, {color: colorPrimary}]}>{formatCurrency(option.amount)} COP</Text>
+                  </Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {isInvoice && (
+        <View>
+          {options.map((option, index) => (
+            <View key={index}>
+              <TouchableOpacity style={[styles.containerBtnPackage, styles.rowPackage]} onPress={option.onPress}>
+                  <Image
+                    source={{ uri: option.icon }}
+                    style={{ width: 28, height: 28 }}
+                    resizeMode="contain"
+                  />
+                  <Text numberOfLines={10} variant="labelSmall" style={[primaryBold, styles.textPackage]}>
+                    {option.name}
                   </Text>
               </TouchableOpacity>
             </View>

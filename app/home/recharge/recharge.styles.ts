@@ -11,6 +11,15 @@ export const styles = StyleSheet.create({
         height: '52%',
         marginHorizontal: 20
     },
+    containerPSE: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 27,
+        height: '75%',
+        flex: 1,
+        marginHorizontal: 20,
+        marginVertical: 20
+    },
     image:{
         width: 150,
         height: 100,
