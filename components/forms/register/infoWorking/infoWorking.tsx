@@ -11,7 +11,7 @@ import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
 import DateSelect from "../../select/dateSelect/dateSelect";
-import { formatDate } from "@/utils/fomatDate";
+import { formatDate, formatDateWithoutSlash } from "@/utils/fomatDate";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { formatCurrency, validateNumber } from "@/utils/validationForms";
 
@@ -24,20 +24,17 @@ interface InfoWorkingProps{
     type?: number;
     listMunicipios: List[] | null;
     listCiiu: List[] | null;
-    listProfesiones: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function InfoWorking({type = 0, listMunicipios, listCiiu, listProfesiones, onSubmit }: InfoWorkingProps) {
+export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmit }: InfoWorkingProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [actiCiiu, setActiCiiu] = useState('');
     const [descCiiu, setDescCiiu] = useState('');
-    const [profesion, setProfesion] = useState('');
     const [nomEmpreNeg, setNomEmpreNeg] = useState('');
-    const [tipoEmpNeg, setTipoEmpNeg] = useState(''); 
     const [ciuEmpreNeg, setCiuEmpreNeg] = useState('');
-    const [direEmpreNeg, setDireEmpreNeg] = useState('');
+    const [telEmpreNeg, setTelEmpreNeg] = useState('');
     const [cargo, setCargo] = useState('');
     const [mesInfoFinan, setMesInfoFinan] = useState('');
     const [declarante, setDeclarante] = useState('');
@@ -46,34 +43,21 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     const [totalIngre, setTotalIngre] = useState('');
     const [totalEgreso, setTotalEgreso] = useState('');
     const [desOtrosIngresos, setDesOtrosIngresos] = useState('');
-    const [ingreAdic, setIngreAdic] = useState('');
     const [totalActivo, setTotalActivo] = useState('');
     const [totalPasivo, setTotalPasivo] = useState('');
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [showCiiu, setShowCiiu] = useState(false);
     const [formData] = useState({
-        profesion: '',
         Nom_empre_neg: '',
-        Tipo_emp_neg: '',
         cargo: '',
         declarante: '',
         ingre_mes: '',
-        otro_ingre: '',
         total_ingre: '',
         total_engreso: '',
-        des_otros_ingresos: '',
-        ingre_adic: '',
         total_activo: '',
         total_pasivo: ''
     });
-
-    const options = [
-        { label: 'Pública', value: '1' },
-        { label: 'Privada', value: '2' },
-        { label: 'Mixta', value: '3' },
-        { label: 'No reporta', value: '4' }
-    ];
 
     const optionsDeclarante = [
         { label: 'SI', value: 'S' },
@@ -81,35 +65,39 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     ];
 
     useEffect(() => {
-        const allFieldsFilled = type !== 1 ? actiCiiu && profesion && nomEmpreNeg && tipoEmpNeg && ciuEmpreNeg && direEmpreNeg && cargo && mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo : mesInfoFinan && declarante && ingreMes && otroIngre && totalIngre && totalEgreso && ingreAdic && totalActivo && totalPasivo;
+        console.log(actiCiiu);
+        
+        let  allFieldsFilled = type !== 1 ? actiCiiu && mesInfoFinan && declarante && ingreMes && totalIngre && totalEgreso && totalActivo && totalPasivo : mesInfoFinan && ingreMes && otroIngre && totalIngre && totalEgreso && totalActivo && totalPasivo;
+
+        if (type !== 1 && actiCiiu === '' || actiCiiu === '0010') {
+            allFieldsFilled = actiCiiu && nomEmpreNeg && ciuEmpreNeg && telEmpreNeg && cargo && mesInfoFinan && declarante && ingreMes && totalIngre && totalEgreso && totalActivo && totalPasivo;
+        }
         
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [actiCiiu, profesion, nomEmpreNeg, tipoEmpNeg, ciuEmpreNeg, direEmpreNeg, cargo, mesInfoFinan, declarante, ingreMes, otroIngre, totalIngre, totalEgreso, ingreAdic, totalActivo, totalPasivo]);
+    }, [actiCiiu, nomEmpreNeg, ciuEmpreNeg, telEmpreNeg, cargo, mesInfoFinan, declarante, ingreMes, otroIngre, totalIngre, totalEgreso, totalActivo, totalPasivo]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
-            
             if (savedData) {
                 if(type !== 1) {
                     setShowCiiu(savedData.acti_CIIU === "" ? true : false);
                     setActiCiiu(savedData.acti_CIIU);
                     setDescCiiu(savedData.desc_CIIU);
-                    setProfesion(savedData.profesion);
                     setNomEmpreNeg(savedData.Nom_empre_neg);
-                    setTipoEmpNeg(savedData.Tipo_emp_neg);
                     setCiuEmpreNeg(savedData.ciu_empre_neg);
-                    setDireEmpreNeg(savedData.dire_empre_neg);
-                    setCargo(savedData.cargo);
+                    setTelEmpreNeg(savedData.tel_empre_neg);
+                    setCargo(actiCiiu === '' || actiCiiu === '0010' ? savedData.cargo : savedData.desc_CIIU);
+                    setDeclarante(savedData.declarante);
                 }
                 setMesInfoFinan(savedData.mes_info_finan);
-                setDeclarante(savedData.declarante);
                 setIngreMes(type !== 1 ? savedData.ingre_mes : savedData.r_l_ingresos_mens);
                 setOtroIngre(type !== 1 ? savedData.otro_ingre : savedData.r_l_vrlr_otros_in);
-                setTotalIngre(savedData.total_ingre);
+                if(type === 1){
+                    setTotalIngre(savedData.total_ingre);
+                    setDesOtrosIngresos(savedData.des_otros_ingresos);
+                }
                 setTotalEgreso(type !== 1 ? savedData.total_engreso : savedData.r_l_vrlr_egresos);
-                setDesOtrosIngresos(savedData.des_otros_ingresos);
-                setIngreAdic(savedData.ingre_adic);
                 setTotalActivo(type !== 1 ? savedData.total_activo : savedData.r_l_vr_tot_acti);
                 setTotalPasivo(type !== 1 ? savedData.total_pasivo : savedData.r_l_vr_tot_pasi);
 
@@ -147,32 +135,27 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
             ...formData, 
             acti_CIIU: actiCiiu,
             desc_CIIU: descCiiu,
-            profesion: profesion,
             Nom_empre_neg: nomEmpreNeg,
-            Tipo_emp_neg: tipoEmpNeg,
             ciu_empre_neg: ciuEmpreNeg,
-            dire_empre_neg: direEmpreNeg,
-            cargo: cargo,
-            mes_info_finan: mesInfoFinan,
+            dire_empre_neg: 'No reporta',
+            tel_empre_neg: telEmpreNeg,
+            cargo: actiCiiu === '' || actiCiiu === '0010' ? cargo : descCiiu,
+            mes_info_finan: formatDateWithoutSlash(mesInfoFinan),
             declarante: declarante,
             ingre_mes: ingreMes,
-            otro_ingre: otroIngre,
             total_ingre: totalIngre,
             total_engreso: totalEgreso,
-            des_otros_ingresos: desOtrosIngresos,
-            ingre_adic: ingreAdic,
             total_activo: totalActivo,
             total_pasivo: totalPasivo
         } : {
             ...formData,
-            mes_info_finan: mesInfoFinan,
-            declarante: declarante,
+            mes_info_finan: formatDateWithoutSlash(mesInfoFinan),
+            declarante: 'N',
             r_l_ingresos_mens: ingreMes,
             r_l_vrlr_otros_in: otroIngre,
             total_ingre: totalIngre,
             r_l_vrlr_egresos: totalEgreso,
             des_otros_ingresos: desOtrosIngresos,
-            ingre_adic: ingreAdic,
             r_l_vr_tot_acti: totalActivo,
             r_l_vr_tot_pasi: totalPasivo
         }; 
@@ -205,8 +188,6 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
     const handleSelectCheckBox = (value: string) =>{
         if (value === 'S' || value === 'N') {
             setDeclarante(value);
-        } else {
-            setTipoEmpNeg(value);
         }
     };
 
@@ -221,9 +202,11 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                     <View style={styles.containerForm}>
                         {type !== 1 && (
                             <>
-                                <TitleLine 
-                                    label="Infomarción laboral"
-                                />
+                                {(actiCiiu === '' || actiCiiu === '0010') && (
+                                    <TitleLine 
+                                        label="Infomarción laboral"
+                                    />
+                                )}
                                 {(showCiiu) && (
                                     <View style={styles.mb5}>
                                         <SearchSelect
@@ -236,66 +219,54 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                         />
                                     </View>
                                 )}
-                                <View style={styles.mb5}>
-                                    <SearchSelect
-                                        isRequired
-                                        label="Profesión"
-                                        data={listProfesiones}
-                                        placeholder="Seleccione una opción"
-                                        onSelect={handleSelect(setProfesion)}
-                                        selectedValue={profesion}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <Inputs
-                                        label="Nombre de la empresa o negocio"
-                                        placeholder="Escribe el nombre de empresa o negocio"
-                                        isSecureText={false}
-                                        isRequired={true}
-                                        keyboardType="default"
-                                        onChangeText={setNomEmpreNeg}
-                                        value={nomEmpreNeg}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <CheckboxCustom 
-                                        label="Tipo de empresa o negocio"
-                                        isRequired
-                                        options={options}
-                                        onSelect={handleSelectCheckBox}
-                                        selectedValue={tipoEmpNeg}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <SearchSelect
-                                        isRequired
-                                        label="Ciudad"
-                                        data={listMunicipios}
-                                        placeholder="Seleccione una opción"
-                                        onSelect={handleSelect(setCiuEmpreNeg)}
-                                        selectedValue={ciuEmpreNeg}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <AddressDian 
-                                        label="Dirección de trabajo" 
-                                        placeholder="Escribe tu dirección" 
-                                        onSelect={handleSelect(setDireEmpreNeg)} 
-                                        selectedValue={direEmpreNeg}
-                                        isRequired
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <Inputs
-                                        label="Cargo"
-                                        placeholder="Escribe el cargo en tu empresa"
-                                        isSecureText={false}
-                                        isRequired={true}
-                                        keyboardType="default"
-                                        onChangeText={setCargo}
-                                        value={cargo}
-                                    />
-                                </View>
+                                {(actiCiiu === '' || actiCiiu === '0010') && (
+                                    <>
+                                        <View style={styles.mb5}>
+                                            <Inputs
+                                                label="Nombre de la empresa o negocio"
+                                                placeholder="Escribe el nombre de empresa o negocio"
+                                                isSecureText={false}
+                                                isRequired={true}
+                                                keyboardType="default"
+                                                onChangeText={setNomEmpreNeg}
+                                                value={nomEmpreNeg}
+                                            />
+                                        </View>
+                                        <View style={styles.mb5}>
+                                            <SearchSelect
+                                                isRequired
+                                                label="Ciudad"
+                                                data={listMunicipios}
+                                                placeholder="Seleccione una opción"
+                                                onSelect={handleSelect(setCiuEmpreNeg)}
+                                                selectedValue={ciuEmpreNeg}
+                                            />
+                                        </View>
+                                        <View style={styles.mb5}>
+                                            <Inputs
+                                                label="Número de télefono de la empresa"
+                                                placeholder="Escribe el número de télefono"
+                                                isSecureText={false}
+                                                isRequired={true}
+                                                keyboardType="numeric"
+                                                maxLength={10}
+                                                onChangeText={setTelEmpreNeg}
+                                                value={telEmpreNeg}
+                                            />
+                                        </View>
+                                        <View style={styles.mb5}>
+                                            <Inputs
+                                                label="Cargo"
+                                                placeholder="Escribe el cargo en tu empresa"
+                                                isSecureText={false}
+                                                isRequired={true}
+                                                keyboardType="default"
+                                                onChangeText={setCargo}
+                                                value={cargo}
+                                            />
+                                        </View>
+                                    </>
+                                )}
                             </>
                         )}
                         <TitleLine 
@@ -310,15 +281,17 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                 value={mesInfoFinan}
                             />
                         </View>
-                        <View style={styles.mb5}>
-                            <CheckboxCustom 
-                                label="¿Es declarante?"
-                                isRequired
-                                options={optionsDeclarante}
-                                onSelect={handleSelectCheckBox}
-                                selectedValue={declarante}
-                            />
-                        </View>
+                        {type === 0 && (
+                            <View style={styles.mb5}>
+                                <CheckboxCustom 
+                                    label="¿Es declarante?"
+                                    isRequired
+                                    options={optionsDeclarante}
+                                    onSelect={handleSelectCheckBox}
+                                    selectedValue={declarante}
+                                />
+                            </View>
+                        )}
                         <View style={styles.mb5}>
                             <Inputs
                                 label="Ingresos fijos mensuales"
@@ -331,18 +304,33 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                 isCurrency
                             />
                         </View>
-                        <View style={styles.mb5}>
-                            <Inputs
-                                label="Otros ingresos mensuales"
-                                placeholder="Escribe tus otros ingresos mensuales"
-                                isSecureText={false}
-                                isRequired={true}
-                                keyboardType="numeric"
-                                onChangeText={setOtroIngre}
-                                value={otroIngre}
-                                isCurrency
-                            />
-                        </View>
+                        {type === 1 && (
+                             <>
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Otros ingresos mensuales"
+                                        placeholder="Escribe tus otros ingresos mensuales"
+                                        isSecureText={false}
+                                        isRequired={true}
+                                        keyboardType="numeric"
+                                        onChangeText={setOtroIngre}
+                                        value={otroIngre}
+                                        isCurrency
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Descripción otros ingresos:"
+                                        placeholder="Escribe el concepto de tus egresos"
+                                        isSecureText={false}
+                                        isRequired={false}
+                                        keyboardType="default"
+                                        onChangeText={setDesOtrosIngresos}
+                                        value={desOtrosIngresos}
+                                    />
+                                </View>
+                             </>
+                        )}
                         <View style={styles.mb5}>
                             <Inputs
                                 label="Total ingresos mensuales"
@@ -365,29 +353,6 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, listPro
                                 keyboardType="numeric"
                                 onChangeText={setTotalEgreso}
                                 value={totalEgreso}
-                                isCurrency
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <Inputs
-                                label="Por concepto de:"
-                                placeholder="Escribe el concepto de tus egresos"
-                                isSecureText={false}
-                                isRequired={false}
-                                keyboardType="default"
-                                onChangeText={setDesOtrosIngresos}
-                                value={desOtrosIngresos}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <Inputs
-                                label="Ingresos adicionales generados por la inversión del crédito ($)"
-                                placeholder="Escribe el total ingresos adicionales"
-                                isSecureText={false}
-                                isRequired={true}
-                                keyboardType="numeric"
-                                onChangeText={setIngreAdic}
-                                value={ingreAdic}
                                 isCurrency
                             />
                         </View>

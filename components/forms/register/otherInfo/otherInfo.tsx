@@ -10,7 +10,7 @@ import FadeInOut from "@/components/animations/fade/fadeInOut";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
-import { listAutoTypes, listBienesType, listCurrencyType, listOperationType } from "@/utils/listUtils";
+import {listBienesJurType, listBienesType, listCurrencyType, listOperationType } from "@/utils/listUtils";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 
 interface List {
@@ -19,22 +19,19 @@ interface List {
 }
 
 interface OtherInfoProps{
+    type?: number;
     listMunicipios: List[] | null;
     listPaises: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function OtherInfo({listMunicipios, listPaises, onSubmit }: OtherInfoProps) {
+export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmit }: OtherInfoProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [tipoBienRaices, setTipoBienRaices] = useState('');
     const [direcBienRaices, setDirecBienRaices] = useState('');
     const [ciudBienRaices, setCiudBienRaices] = useState('');
     const [valorComerPropi, setValorComerPropi] = useState('');
-    const [marcaVehicu, setMarcaVehicu] = useState(''); 
-    const [modeVehicu, setModeVehicu] = useState('');
-    const [noPlaca, setNoPlaca] = useState('');
-    const [valorcomerVehicu, setValorcomerVehicu] = useState('');
     const [operaMonedaExtr, setOperaMonedaExtr] = useState('');
     const [tipoOpera, setTipoOpera] = useState('');
     const [nombEntidad, setNombEntidad] = useState('');
@@ -46,8 +43,6 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
     const [nombRefPers, setNombRefPers] = useState('');
     const [direcRefPers, setDirecRefPers] = useState('');
     const [telRefPers, setTelRefPers] = useState('');
-    const [ciuRefPers, setCiuRefPers] = useState('');
-    const [isAuto, setIsAuto] = useState('');
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [isInitial, setIsInitial] = useState(false);
@@ -70,8 +65,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
         monto: '0',
         nomb_ref_pers: '',
         direc_ref_pers: '',
-        tel_ref_pers: '',
-        isAuto: ''
+        tel_ref_pers: ''
     });
 
     const optionsDeclarante = [
@@ -88,10 +82,6 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                 setDirecBienRaices(savedData.direc_bien_raices);
                 setCiudBienRaices(savedData.ciud_bien_raices);
                 setValorComerPropi(savedData.valor_comer_propi);
-                setMarcaVehicu(savedData.marca_vehicu);
-                setModeVehicu(savedData.mode_vehicu);
-                setNoPlaca(savedData.no_placa);
-                setValorcomerVehicu(savedData.Valor_comer_vehicu);
                 setOperaMonedaExtr(savedData.opera_moneda_extr);
                 setTipoOpera(savedData.tipo_opera);
                 setNombEntidad(savedData.nomb_entidad);
@@ -103,8 +93,6 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                 setNombRefPers(savedData.nomb_ref_pers);
                 setDirecRefPers(savedData.direc_ref_pers);
                 setTelRefPers(savedData.tel_ref_pers);
-                setCiuRefPers(savedData.ciud_opera_extr);
-                setIsAuto(savedData.isAuto);
                 setIsVisible(true);
             }
         };
@@ -114,14 +102,10 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
 
     useEffect(() => {        
         const checkAllFieldsFilled = () => {
-            let allFieldsFilled = tipoBienRaices && isAuto && operaMonedaExtr && nombRefPers && ciuRefPers &&direcRefPers && telRefPers;
+            let allFieldsFilled = tipoBienRaices && operaMonedaExtr && nombRefPers && direcRefPers && telRefPers;
 
-            if (tipoBienRaices && tipoBienRaices !== '5') {
+            if (tipoBienRaices && tipoBienRaices !== '0') {
                 allFieldsFilled = allFieldsFilled && direcBienRaices && ciudBienRaices && valorComerPropi;
-            }
-
-            if (isAuto === 'S') {
-                allFieldsFilled = allFieldsFilled && marcaVehicu && modeVehicu && noPlaca && valorcomerVehicu;
             }
 
             if (operaMonedaExtr === 'S') {
@@ -132,21 +116,14 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
         };
 
         setIsButtonEnabled(!!checkAllFieldsFilled());
-    }, [tipoBienRaices, isAuto, operaMonedaExtr, nombRefPers, direcBienRaices, ciudBienRaices, valorComerPropi, marcaVehicu, modeVehicu, noPlaca, valorcomerVehicu, tipoOpera, nombEntidad, numctaOperint, ciudOperaextr, paisOperaextr, moneda, monto, ciuRefPers, direcRefPers, telRefPers]);
+    }, [tipoBienRaices, operaMonedaExtr, nombRefPers, direcBienRaices, ciudBienRaices, valorComerPropi, tipoOpera, nombEntidad, numctaOperint, ciudOperaextr, paisOperaextr, moneda, monto, direcRefPers, telRefPers]);
 
     useEffect(() => {
         if (isInitial) {
-            if (tipoBienRaices === '5') {
+            if (tipoBienRaices === '0') {
                 setDirecBienRaices('');
                 setCiudBienRaices('');
                 setValorComerPropi('0');
-            }
-
-            if (isAuto !== 'S') {
-                setMarcaVehicu('');
-                setModeVehicu('');
-                setNoPlaca('');
-                setValorcomerVehicu('0');
             }
 
             if (operaMonedaExtr !== 'S') {
@@ -163,14 +140,8 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
 
     const handleSubmit = () => {
 
-        if (tipoBienRaices && tipoBienRaices !== '5' && parseInt(valorComerPropi.replace(/[^0-9]/g, ''), 10) < 2600000) {
+        if (tipoBienRaices && tipoBienRaices !== '0' && parseInt(valorComerPropi.replace(/[^0-9]/g, ''), 10) < 2600000) {
             setMessageError('El valor comercial de la propiedad no puede ser menor a 2 SMMLV.');
-            setShowError(true);
-            return;
-        }
-
-        if (isAuto === 'S' && parseInt(valorcomerVehicu.replace(/[^0-9]/g, ''), 10) < 2600000) {
-            setMessageError('El valor comercial del vehiculo no puede ser menor a 2 SMMLV.');
             setShowError(true);
             return;
         }
@@ -183,10 +154,6 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
             direc_bien_raices: direcBienRaices,
             ciud_bien_raices: ciudBienRaices,
             valor_comer_propi: valorComerPropi,
-            marca_vehicu: marcaVehicu,
-            mode_vehicu: modeVehicu,
-            no_placa: noPlaca,
-            Valor_comer_vehicu: valorcomerVehicu,
             opera_moneda_extr: operaMonedaExtr,
             tipo_opera: tipoOpera,
             nomb_entidad: nombEntidad,
@@ -196,10 +163,8 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
             moneda: moneda,
             monto: monto,
             nomb_ref_pers: nombRefPers,
-            ciu_ref_pers: ciuRefPers,
             direc_ref_pers: direcRefPers,
             tel_ref_pers: telRefPers,
-            isAuto: isAuto
         }; 
 
         const fetchFormData = async () => {
@@ -223,9 +188,7 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
     };
 
     const handleSelectCheckBox = (type: 'auto' | 'operacion') => (value: string) => {
-        if (type === 'auto') {
-            setIsAuto(value);
-        }  else {
+        if (type === 'operacion') {
             setOperaMonedaExtr(value);
         }
 
@@ -243,13 +206,13 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                             <SearchSelect
                                 isRequired
                                 label="Tipo"
-                                data={listBienesType}
+                                data={type === 1 ? listBienesJurType : listBienesType}
                                 placeholder="Seleccione una opción"
                                 onSelect={handleSelect(setTipoBienRaices)}
                                 selectedValue={tipoBienRaices}
                             />
                         </View>
-                        {(tipoBienRaices && tipoBienRaices !== '5') &&(
+                        {(tipoBienRaices && tipoBienRaices !== '0') &&(
                             <>
                                 <View style={styles.mb5}>
                                     <AddressDian 
@@ -279,68 +242,6 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                                         keyboardType="numeric"
                                         onChangeText={setValorComerPropi}
                                         value={valorComerPropi}
-                                        isCurrency
-                                    />
-                                </View>
-                            </>
-                        )}
-                        <TitleLine 
-                            label="Descripción de vehículos"
-                        />
-                        <View style={styles.mb5}>
-                            <CheckboxCustom 
-                                label="¿Posee algún vehículo?"
-                                isRequired
-                                options={optionsDeclarante}
-                                onSelect={handleSelectCheckBox('auto')}
-                                selectedValue={isAuto}
-                            />
-                        </View>
-                        {isAuto === 'S' &&(
-                            <>
-                                 <View style={styles.mb5}>
-                                    <SearchSelect
-                                        isRequired
-                                        label="Marca"
-                                        data={listAutoTypes}
-                                        placeholder="Seleccione una opción"
-                                        onSelect={handleSelect(setMarcaVehicu)}
-                                        selectedValue={marcaVehicu}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <Inputs
-                                        label="Modelo"
-                                        placeholder="Ej: 2024, 2023, etc."
-                                        isSecureText={false}
-                                        isRequired={true}
-                                        keyboardType="numeric"
-                                        onChangeText={setModeVehicu}
-                                        value={modeVehicu}
-                                        maxLength={4}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <Inputs
-                                        label="Número de placa"
-                                        placeholder="Ej: ABC123, DEF456, etc."
-                                        isSecureText={false}
-                                        isRequired={true}
-                                        keyboardType="default"
-                                        onChangeText={setNoPlaca}
-                                        value={noPlaca}
-                                        maxLength={6}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <Inputs
-                                        label="Valor comercial del vehículo"
-                                        placeholder="Escribe el valor comercial de tu vehículo"
-                                        isSecureText={false}
-                                        isRequired={true}
-                                        keyboardType="numeric"
-                                        onChangeText={setValorcomerVehicu}
-                                        value={valorcomerVehicu}
                                         isCurrency
                                     />
                                 </View>
@@ -448,16 +349,6 @@ export default function OtherInfo({listMunicipios, listPaises, onSubmit }: Other
                                 keyboardType="default"
                                 onChangeText={setNombRefPers}
                                 value={nombRefPers}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Ciudad"
-                                data={listMunicipios}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setCiuRefPers)}
-                                selectedValue={ciuRefPers}
                             />
                         </View>
                         <View style={styles.mb5}>

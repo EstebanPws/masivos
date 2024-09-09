@@ -174,11 +174,23 @@ export const listTaxesType = [
 ];
 
 export const listBienesType = [
+    { name: 'Ninguno', value: '0'},
     { name: 'Casa', value: '1' },
     { name: 'Apartamento', value: '2' },
     { name: 'Finca', value: '3' },
-    { name: 'Otro', value: '4' },
-    { name: 'No reporta', value: '5' }
+    { name: 'Local', value: '4' },
+    { name: 'Lote', value: '5' },
+    { name: 'Oficina', value: '6' },
+    { name: 'Edificio', value: '7' },
+    { name: 'Otro', value: '8' }
+];
+
+export const listBienesJurType = [
+    { name: 'Ninguno', value: '0'},
+    { name: 'Casa', value: '1' },
+    { name: 'Apartamento', value: '2' },
+    { name: 'Finca', value: '3' },
+    { name: 'Otro', value: '4' }
 ];
 
 export const listAutoTypes = [

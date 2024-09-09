@@ -2,12 +2,12 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     header:{
-        paddingTop: 12,
+        paddingTop: 20,
         borderBottomLeftRadius: 27,
         borderBottomRightRadius: 27
     },
     headerNotBorder:{
-        paddingTop: 12
+        paddingTop: 18
     },
     appbarHeader: {
         backgroundColor: 'transparent',

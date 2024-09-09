@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { styles } from "./infoGeneral.styles";
 import Inputs from "@/components/forms/inputs/inputs";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
-import { listCivilStatusType, listEducationType, listGenderType, listHousingType, listOcupationType, listUbicationZoneType } from "@/utils/listUtils";
+import { listCivilStatusType, listEducationType, listGenderType, listOcupationType, listUbicationZoneType } from "@/utils/listUtils";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { getData, setData } from "@/utils/storageUtils";
 import { AnimatePresence } from "moti";
@@ -32,7 +32,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
     const [education, setEducation] = useState('');
     const [ocupation, setOcupation] = useState('');
     const [ubicationZone, setUbicationZone] = useState(''); 
-    const [housing, setHousing] = useState('');
     const [ciudMuni, setCiudMuni] = useState('');
     const [neighborhood, setNeighborhood] = useState('');
     const [address, setAddress] = useState('');
@@ -44,11 +43,9 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
         niv_edu: '',
         ocupacion: '',
         zon_ubi: '',
-        tip_vivien: '',
         ciud_muni: '',
         barrio: '',
-        dire_domi: '',
-        extrenjero: ''
+        dire_domi: ''
     });
 
     const options = [
@@ -57,16 +54,16 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
     ];
 
     useEffect(() => {        
-        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && housing && ciudMuni && neighborhood && address && isExtranjero : ciudMuni && neighborhood && address;     
+        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && neighborhood && address && isExtranjero : ciudMuni && neighborhood && address;     
 
         if(isExtranjero === '1'){
-            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && housing && ciudMuni && neighborhood && address && isExtranjero && paisNacimiento : ciudMuni && neighborhood && address;
+            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && neighborhood && address && isExtranjero && paisNacimiento : ciudMuni && neighborhood && address;
         } else {
             setPaisNacimiento('');
         }
 
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [gender, civilStatus, education, ocupation, ubicationZone, housing, ciudMuni, neighborhood, address, isExtranjero, paisNacimiento]);
+    }, [gender, civilStatus, education, ocupation, ubicationZone, ciudMuni, neighborhood, address, isExtranjero, paisNacimiento]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
@@ -77,7 +74,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                 setEducation(savedData.niv_edu);
                 setOcupation(savedData.ocupacion);
                 setUbicationZone(savedData.zon_ubi);
-                setHousing(savedData.tip_vivien);
                 setCiudMuni(savedData.ciud_muni)
                 setNeighborhood(savedData.barrio);
                 setAddress(savedData.dire_domi);
@@ -107,7 +103,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
             niv_edu: education,
             ocupacion: ocupation,
             zon_ubi: ubicationZone,
-            tip_vivien: housing,
             ciud_muni: ciudMuni,
             barrio: neighborhood,
             dire_domi: address,
@@ -199,16 +194,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                         selectedValue={ubicationZone}
                                     />
                                 </View>
-                                <View style={styles.mb5}>
-                                    <SearchSelect
-                                        isRequired
-                                        label="Tipo de vivienda"
-                                        data={listHousingType}
-                                        placeholder="Seleccione una opción"
-                                        onSelect={handleSelect(setHousing)}
-                                        selectedValue={housing}
-                                    />
-                                </View>
                             </>
                         )}
                         <View style={styles.mb5}>
@@ -245,7 +230,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                             <>
                                 <View style={styles.mb5}>
                                     <CheckboxCustom 
-                                        label="¿Es usted extrajero?"
+                                        label="¿Es usted extranjero?"
                                         isRequired
                                         options={options}
                                         onSelect={handleSelectCheckBox}

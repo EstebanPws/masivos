@@ -14,6 +14,7 @@ import { AnimatePresence } from "moti";
 import FadeInOut from "@/components/animations/fade/fadeInOut";
 import TitleLine from "@/components/titleLine/titleLine";
 import AddressDian from "../../addressDian/addressDian";
+import CheckboxCustom from "../../checkbox/checkbox";
 
 interface List {
     name: string;
@@ -23,10 +24,11 @@ interface List {
 interface BasicInfoProps{
     type: number;
     listMunicipios: List[] | null;
+    listPaises: List[] | null;
     onSubmit: (data: any) => void;
 }
 
-export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoProps) {
+export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }: BasicInfoProps) {
     const [names, setNames] = useState('');
     const [surnames, setSurnames] = useState('');
     const [birthDate, setBirthDate] = useState('');
@@ -45,6 +47,10 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
     const [showError, setShowError] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [tipoPer, setTipoPer] = useState('');
+    const [isExtranjero, setIsExtranjero] = useState('');
+    const [paisNacimiento, setPaisNacimiento] = useState('');
+    const [namesRefPer, setNamesRefPer] = useState('');
+    const [phoneRefPer, setPhoneRefPer] = useState('');
     const today = new Date();
     const [formData] = useState({
         entidad: '9011569983',
@@ -66,11 +72,22 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
         aut_env_email: 'S'
     });
 
+    const options = [
+        { label: 'SI', value: '1' },
+        { label: 'NO', value: '2' },
+    ];
+
     useEffect(() => {
-        const allFieldsFilled = type === 1 ? names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur : names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
+        let allFieldsFilled = type === 1 ? names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur && isExtranjero && namesRefPer && phoneRefPer: names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
+
+        if(isExtranjero === '1' && type === 1) {
+            allFieldsFilled = names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur && isExtranjero && paisNacimiento && namesRefPer && phoneRefPer;
+        } else {
+            setPaisNacimiento('');
+        }
         
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [names, surnames, birthDate, placeBirthDate, typeDocument, inputDocument, birthDateDoc, placeBirthDateDoc, phone, email]);
+    }, [names, surnames, birthDate, placeBirthDate, typeDocument, inputDocument, birthDateDoc, placeBirthDateDoc, phone, email, isExtranjero, paisNacimiento, namesRefPer, phoneRefPer]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
@@ -90,6 +107,9 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                     setCiudMuniJur(savedData.r_l_ciu);
                     setNeighborhoodJur(savedData.barrio);
                     setAddressJur(savedData.r_l_dir);
+                    setIsExtranjero(savedData.extrenjero);
+                    setNamesRefPer(savedData.r_l_ref_per_nombres);
+                    setPhoneRefPer(savedData.r_l_ref_per_tel);
                 }
                 setTipoPer(savedData.tipo_pers);
                 setIsVisible(true);
@@ -105,6 +125,10 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
 
     const handleDateSelect = (setter: { (value: React.SetStateAction<string>): void }) => (date: any) => {
         setter(formatDate(date));
+    };
+
+    const handleSelectCheckBox = (value: string) =>{
+        setIsExtranjero(value);
     };
 
     const handleSubmit = () => {
@@ -144,7 +168,11 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
             r_l_email: email,
             r_l_ciu: ciudMuniJur,
             barrio: neighborhoodJur,
-            r_l_dir: addressJur
+            r_l_dir: addressJur,
+            extrenjero: isExtranjero,
+            pais_nacimiento: paisNacimiento,
+            r_l_ref_per_nombres: namesRefPer,
+            r_l_ref_per_tel: phoneRefPer
         } : {
             ...formData, 
             nombre1: newNames[0], 
@@ -324,6 +352,57 @@ export default function BasicInfo({type, listMunicipios,  onSubmit }: BasicInfoP
                                 value={email}
                             />
                         </View>
+                        {type === 1 && (
+                            <>
+                                <View style={styles.mb5}>
+                                    <CheckboxCustom 
+                                        label="¿Es usted extranjero?"
+                                        isRequired
+                                        options={options}
+                                        onSelect={handleSelectCheckBox}
+                                        selectedValue={isExtranjero}
+                                    />
+                                </View>
+                                {isExtranjero === '1' && (
+                                    <View style={styles.mb5}>
+                                        <SearchSelect
+                                            isRequired
+                                            label="Pais de nacimiento"
+                                            data={listPaises}
+                                            placeholder="Seleccione una opción"
+                                            onSelect={handleSelect(setPaisNacimiento)}
+                                            selectedValue={paisNacimiento}
+                                        />
+                                    </View>
+                                )}
+                                <TitleLine 
+                                    label={'Referencias personales'}
+                                />
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Nombre completo"
+                                        placeholder="Escribe tu nombre completos"
+                                        isSecureText={false}
+                                        isRequired={true}
+                                        keyboardType="default"
+                                        onChangeText={setNamesRefPer}
+                                        value={namesRefPer}
+                                    />
+                                </View>
+                                <View style={styles.mb5}>
+                                    <Inputs
+                                        label="Número de télefono"
+                                        placeholder="Escribe tu número de télefono"
+                                        isSecureText={false}
+                                        isRequired={true}
+                                        keyboardType="numeric"
+                                        onChangeText={setPhoneRefPer}
+                                        value={phoneRefPer}
+                                        maxLength={10}
+                                    />
+                                </View>
+                            </>
+                        )}
                         <View style={styles.mV2}>
                             <ButtonsPrimary 
                                 disabled={!isButtonEnabled}
