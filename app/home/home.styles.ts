@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     },
     imageContainer:{
         justifyContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     image:{
         width: 280,

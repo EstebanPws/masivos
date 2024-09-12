@@ -32,7 +32,8 @@ export default function Page() {
   
     if (!existInfoClient) {
       try {
-        const body = { id: account };
+        const accountConsult = account.startsWith('0') ? account.slice(1) : account;
+        const body = { id: accountConsult }; 
         const response = await instanceWallet.post('formView', body);
         const data = response.data;
   
@@ -58,7 +59,6 @@ export default function Page() {
       } catch (error) {
         const infoClient = { infoClient: false };
         await setData('infoClient', infoClient);
-  
         return null; 
       }
     }

@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { Image, View, Platform, TouchableOpacity } from "react-native";
+import { Image, View, Platform, TouchableOpacity, ScrollView } from "react-native";
 import { Icon, Text } from "react-native-paper";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
@@ -60,47 +60,49 @@ export default function Page() {
           <Image source={require('../assets/images/general/home.webp')} resizeMode="cover" style={styles.image} />
           <HeaderSecondary type={0}/>
           <View style={styles.containerText}>
-            <Text style={{ ...primaryBold, ...styles.textWhite }} variant="headlineMedium">¡Bienvenido!</Text>
-            <Text style={{ ...primaryRegular, ...styles.textWhite }} variant="titleLarge">Por favor identificate para entrar en tu cuenta.</Text>
-          </View>
-          <View style={styles.containerForm}>
-            <Inputs
-              label="Número del documento"
-              placeholder="Escribe tu número de documento"
-              isSecureText={false}
-              isRequired={false}
-              keyboardType="numeric"
-              onChangeText={setInputDocument}
-              value={inputDocument}
-            />
-            <ButtonsPrimary
-              label="Acceder a la billetera"
-              style={styles.mt5}
-              onPress={handleLogin}
-            />
-          </View>
-          <View style={{...styles.row, ...styles.mt5}}>
-            {password  ? (
-              <TouchableOpacity onPress={handleAuthenticate}>
-                <View style={styles.row}>
-                  <View style={styles.icon}>
-                    <Icon
-                      source="account"
-                      color={colorPrimary}
-                      size={20}
-                    />
+              <Text style={{ ...primaryBold, ...styles.textWhite }} variant="headlineMedium">¡Bienvenido!</Text>
+              <Text style={{ ...primaryRegular, ...styles.textWhite }} variant="titleLarge">Por favor identificate para entrar en tu cuenta.</Text>
+            </View>
+          <ScrollView>
+            <View style={styles.containerForm}>
+              <Inputs
+                label="Número del documento"
+                placeholder="Escribe tu número de documento"
+                isSecureText={false}
+                isRequired={false}
+                keyboardType="numeric"
+                onChangeText={setInputDocument}
+                value={inputDocument}
+              />
+              <ButtonsPrimary
+                label="Acceder a la billetera"
+                style={styles.mt5}
+                onPress={handleLogin}
+              />
+            </View>
+            <View style={{...styles.row, ...styles.mt5}}>
+              {password  ? (
+                <TouchableOpacity onPress={handleAuthenticate}>
+                  <View style={styles.row}>
+                    <View style={styles.icon}>
+                      <Icon
+                        source="account"
+                        color={colorPrimary}
+                        size={20}
+                      />
+                    </View>
+                    <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
                   </View>
-                  <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View />
-            )}
-            <ButtonsSecondary
-              label="Registrarse"
-              onPress={() => setShowTerms(true)}
-            />
-          </View>
+                </TouchableOpacity>
+              ) : (
+                <View />
+              )}
+              <ButtonsSecondary
+                label="Registrarse"
+                onPress={() => setShowTerms(true)}
+              />
+            </View>
+          </ScrollView>
         </View>
       </KeyboardAwareScrollView>
       {showAlertAuth && (

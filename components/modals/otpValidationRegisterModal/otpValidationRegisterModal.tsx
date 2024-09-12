@@ -71,9 +71,16 @@ export default function OtpValidationRegisterModal({ numberDocument, onClose, on
         try {
             const codeEmailValidateResponse = await instanceWallet.post('codeCheck', bodyValidate);
             const responseMessage = codeEmailValidateResponse.data.message;
-            const tokenSplit = responseMessage.split('token: '); 
-            modalidad = codeEmailValidateResponse.data.data.modalidad
-            setSessionToken(tokenSplit[1]);
+            if (responseMessage.includes('es correcto')) {
+                console.log(codeEmailValidateResponse.data.data);
+                
+                const token = codeEmailValidateResponse.data.data.token;
+                modalidad = codeEmailValidateResponse.data.data.modalidad;
+                setSessionToken(token);
+            } else {
+                message = "El código ingresado es incorrecto.";
+                responseType = "error";
+            }
         } catch (error) {    
             message = "Hubo un error al intentar verificar el código";
             responseType =  "error";

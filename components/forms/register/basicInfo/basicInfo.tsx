@@ -40,7 +40,6 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [ciudMuniJur, setCiudMuniJur] = useState('');
-    const [neighborhoodJur, setNeighborhoodJur] = useState('');
     const [addressJur, setAddressJur] = useState('');
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -78,10 +77,10 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
     ];
 
     useEffect(() => {
-        let allFieldsFilled = type === 1 ? names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur && isExtranjero && namesRefPer && phoneRefPer: names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
+        let allFieldsFilled = type === 1 ? names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && addressJur && isExtranjero && namesRefPer && phoneRefPer: names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email;
 
         if(isExtranjero === '1' && type === 1) {
-            allFieldsFilled = names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && neighborhoodJur && addressJur && isExtranjero && paisNacimiento && namesRefPer && phoneRefPer;
+            allFieldsFilled = names && surnames && birthDate && placeBirthDate && typeDocument && inputDocument && birthDateDoc && placeBirthDateDoc && phone && email && ciudMuniJur && addressJur && isExtranjero && paisNacimiento && namesRefPer && phoneRefPer;
         } else {
             setPaisNacimiento('');
         }
@@ -99,13 +98,12 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                 setPlaceBirthDate(type === 1 ? savedData.r_l_ciu_nacimiento : savedData.lug_nac);
                 setTypeDocument(type === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc);
                 setInputDocument(type === 1 ? savedData.r_l_ced : savedData.no_docum);
-                setBirthDateDoc(type === 1 ? savedData.r_l_fecha_expdoc : savedData.expedida_en);
+                setBirthDateDoc(type === 1 ? savedData.r_l_fecha_expdoc : savedData.fecha_exp);
                 setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.expedida_en);
                 setPhone(type === 1 ? savedData.r_l_tel : savedData.numero_celular);
                 setEmail(type === 1 ? savedData.r_l_email : savedData.correo);
                 if(type === 1){
                     setCiudMuniJur(savedData.r_l_ciu);
-                    setNeighborhoodJur(savedData.barrio);
                     setAddressJur(savedData.r_l_dir);
                     setIsExtranjero(savedData.extrenjero);
                     setNamesRefPer(savedData.r_l_ref_per_nombres);
@@ -167,7 +165,6 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
             r_l_tel: phone,
             r_l_email: email,
             r_l_ciu: ciudMuniJur,
-            barrio: neighborhoodJur,
             r_l_dir: addressJur,
             extrenjero: isExtranjero,
             pais_nacimiento: paisNacimiento,
@@ -305,17 +302,6 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                                         placeholder="Seleccione una opción"
                                         onSelect={handleSelect(setCiudMuniJur)}
                                         selectedValue={ciudMuniJur}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <Inputs
-                                        label="Barrio"
-                                        placeholder="Escribe el barrio donde resides"
-                                        isSecureText={false}
-                                        isRequired={true}
-                                        keyboardType="default"
-                                        onChangeText={setNeighborhoodJur}
-                                        value={neighborhoodJur}
                                     />
                                 </View>
                                 <View style={styles.mb5}>

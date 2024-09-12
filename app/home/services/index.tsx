@@ -37,7 +37,7 @@ interface Option {
 }
 
 export default function Page() {
-  const { setActiveTab, goBack, activeLoader, desactiveLoader } = useTab();
+  const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
   const [packageService, setPackageService] = useState('');
   const [valueRecharge, setValueRecharge] = useState('');
   const [recharge, setRecharge] = useState('');
@@ -200,8 +200,10 @@ export default function Page() {
   }
 
   useEffect(() => {
-    fetchGetServices();
-  }, []);  
+    if(activeTab === '/home/services/'){
+      fetchGetServices();
+    }
+ }, [activeTab])
   
   useFocusEffect(() => {
     setActiveTab('/home/services/');

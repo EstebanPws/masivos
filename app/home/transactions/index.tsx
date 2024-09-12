@@ -55,14 +55,19 @@ export default function Page() {
         const infoClient = await getData('infoClient');
         const body = {
             entidad: "9011569983",
-            no_cuenta: account?.startsWith('8') ? account : `0${account}`,
+            no_cuenta: account,
             no_docum: infoClient.numDoc,
             fecha_inicio: oldSevenDateFinal,
             fecha_final : todayFinal
         }
 
+        console.log(body);
+        
+
         await instanceWallet.post('getMovements', body)
         .then((response) => {
+            console.log(response.data);
+            
             const data = response.data.data;
             const sortedTransactions = data.sort((a: any, b: any) => {
                 if (b.fecha_aplicacion_conta === a.fecha_aplicacion_conta) {
@@ -149,7 +154,7 @@ export default function Page() {
         const infoClient = await getData('infoClient');
         const body = {
             entidad: "9011569983",
-            no_cuenta: account?.startsWith('8') ? account : `0${account}`,
+            no_cuenta: account,
             no_docum: infoClient.numDoc,
             fecha_inicio: startDate.replaceAll('/', ''),
             fecha_final : endDate.replaceAll('/', '')

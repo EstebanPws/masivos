@@ -65,8 +65,6 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
     ];
 
     useEffect(() => {
-        console.log(actiCiiu);
-        
         let  allFieldsFilled = type !== 1 ? actiCiiu && mesInfoFinan && declarante && ingreMes && totalIngre && totalEgreso && totalActivo && totalPasivo : mesInfoFinan && ingreMes && otroIngre && totalIngre && totalEgreso && totalActivo && totalPasivo;
 
         if (type !== 1 && actiCiiu === '' || actiCiiu === '0010') {

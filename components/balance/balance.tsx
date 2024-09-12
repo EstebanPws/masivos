@@ -31,7 +31,7 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
             activeLoader();
             try {
                 const existNumber = await getNumberAccount();
-                let myNumberAccount;
+                let myNumberAccount: string = "";
                 
                 if(!existNumber || existNumber === ""){
                     const bodyAccount = {
@@ -42,10 +42,18 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
                     }
 
                     const account = await instanceWallet.post('getAccounts', bodyAccount);
-                    const cuenta = account.data.data.cuenta;
-
-                    setNumberAccount(cuenta);
-                    myNumberAccount = cuenta
+                    let cuenta: string = "";
+                    if (account.data.data[1]) {
+                        cuenta = `${account.data.data[1].CUENTA}`;
+                    } else if(account.data.data[0]) {
+                        cuenta = `${account.data.data[0].CUENTA}`;
+                    }else {
+                        cuenta = `${account.data.data.CUENTA}`;
+                    }
+                   
+                    const cuentaFinal = cuenta.startsWith('7') ? `0${cuenta}` : `${cuenta}`;
+                    setNumberAccount(cuentaFinal);
+                    myNumberAccount = cuentaFinal;
                 }
 
                 if (onMount) {

@@ -56,7 +56,7 @@ export default function Page() {
            orig_ope:"13",
            tipo_mov_ori:"",
            tipo_mov_des:"",
-           prod_orig:`${account?.startsWith('8') ? account : `0${account}`}`,
+           prod_orig: account,
            doc_prod_orig: `${infoClient.numDoc}`,
            nom_orig:`${infoClient.names} ${infoClient.surnames}`,
            id_tx_entidad: generateUniqueId(),

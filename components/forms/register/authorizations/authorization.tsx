@@ -40,8 +40,6 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
     const [crs, setCrs] = useState('');
     const [paisCrs, setPaisCrs] = useState('');
     const [nitCrs, setNitCrs] = useState('');
-    const [dec1, setDec1] = useState('');
-    const [dec2, setDec2] = useState('');
     const [dec3, setDec3] = useState('');
     const [cert, setCert] = useState('');
     const [messageError, setMessageError] = useState('');
@@ -77,8 +75,6 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
                 setCrs(savedData.crs);
                 setPaisCrs(savedData.paisCrs);
                 setNitCrs(savedData.nitCrs);
-                setDec1(savedData.dec1);
-                setDec2(savedData.dec2);
                 setDec3(savedData.dec3);
                 setCert(savedData.cert);
                 setIsVisible(true);
@@ -90,7 +86,7 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
 
     useEffect(() => {        
         const checkAllFieldsFilled = () => {
-            let allFieldsFilled = type !== '8' ? facta1 && facta2 && facta3 && facta4 && crs && dec1 && dec2 && dec3 && cert : cert;
+            let allFieldsFilled = type !== '8' ? facta1 && facta2 && facta3 && facta4 && crs && dec3 && cert : cert;
 
             if (crs === 'S') {
                 allFieldsFilled = allFieldsFilled && paisCrs && nitCrs
@@ -100,7 +96,7 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
         };
 
         setIsButtonEnabled(!!checkAllFieldsFilled());
-    }, [facta1, facta2, facta3, facta4, crs, dec1, dec2, dec3, cert]);
+    }, [facta1, facta2, facta3, facta4, crs, dec3, cert]);
 
     useEffect(() => {
         if (isInitial) {
@@ -121,8 +117,6 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
             crs: crs,
             paisCrs: paisCrs,
             nitCrs: nitCrs,
-            dec1: dec1,
-            dec2: dec2,
             dec3: dec3,
             cert: cert
         }; 
@@ -163,12 +157,6 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
                 break;
             case 'crs':
                 setCrs(value);
-                break;
-            case 'dec1':
-                setDec1(value);
-                break;
-            case 'dec2':
-                setDec2(value);
                 break;
             case 'dec3':
                 setDec3(value);
@@ -272,19 +260,9 @@ export default function Authorization({type, listPaises, onSubmit }: Authorizati
                                     <Accordions title={"Declaraciones"}>
                                         <View style={styles.mb5}>
                                             <Text variant="titleSmall" style={{ ...primaryRegular, ...styles.text }}>1) me comprometo a actualizar anualmente, y cuando me lo soliciten, la información de este formulario  y presentar los documentos requeridos por CoopCentral.{'\n\n'} 2) me reservo el derecho a conocer, actualizar, rectificar, modificar, eliminar, la información de carácter personal así como a solicitar por cualquier medio a CoopCentral no utilizar o revocar mi información personal.{'\n\n'} 3) Conozco mis derechos y obligaciones derivados de la ley de Habeas Data y Protección de datos personales.{'\n\n'} 4) CoopCentral me ha informado los canales de comunicación a través de los cuales puedo acceder para conocer las obligaciones derivadas de las normas antes citadas.</Text>
-                                            <CheckboxCustom 
-                                                options={optionsAut}
-                                                onSelect={handleSelectCheckBox('dec1')}
-                                                selectedValue={dec1}
-                                            />    
                                         </View>
                                         <View style={styles.mb5}>
                                             <Text variant="titleSmall" style={{ ...primaryRegular, ...styles.text }}>La presentación de la solicitud de crédito no implica compromiso alguno para COOPCENTRAL y la comprobación de la inexactitud de cualquiera de las informaciones consignadas en este formulario será motivo para negar dicha solicitud.</Text>
-                                            <CheckboxCustom 
-                                                options={optionsAut}
-                                                onSelect={handleSelectCheckBox('dec2')}
-                                                selectedValue={dec2}
-                                            />    
                                         </View>
                                         <View style={styles.mb5}>
                                             <Text variant="titleSmall" style={{ ...primaryRegular, ...styles.text }}>Declaro (amos) que he (mos) recibido la información comprensible y legible del crédito y que he (mos) entendido los términos y condiciones ofrecidos por COOPCENTRAL. Especialmente declaro (amos) que he (mos)recibido la siguiente información: Tasa de interés (forma de pago, tasa efectiva anual, tasa nominal tasa de referencia y puntos adicionales), tasa de interés de mora, plazo, período de gracia, comisiones y recargos, condiciones de prepago, derechos de COOPCENTRAL en caso de incumplimiento del deudor o deudores, acceso a la información sobre la calidad del riesgo, condiciones de cobranza y judicialización.</Text>

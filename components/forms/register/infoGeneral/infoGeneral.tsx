@@ -33,7 +33,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
     const [ocupation, setOcupation] = useState('');
     const [ubicationZone, setUbicationZone] = useState(''); 
     const [ciudMuni, setCiudMuni] = useState('');
-    const [neighborhood, setNeighborhood] = useState('');
     const [address, setAddress] = useState('');
     const [isExtranjero, setIsExtranjero] = useState('');
     const [paisNacimiento, setPaisNacimiento] = useState('');
@@ -44,7 +43,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
         ocupacion: '',
         zon_ubi: '',
         ciud_muni: '',
-        barrio: '',
         dire_domi: ''
     });
 
@@ -54,16 +52,16 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
     ];
 
     useEffect(() => {        
-        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && neighborhood && address && isExtranjero : ciudMuni && neighborhood && address;     
+        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && address && isExtranjero : ciudMuni && address;     
 
         if(isExtranjero === '1'){
-            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && neighborhood && address && isExtranjero && paisNacimiento : ciudMuni && neighborhood && address;
+            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && address && isExtranjero && paisNacimiento : ciudMuni && address;
         } else {
             setPaisNacimiento('');
         }
 
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [gender, civilStatus, education, ocupation, ubicationZone, ciudMuni, neighborhood, address, isExtranjero, paisNacimiento]);
+    }, [gender, civilStatus, education, ocupation, ubicationZone, ciudMuni, address, isExtranjero, paisNacimiento]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
@@ -75,7 +73,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                 setOcupation(savedData.ocupacion);
                 setUbicationZone(savedData.zon_ubi);
                 setCiudMuni(savedData.ciud_muni)
-                setNeighborhood(savedData.barrio);
                 setAddress(savedData.dire_domi);
                 setIsExtranjero(savedData.extrenjero);
                 
@@ -104,7 +101,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
             ocupacion: ocupation,
             zon_ubi: ubicationZone,
             ciud_muni: ciudMuni,
-            barrio: neighborhood,
             dire_domi: address,
             extrenjero: isExtranjero,
             pais_nacimiento: paisNacimiento
@@ -204,17 +200,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                 placeholder="Seleccione una opción"
                                 onSelect={handleSelect(setCiudMuni)}
                                 selectedValue={ciudMuni}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <Inputs
-                                label="Barrio"
-                                placeholder="Escribe el barrio donde resides"
-                                isSecureText={false}
-                                isRequired={true}
-                                keyboardType="default"
-                                onChangeText={setNeighborhood}
-                                value={neighborhood}
                             />
                         </View>
                         <View style={styles.mb5}>

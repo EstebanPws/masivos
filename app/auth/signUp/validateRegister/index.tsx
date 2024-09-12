@@ -33,6 +33,17 @@ export default function Page() {
         return true;
     };
 
+    const handleOnNavigationStateChange = (navState: { url: any; }) => {
+        const currentUrl = navState.url;
+        // Usamos la API URL para extraer los parámetros
+        const url = new URL(currentUrl);
+        const success = url.searchParams.get('success');
+    
+        if (success) {
+            router.push('/');
+        }
+      };
+
     const handleError = (syntheticEvent: WebViewErrorEvent) => {
         const { nativeEvent } = syntheticEvent;
         console.log(nativeEvent);
@@ -89,6 +100,7 @@ export default function Page() {
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
                     onError={(syntheticEvent) => handleError(syntheticEvent)}
                     onSslError={(event: { preventDefault: () => void; }) => handleSslError(event)}
+                    onNavigationStateChange={handleOnNavigationStateChange}
                 />
             </MotiView>
         </>
