@@ -40,7 +40,7 @@ export default function TypeTransaction ({merchant, amount, date, time, type, on
                     <View style={styles.text}>
                         <Text numberOfLines={1} ellipsizeMode='tail'  variant='bodySmall' style={[primaryBold]}>{merchant}</Text>
                         <Text  variant='bodySmall' style={[primaryRegular]}>{date}</Text>
-                        <Text  variant='bodySmall' style={[primaryRegular]}>{time}</Text>
+                        {/**<Text  variant='bodySmall' style={[primaryRegular]}>{time}</Text>*/}
                     </View>
                     <View>
                         <Text variant='bodySmall' style={[primaryRegular, {textAlign: 'right'}]}>{type === 'Recibido' ?  `+ ${formatCurrency(amount)}` : `- ${formatCurrency(amount)}`}</Text>

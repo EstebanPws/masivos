@@ -40,22 +40,23 @@ export default function Page() {
         const infoClient = {
           infoClient: true,
           id: data.id,
-          numDoc: data.cliente.docCli,
-          tipoDoc: data.tipo_doc,
-          firstName: data.cliente.nombres1,
-          names: `${data.cliente.nombres1} ${data.cliente.nombres2}`,
-          surnames: `${data.cliente.apellido1} ${data.cliente.apellido2}`,
-          birthDate: data.cliente.fechaNac,
-          phoneNumber: data.numero_celular,
-          email: data.correo,
-          ciudadRes: data.cliente.ciudadRes,
-          barrio: data.barrio,
-          direRes: data.cliente.dirRes.trim()
+          numDoc: data.account[0].no_docum,
+          tipoDoc: data.account[0].tipo_doc,
+          firstName: data.nombres1,
+          firstSurname: data.apellido1,
+          names: `${data.nombres1} ${data.nombres2}`,
+          surnames: `${data.apellido1} ${data.apellido2}`,
+          birthDate: data.account[0].fecha_nac,
+          phoneNumber: data.account[0].numero_celular,
+          email: data.account[0].correo,
+          ciudadRes: data.ciudadRes,
+          barrio: data.account[0].barrio,
+          direRes: data.dirRes.trim()
         };
         
         await setData('infoClient', infoClient);
   
-        return data.cliente.nombres1;
+        return data.nombres1;
       } catch (error) {
         const infoClient = { infoClient: false };
         await setData('infoClient', infoClient);

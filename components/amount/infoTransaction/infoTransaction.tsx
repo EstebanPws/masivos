@@ -173,14 +173,14 @@ export default function InfoTransaction ({transaction, onPress}: InfoTransaction
                             {newDate}
                         </Text>
                     </View>
-                    <View style={styles.row}>
+                    {/**<View style={styles.row}>
                         <Text numberOfLines={5} ellipsizeMode='tail' variant='bodySmall' style={[primaryBold, styles.textCenter]}>
                             Hora:
                         </Text>
                         <Text numberOfLines={5} ellipsizeMode='tail' variant='bodySmall' style={[primaryRegular, styles.textCenter, { width: '50%' }]}>
                             {horaTx}
                         </Text>
-                    </View>
+                    </View>*/}
                     <View style={styles.row}>
                         <Text numberOfLines={5} ellipsizeMode='tail' variant='bodySmall' style={[primaryBold, styles.textCenter]}>
                             Descripción:

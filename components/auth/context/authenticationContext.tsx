@@ -87,7 +87,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     if(response.data.message.startsWith('ey')){
                         setSessionToken(response.data.message);
                         setModalidad(response.data.data.modalidad);
-                        router.replace('/home/');
+                        response.data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
                     } else {
                         setShowOtpValidation(true);
                     }
@@ -125,7 +125,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                 if(response.data.message.startsWith('ey')){
                     setSessionToken(response.data.message);
                     setModalidad(response.data.data.modalidad);
-                    router.replace('/home/');
+                    response.data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
                 } else {
                     setShowOtpValidation(true);
                 }
@@ -172,7 +172,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
     const handleOnFinish = (modalidad:string) => {
         setModalidad(modalidad);
         setShowOtpValidation(false);
-        router.replace('/home/');
+        modalidad === '0' ? router.replace('/account') : router.replace('/home/');
     }
 
     return (

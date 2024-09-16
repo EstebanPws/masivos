@@ -30,6 +30,7 @@ export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [messageModal, setMessageModal] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [typeModal, setTypeModal] = useState<'error' | 'success'>('error');
 
   useEffect(() => {
     const fetchInfo = async () => {
@@ -64,8 +65,11 @@ export default function Page() {
       await instanceWallet.post('accountOperations', body)
       .then(async (response) => {
         const data = response.data;
+       
         if(data.status === 200){
-          await logout();
+          setTypeModal('success');
+          setMessageModal('Su cuenta ha sido cancelada con éxito.');
+          setShowModal(true);
         }
         desactiveLoader();
       })
@@ -77,21 +81,30 @@ export default function Page() {
         } else {
             setMessageModal("Hubo un error al intentar enviar el formulario");
         }
+        setTypeModal('error');
         setShowModal(true);
         desactiveLoader();
       });
     } else {
+      setTypeModal('error');
       setMessageModal('Para cancelar tu cuenta, asegúrate de que el saldo esté en $0 primero.');
       setShowModal(true);
     }
   }
 
-
   const extractErrorCode = (message: string) => {
     const regex = /\[(\d+)\]/;
     const match = message.match(regex);
     return match ? match[1] : null;
-};
+  };
+
+  const handleCloseModal = async (type: number) => {
+    if(type === 0) {
+      await logout();
+    }
+
+    setShowModal(false);
+  }
   
   const handleBack = () => {
       goBack();
@@ -192,9 +205,9 @@ export default function Page() {
       </View>
       {showModal && (
         <InfoModal 
-          type={'error'}
+          type={typeModal}
           message={messageModal}
-          onPress={() => {setShowModal(false); setShowModalConfirm(false)}} 
+          onPress={() => {handleCloseModal(typeModal === 'success' ? 0 : 1); setShowModalConfirm(false)}} 
           isVisible={showModal}       
         />
       )}

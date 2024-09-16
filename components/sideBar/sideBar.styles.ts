@@ -40,7 +40,14 @@ export const styles = StyleSheet.create({
     overflow: 'hidden', 
   },
   slideBarText: {
+    marginTop: -50,
     fontSize: 18,
     fontWeight: 'bold',
   },
+  rowOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 30
+  }
 });

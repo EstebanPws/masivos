@@ -35,4 +35,33 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     height: 230
   },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    maxHeight: 600
+  },
+  account:{
+      paddingTop: 20,
+      paddingHorizontal: 10,
+      justifyContent: 'space-around',
+  },
+  subtitle: {
+      color: MD3Colors.neutralVariant10, 
+      marginTop: 20
+  },
+  scrollPadding: {
+      paddingBottom: 30, 
+      paddingHorizontal: 10
+  },
+  balance: {
+    borderRadius: 27,
+    padding: 10,
+    width: '100%',
+    marginVertical: 5
+  },
+  text:{
+    color: 'white',
+    textAlign: 'center'
+  },
 });

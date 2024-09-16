@@ -56,13 +56,13 @@ export default function Page() {
            orig_ope:"13",
            tipo_mov_ori:"",
            tipo_mov_des:"",
-           prod_orig: account,
+           prod_orig: account?.startsWith('0') ? account.slice(1,9) : account,
            doc_prod_orig: `${infoClient.numDoc}`,
            nom_orig:`${infoClient.names} ${infoClient.surnames}`,
            id_tx_entidad: generateUniqueId(),
-           prod_dest:`${contactInfo.contact.no_cuenta.startsWith('8') ? contactInfo.contact.no_cuenta : `0${contactInfo.contact.no_cuenta}`}`,
-           doc_prod_dest: `${contactInfo.contact.cliente.docCli}`,
-           nom_dest:`${`${contactInfo.contact.cliente.nombres1} ${contactInfo.contact.cliente.nombres2} ${contactInfo.contact.cliente.apellido1} ${contactInfo.contact.cliente.apellido2}`}`,
+           prod_dest:`${contactInfo.no_cuenta}`,
+           doc_prod_dest: `${contactInfo.cliente.docCli}`,
+           nom_dest:`${`${contactInfo.cliente.nombres1} ${contactInfo.cliente.nombres2} ${contactInfo.cliente.apellido1} ${contactInfo.cliente.apellido2}`}`,
            descrip_tx: "Envio de billetera a billetera",
            valor_tx: validateNumber(valRecharge),
            tipo_canal_proce:"04",
@@ -171,7 +171,7 @@ export default function Page() {
             setTitleModal(null);
         } else {
             const contact: ContactSelect = {
-                name: `${response.contact.cliente.nombres1} ${response.contact.cliente.nombres2} ${response.contact.cliente.apellido1} ${response.contact.cliente.apellido2}`,
+                name: `${response.cliente.nombres1} ${response.cliente.nombres2} ${response.cliente.apellido1} ${response.cliente.apellido2}`,
                 phone: response.phone
             }
             setContactSelect(contact);
@@ -190,7 +190,7 @@ export default function Page() {
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y límites transaccionales?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, el saldo máximo como el monto acumulado de las operaciones (entradas y salidas) no podrán exceder en ningún momento los $9,907,182, es decir, 210.50 UVT.\n\n Estos topes no son establecidos por ${expo} ni por el Banco Cooperativo Coopcentral, son establecidos por normatividad legal, según el decreto 222 del 2020 Por ser un depósito de bajo monto (DBM) con ${expo} puedes realizar transacciones acumuladas por mes de 210.5 UVT.\n\n ¿Mi depósito está exento de 4xmil (Gravamen a los movimientos financieros- GMF)? Con ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,000 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas`);
+        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
         setShowError(true);
         setTypeMessage('info');
     }

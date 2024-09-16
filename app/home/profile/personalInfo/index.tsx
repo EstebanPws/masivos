@@ -7,15 +7,19 @@ import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { ScrollView, View } from "react-native";
 import Inputs from "@/components/forms/inputs/inputs";
 import { getData } from "@/utils/storageUtils";
-import DateSelect from "@/components/forms/select/dateSelect/dateSelect";
 
 export default function Page() {
   const { setActiveTab, goBack } = useTab();
   const [info, setInfo] = useState<any>();
+  const [birthDate, setBirthDate] = useState('');
 
   useEffect(() => {
     const fetchInfo = async () => {
       const infoClient = await getData('infoClient');
+      const year = infoClient.birthDate.slice(0, 4);
+      const month = infoClient.birthDate.slice(4, 6);
+      const day = infoClient.birthDate.slice(6, 8);
+      setBirthDate(`${year}/${month}/${day}`);
       setInfo(infoClient);
     }
 
@@ -61,13 +65,14 @@ export default function Page() {
                 />
               </View>
               <View style={styles.mb5}>
-                <DateSelect
-                    isRequired
-                    label="Fecha de nacimiento"
-                    placeholder="Seleccione una opción"
-                    value={info ? info.birthDate : ''}
-                    onSelect={() => {}}
-                    readonly
+                <Inputs
+                  label="Fecha de nacimiento"
+                  placeholder="Escribe tus nombres completos"
+                  isSecureText={false}
+                  isRequired={false}
+                  keyboardType="default"
+                  value={birthDate}
+                  readonly
                 />
               </View>
               <View style={styles.mb5}>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { Text } from 'react-native-paper';
 import * as Contacts from 'expo-contacts';
 import { styles } from './contactList.styles';
 import { Contact } from 'expo-contacts';
@@ -8,25 +9,46 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import instanceWallet from '@/services/instanceWallet';
 import { Icon } from 'react-native-paper';
+import { useTab } from '@/components/auth/tabsContext/tabsContext';
+import Modal from 'react-native-modal';
+import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';
 
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
 const {primaryRegular, primaryBold} = extra.text;
 const {colorPrimary, colorSecondary} = extra;
 
+interface ListAccounts {
+  number: number;
+  estado: string;
+}
+
 interface ContactListProps {
     onResponseContact: (response: any) => void;
 }
 
 export default function ContactList({ onResponseContact }: ContactListProps) {
+  const {activeLoader, desactiveLoader} = useTab();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [noContacts, setNoContacts] = useState(false);
+  const [listAccounts, setListAccounts] = useState<any>([]);
+  const [isVisible, setIsVisible] = useState(false);
+
 
   const fetchListContacts = async () => {
     try {
       const response = await instanceWallet.get('getAccountP2P');
-      return response.data;
+      const dataFinal = response.data.map((contact: any) => {
+        let data;
+        if(contact.no_cuenta.startsWith('73000') || contact.no_cuenta.startsWith('87300')) {
+          data = contact;
+        }
+
+        return data;
+      });
+
+      return dataFinal;
     } catch (error) {
       setNoContacts(true);
       return [];
@@ -42,13 +64,22 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
         });
 
         const listContacts = await fetchListContacts();
-        const listNumbers = listContacts?.map((contact: { numero_celular: any; }) => contact.numero_celular);
+        const listNumbers = listContacts?.map((contact: { numero_celular: any; }) => {
+          let number;
+          if(contact) {
+            number = contact.numero_celular
+          }
+
+          return number;
+        });
 
         const filteredContacts = data.filter(contact => {
-          return contact.phoneNumbers && contact.phoneNumbers.some(phone => 
-            listNumbers.includes(phone.number?.replace(/\s+/g, '')) 
-          );
+          return contact.phoneNumbers && contact.phoneNumbers.some(phone => {
+            let number = phone.number?.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '');
+            return listNumbers.includes(number) 
         });
+        });
+        
 
         if(filteredContacts.length === 0){
           setNoContacts(true);
@@ -80,30 +111,106 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
     const body = { numero_celular: phone};
 
     try {
-        const response = await instanceWallet.post('getcelularP2P', body);
-        let final;
-        if(response.data.length !== 0) {
-            final = {
-                contact: response.data[0],
-                phone: phone
-            }
-        } else {
-            final = `El número de celular seleccionado no tiene cuenta o depósito en ${expo}`;
-        }
-        return final;
+      const response = await instanceWallet.post('getcelularP2P', body);
+      let final;
+      if(response.data.length !== 0) {
+          const data = response.data;
+          const document = response.data[0].cliente.docCli;
+          const account = response.data[0].no_cuenta;
+          if(account.startsWith('73000') || account.startsWith('87300')){
+              const stateAccounts = await fetchListAccounts(document, account);
+              const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");
+              const uniqueAccounts = new Set<number>();
+
+              const result = data.filter((item: { no_cuenta: string; }) => {
+                  const accountNumber = parseInt(item.no_cuenta);
+                  const isActiveAccount = activeAccounts.some((activeAccount: { number: number; }) => activeAccount.number === accountNumber);
+                  
+                  if (isActiveAccount && !uniqueAccounts.has(accountNumber)) {
+                      uniqueAccounts.add(accountNumber); 
+                      return true; 
+                  }
+
+                  return false;
+              });
+
+              setListAccounts(result);
+              setIsVisible(true);
+              final= 'success';
+          } else {
+              final = `El número de celular ingresado no tiene cuenta o depósito en ${expo}`;
+          }
+      } else {
+          final = `El número de celular ingresado no tiene cuenta o depósito en ${expo}`;
+      }
+      return final;
     } catch (error) {
-        return "Hubo un error al intentar consultar los datos del número seleccionado, por favor intentelo de nuevo en unos minutos.";
+        console.log(error);
+        return "Hubo un error al intentar consultar los datos del número ingresado, por favor intentelo de nuevo en unos minutos.";
     }
   };
 
+  const fetchListAccounts = async (document: string, account: string) => {
+    activeLoader();
+    const bodyAccount = {
+        no_doc : document,
+        modalidad : account.startsWith('7') ? '0' : '8',
+        oficina: "73",
+        estado: "T"
+    }
+
+    let accounts: any = [];
+    await instanceWallet.post('getAccounts', bodyAccount)
+    .then(async (response) => {
+        const data = response.data;
+        
+        if(response.data.data[0]){
+            accounts = data.data.map((account: any) => {
+                const numberAccounts: ListAccounts = {
+                    number: account.CUENTA,
+                    estado: account.ESTADO
+                }
+
+                return numberAccounts;
+            });
+
+        } else {
+            const accountsMap = [data.data];
+            accounts = accountsMap.map((account: any) => {
+                const numberAccounts: ListAccounts = {
+                    number: account.CUENTA,
+                    estado: account.ESTADO
+                }
+
+                return numberAccounts;
+            });
+        }
+    })
+    .catch((err) => {
+        console.log(err.response.data);
+    });
+    desactiveLoader();
+
+    return accounts;
+  }
+
   const handleSelect = async (item: Contact) => {
-    let number = item.phoneNumbers ? item.phoneNumbers[0].number?.replaceAll(' ', '') : '';
-    const contactSelect = await fetchListContactSelect(number!);
-    onResponseContact(contactSelect);
+    const number = item.phoneNumbers ? item.phoneNumbers[0].number?.replaceAll(' ', '') : '';
+    const sendNumber = number!.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '')
+    
+    const contactSelect = await fetchListContactSelect(sendNumber);
+    if(contactSelect !== 'success') {
+      onResponseContact(contactSelect);
+    }
+  };
+
+  const handleResult = async (contact: any) => {
+    onResponseContact(contact);
   };
 
   return (
-    <View style={styles.container}>
+    <>
+      <View style={styles.container}>
         <View style={styles.mb5}>
             <Inputs
                 icon={'account-search'}
@@ -146,6 +253,44 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
           ))}
           </>
         )}
-    </View>
+      </View>
+      <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
+        <View style={styles.modalContainer}>
+            <ScrollView>
+                <View style={styles.scrollPadding}>
+                    <Text variant="titleSmall" style={[primaryBold, styles.text, styles.subtitle]}>Por favor selecciona la cuenta a la que quieres enviar el dinero.</Text>
+                    {listAccounts.map((account: any, index: React.Key | null | undefined) => (
+                        <View key={index} style={styles.account}>
+                            <TouchableOpacity onPress={() => handleResult(account)}>
+                                <LinearGradient
+                                    colors={[colorPrimary, colorSecondary]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.balance}
+                                >
+                                    <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
+                                        <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
+                                    </Text>
+                                    <LinearGradient
+                                        colors={[colorPrimary, colorSecondary]}
+                                        start={{ x: 1, y: 0 }}
+                                        end={{ x: 0, y: 0 }}
+                                        style={styles.balance}
+                                    >
+                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{account.no_cuenta.startsWith('7') ? `0${account.no_cuenta}` : account.no_cuenta}</Text>
+                                    </LinearGradient>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
+                    ))}
+                </View>
+            </ScrollView>
+            <ButtonsPrimary
+                label='Cerrar'
+                onPress={() => setIsVisible(false)}
+            />
+        </View>
+      </Modal>
+    </>
   );
 }

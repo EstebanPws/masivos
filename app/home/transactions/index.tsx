@@ -10,7 +10,7 @@ import TypeTransaction from "@/components/amount/typeTransaction/typeTransaction
 import { Icon, Text } from "react-native-paper";
 import Constants from "expo-constants";
 import DateSelect from "@/components/forms/select/dateSelect/dateSelect";
-import { formatDate } from "@/utils/fomatDate";
+import { formatDate, formatDateGuion } from "@/utils/fomatDate";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 import TitleLine from "@/components/titleLine/titleLine";
@@ -31,13 +31,6 @@ interface Transaction {
 }
 
 export default function Page() {
-    const today = new Date();
-    const todayFormat = formatDate(today);
-    const todayFinal = todayFormat.replaceAll('/', '');
-    const pastDate = new Date(today);
-    pastDate.setDate(today.getDate() - 7);
-    const oldSevenDate = formatDate(pastDate);
-    const oldSevenDateFinal = oldSevenDate.replaceAll('/', '');
 
     const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
     const [showError, setShowError] = useState(false);
@@ -50,6 +43,14 @@ export default function Page() {
     const [transactionSelected, setTransactionSelected] = useState<any>(null);
 
     const fetchGetTransactions = async () => {
+        const today = new Date();
+        const todayFormat = formatDate(today);
+        const todayFinal = todayFormat.replaceAll('/', '');
+        const pastDate = new Date(today);
+        pastDate.setDate(today.getDate() - 7);
+        const oldSevenDate = formatDate(pastDate);
+        const oldSevenDateFinal = oldSevenDate.replaceAll('/', '');
+        
         activeLoader();
         const account = await getNumberAccount();
         const infoClient = await getData('infoClient');
@@ -61,13 +62,8 @@ export default function Page() {
             fecha_final : todayFinal
         }
 
-        console.log(body);
-        
-
         await instanceWallet.post('getMovements', body)
         .then((response) => {
-            console.log(response.data);
-            
             const data = response.data.data;
             const sortedTransactions = data.sort((a: any, b: any) => {
                 if (b.fecha_aplicacion_conta === a.fecha_aplicacion_conta) {
@@ -102,6 +98,7 @@ export default function Page() {
 
                 return transaction;
             });
+            
             setFilteredTransactions(filterTransaction);
             setInitialTransactions(filterTransaction);
             desactiveLoader();
@@ -156,8 +153,8 @@ export default function Page() {
             entidad: "9011569983",
             no_cuenta: account,
             no_docum: infoClient.numDoc,
-            fecha_inicio: startDate.replaceAll('/', ''),
-            fecha_final : endDate.replaceAll('/', '')
+            fecha_inicio: startDate.replaceAll('-', ''),
+            fecha_final : endDate.replaceAll('-', '')
         }
 
         await instanceWallet.post('getMovements', body)
@@ -202,7 +199,7 @@ export default function Page() {
     };
 
     const handleDateSelect = (setter: { (value: React.SetStateAction<string>): void }) => (date: any) => {
-        setter(formatDate(date));
+        setter(formatDateGuion(date));
     };
 
     const handleBorrar = () => {

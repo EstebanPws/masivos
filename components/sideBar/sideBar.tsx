@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
 import { MotiView } from 'moti';
 import { styles } from './sideBar.styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import { Icon } from 'react-native-paper';
+import { router } from 'expo-router';
 
 const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary, colorSecondary} = extra;
-const {primaryBold} = extra.text;
+const {primaryBold, primaryRegular} = extra.text;
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +58,17 @@ export default function SideBar() {
               />
             </LinearGradient>
         </TouchableOpacity>
-        <Text style={[styles.slideBarText, primaryBold]}>Nuevas opciones</Text>
+        <Text variant="titleLarge" style={[styles.slideBarText, primaryBold]}>Menú</Text>
+        <TouchableOpacity style={{height: 100}} onPress={() => router.push('/account')}>
+          <View style={styles.rowOption}>
+            <Text variant="titleMedium"  style={[primaryRegular]}>Mis cuentas</Text>
+            <Icon
+              source={'account-convert-outline'}
+              size={24}
+              color={colorPrimary}
+            />
+          </View>
+        </TouchableOpacity>
       </MotiView>
     </View>
   );

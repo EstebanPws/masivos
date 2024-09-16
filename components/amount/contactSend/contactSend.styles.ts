@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native"
+import { MD3Colors } from "react-native-paper";
 
 export const styles = StyleSheet.create({
     container:{
@@ -30,5 +31,24 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: 10,
         borderRadius: 10
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        maxHeight: 600
+    },
+    account:{
+        paddingTop: 20,
+        paddingHorizontal: 10,
+        justifyContent: 'space-around',
+    },
+    subtitle: {
+        color: MD3Colors.neutralVariant10, 
+        marginTop: 20
+    },
+    scrollPadding: {
+        paddingBottom: 30, 
+        paddingHorizontal: 10
     }
 });

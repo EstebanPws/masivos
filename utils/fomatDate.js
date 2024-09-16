@@ -6,6 +6,11 @@ export const formatDate = (date) => {
     return format(date, 'yyyy/MM/dd');
 };
 
+export const formatDateGuion = (date) => {
+    if (!date) return '';
+    return format(date, 'yyyyMMdd');
+};
+
 export const formatDateValue = (date) => {
     if (!date) return new Date();
     const year = date.substring(0, 4);
