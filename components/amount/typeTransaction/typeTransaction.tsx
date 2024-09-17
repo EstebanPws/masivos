@@ -17,10 +17,11 @@ interface TypeTransactionProps {
     date: string;
     time: string;
     type: string;
+    infoType: string;
     onPress: () => void;
 }
 
-export default function TypeTransaction ({merchant, amount, date, time, type, onPress}: TypeTransactionProps) {
+export default function TypeTransaction ({merchant, amount, date, time, type, infoType, onPress}: TypeTransactionProps) {
     return (
         <TouchableOpacity style={styles.touchable} onPress={() => onPress()}>
             <View style={styles.row}>
@@ -38,6 +39,7 @@ export default function TypeTransaction ({merchant, amount, date, time, type, on
                 </LinearGradient>
                 <View style={styles.row1}>
                     <View style={styles.text}>
+                    <Text numberOfLines={5} ellipsizeMode='tail'  variant='bodySmall' style={[primaryBold]}>{infoType}</Text>
                         <Text numberOfLines={1} ellipsizeMode='tail'  variant='bodySmall' style={[primaryBold]}>{merchant}</Text>
                         <Text  variant='bodySmall' style={[primaryRegular]}>{date}</Text>
                         {/**<Text  variant='bodySmall' style={[primaryRegular]}>{time}</Text>*/}

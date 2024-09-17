@@ -34,17 +34,20 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
   const [noContacts, setNoContacts] = useState(false);
   const [listAccounts, setListAccounts] = useState<any>([]);
   const [isVisible, setIsVisible] = useState(false);
-
+  const [contactSelect, setContactSelect] = useState<any>();
 
   const fetchListContacts = async () => {
     try {
       const response = await instanceWallet.get('getAccountP2P');
-      const dataFinal = response.data.map((contact: any) => {
-        let data;
-        if(contact.no_cuenta.startsWith('73000') || contact.no_cuenta.startsWith('87300')) {
-          data = contact;
-        }
+      const dataFinal = response.data.filter((contact: any) => {
+        let data: any;
+        const infoContact = contact.account.filter((contactAccount: any) => {
+          if(contactAccount.no_cuenta.startsWith('73000') || contactAccount.no_cuenta.startsWith('87300')) {
+            return contact;
+          }
+        });
 
+        data = infoContact;
         return data;
       });
 
@@ -64,11 +67,13 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
         });
 
         const listContacts = await fetchListContacts();
-        const listNumbers = listContacts?.map((contact: { numero_celular: any; }) => {
+        const listNumbers = listContacts?.map((contact: any) => {
           let number;
-          if(contact) {
-            number = contact.numero_celular
-          }
+          contact.account.filter((numberPhone: any) => {
+            if(numberPhone) {
+              number = numberPhone.numero_celular
+            }
+          });
 
           return number;
         });
@@ -77,9 +82,8 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
           return contact.phoneNumbers && contact.phoneNumbers.some(phone => {
             let number = phone.number?.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '');
             return listNumbers.includes(number) 
+          });
         });
-        });
-        
 
         if(filteredContacts.length === 0){
           setNoContacts(true);
@@ -114,32 +118,48 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
       const response = await instanceWallet.post('getcelularP2P', body);
       let final;
       if(response.data.length !== 0) {
-          const data = response.data;
-          const document = response.data[0].cliente.docCli;
-          const account = response.data[0].no_cuenta;
-          if(account.startsWith('73000') || account.startsWith('87300')){
-              const stateAccounts = await fetchListAccounts(document, account);
-              const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");
-              const uniqueAccounts = new Set<number>();
+        const data = response.data;
+        const document = response.data[0].docCli;
+        const account = response.data[0].account[0].no_cuenta;
+        if(account.startsWith('73000') || account.startsWith('87300')){
+            const stateAccounts = await fetchListAccounts(document, account);
+            const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");
+            const uniqueAccounts = new Set<number>();
+            const result = data.filter((item: { account: any; }) => {
+                let accountNumbers = item.account.filter((accounts: { no_cuenta: string; }) => parseInt(accounts.no_cuenta)); 
+                
+                const listAccountNumbers = accountNumbers.filter((accountNumber: any) => {
+                    const isActiveAccount = activeAccounts.some((activeAccount: { number: number; }) => { 
+                        return activeAccount.number === parseInt(accountNumber.no_cuenta);
+                    });
 
-              const result = data.filter((item: { no_cuenta: string; }) => {
-                  const accountNumber = parseInt(item.no_cuenta);
-                  const isActiveAccount = activeAccounts.some((activeAccount: { number: number; }) => activeAccount.number === accountNumber);
-                  
-                  if (isActiveAccount && !uniqueAccounts.has(accountNumber)) {
-                      uniqueAccounts.add(accountNumber); 
-                      return true; 
-                  }
+                    if (isActiveAccount && !uniqueAccounts.has(accountNumber.no_cuenta)) {
+                        uniqueAccounts.add(accountNumber.no_cuenta); 
+                        return true; 
+                    }
 
-                  return false;
-              });
+                    return false;
+                })
+                
+                return listAccountNumbers;
+                
+            });
 
-              setListAccounts(result);
-              setIsVisible(true);
-              final= 'success';
-          } else {
-              final = `El número de celular ingresado no tiene cuenta o depósito en ${expo}`;
-          }
+            let contactSelectInfo = {
+                docCli: data[0].docCli,
+                nombres1: data[0].nombres1,
+                nombres2: data[0].nombres2,
+                apellido1: data[0].apellido1,
+                apellido2: data[0].apellido2
+            };
+
+            setContactSelect(contactSelectInfo);
+            setListAccounts(result);
+            setIsVisible(true);
+            final= 'success';
+        } else {
+            final = `El número de celular ingresado no tiene cuenta o depósito en ${expo}`;
+        }
       } else {
           final = `El número de celular ingresado no tiene cuenta o depósito en ${expo}`;
       }
@@ -205,7 +225,8 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
   };
 
   const handleResult = async (contact: any) => {
-    onResponseContact(contact);
+    contactSelect.no_cuenta = contact.no_cuenta;
+    onResponseContact(contactSelect);
   };
 
   return (
@@ -259,30 +280,38 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
             <ScrollView>
                 <View style={styles.scrollPadding}>
                     <Text variant="titleSmall" style={[primaryBold, styles.text, styles.subtitle]}>Por favor selecciona la cuenta a la que quieres enviar el dinero.</Text>
-                    {listAccounts.map((account: any, index: React.Key | null | undefined) => (
-                        <View key={index} style={styles.account}>
-                            <TouchableOpacity onPress={() => handleResult(account)}>
-                                <LinearGradient
-                                    colors={[colorPrimary, colorSecondary]}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 0 }}
-                                    style={styles.balance}
-                                >
-                                    <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
-                                        <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
-                                    </Text>
-                                    <LinearGradient
-                                        colors={[colorPrimary, colorSecondary]}
-                                        start={{ x: 1, y: 0 }}
-                                        end={{ x: 0, y: 0 }}
-                                        style={styles.balance}
-                                    >
-                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{account.no_cuenta.startsWith('7') ? `0${account.no_cuenta}` : account.no_cuenta}</Text>
-                                    </LinearGradient>
-                                </LinearGradient>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
+                    {listAccounts.length !== 0 && (
+                        <>
+                            {listAccounts.map((account: any, index: React.Key | null | undefined) => (
+                                <View  key={index}  >
+                                    {account.account.map((accounts: any, index: React.Key | null | undefined) => (
+                                        <View key={index} style={styles.account}>
+                                            <TouchableOpacity onPress={() => handleResult(accounts)}>
+                                                <LinearGradient
+                                                    colors={[colorPrimary, colorSecondary]}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={styles.balance}
+                                                >
+                                                    <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
+                                                        <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
+                                                    </Text>
+                                                    <LinearGradient
+                                                        colors={[colorPrimary, colorSecondary]}
+                                                        start={{ x: 1, y: 0 }}
+                                                        end={{ x: 0, y: 0 }}
+                                                        style={styles.balance}
+                                                    >
+                                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('7') ? `0${accounts.no_cuenta}` : account.no_cuenta}</Text>
+                                                    </LinearGradient>
+                                                </LinearGradient>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ))}
+                                </View>
+                            ))}
+                        </>
+                    )}
                 </View>
             </ScrollView>
             <ButtonsPrimary

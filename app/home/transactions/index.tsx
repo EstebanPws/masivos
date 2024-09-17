@@ -17,6 +17,7 @@ import TitleLine from "@/components/titleLine/titleLine";
 import { getData, getNumberAccount } from "@/utils/storageUtils";
 import instanceWallet from "@/services/instanceWallet";
 import InfoTransaction from "@/components/amount/infoTransaction/infoTransaction";
+import { typeTransactionResponse } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -27,6 +28,7 @@ interface Transaction {
     date: string;
     time: string;
     type: string;
+    infoType: string;
     onPress: () => void;
 }
 
@@ -85,12 +87,21 @@ export default function Page() {
                 const seconds = time.substring(4, 6);
                 const zoneTime = Number(hour) >= 13 ? 'P.M' : 'A.M';
 
+                const dataType = typeTransactionResponse.filter((type: any) => {
+                    if(type.tipoMov === transactions.tipo_movimiento && type.docMov === transactions.docu_asoci_Tipo_movi){
+                        return type.desc;
+                    } else if (type.tipoMov === transactions.tipo_movimiento && type.docMov !== transactions.docu_asoci_Tipo_movi) {
+                        return type.desc
+                    }
+                });
+
                 const transaction: Transaction = {
                     merchant: transactions.descri_tx,
                     amount: String(transactions.valor_tx),
                     date: `${year}/${month}/${day}`,
                     time: `${hour}:${minutes}:${seconds} ${zoneTime}`,
                     type: transactions.tipo_operacion_movi === 'A' ? "Recibido" : "Enviado",
+                    infoType: dataType[0].desc,
                     onPress: () => {
                         setTransactionSelected(transactions);
                     }
@@ -104,6 +115,8 @@ export default function Page() {
             desactiveLoader();
         })
         .catch((err) => {
+            console.log(err.response.data);
+            
             desactiveLoader();
             setFilteredTransactions([]);
         });   
@@ -176,12 +189,21 @@ export default function Page() {
                 const seconds = time.substring(4, 6);
                 const zoneTime = Number(hour) >= 13 ? 'P.M' : 'A.M';
 
+                const dataType = typeTransactionResponse.filter((type: any) => {
+                    if(type.tipoMov === transactions.tipo_movimiento && type.docMov === transactions.docu_asoci_Tipo_movi){
+                        return type.desc;
+                    } else if (type.tipoMov === transactions.tipo_movimiento && type.docMov !== transactions.docu_asoci_Tipo_movi) {
+                        return type.desc
+                    }
+                });
+
                 const transaction: Transaction = {
                     merchant: transactions.descri_tx,
                     amount: String(transactions.valor_tx),
                     date: `${year}/${month}/${day}`,
                     time: `${hour}:${minutes}:${seconds} ${zoneTime}`,
                     type: transactions.tipo_operacion_movi === 'A' ? "Recibido" : "Enviado",
+                    infoType: dataType[0].desc,
                     onPress: () => {
                         setTransactionSelected(transactions);
                     }
@@ -275,6 +297,7 @@ export default function Page() {
                                     date={transaction.date}
                                     time={transaction.time}
                                     type={transaction.type}
+                                    infoType={transaction.infoType}
                                     onPress={transaction.onPress}
                                 />
                             ))

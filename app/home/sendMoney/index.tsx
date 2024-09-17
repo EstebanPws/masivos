@@ -61,8 +61,8 @@ export default function Page() {
            nom_orig:`${infoClient.names} ${infoClient.surnames}`,
            id_tx_entidad: generateUniqueId(),
            prod_dest:`${contactInfo.no_cuenta}`,
-           doc_prod_dest: `${contactInfo.cliente.docCli}`,
-           nom_dest:`${`${contactInfo.cliente.nombres1} ${contactInfo.cliente.nombres2} ${contactInfo.cliente.apellido1} ${contactInfo.cliente.apellido2}`}`,
+           doc_prod_dest: `${contactInfo.docCli}`,
+           nom_dest:`${`${contactInfo.nombres1} ${contactInfo.nombres2} ${contactInfo.apellido1} ${contactInfo.apellido2}`}`,
            descrip_tx: "Envio de billetera a billetera",
            valor_tx: validateNumber(valRecharge),
            tipo_canal_proce:"04",
@@ -171,7 +171,7 @@ export default function Page() {
             setTitleModal(null);
         } else {
             const contact: ContactSelect = {
-                name: `${response.cliente.nombres1} ${response.cliente.nombres2} ${response.cliente.apellido1} ${response.cliente.apellido2}`,
+                name: `${response.nombres1} ${response.nombres2} ${response.apellido1} ${response.apellido2}`,
                 phone: response.phone
             }
             setContactSelect(contact);

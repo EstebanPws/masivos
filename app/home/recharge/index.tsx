@@ -67,9 +67,10 @@ export default function Page() {
 
     const fetchCrateTransaction = async () => {
         const account = await getNumberAccount();
+        let accountFinal = account?.startsWith('0') ? account.slice(1, -1) : account;
         const body = {
             amount : validateNumber(valRecharge),
-            no_cuenta: account,
+            no_cuenta: accountFinal,
             identification_type : 4,
             Documento : document,
             Correo : email,

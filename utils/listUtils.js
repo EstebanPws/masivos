@@ -68,6 +68,149 @@ export const errorCancelAccount = {
     "12": "Para cancelar la cuenta, debe tener un saldo de cero."
 }
 
+export const typeTransactionResponse = [
+    {
+        tipoMov: 13,
+        docMov: "TCRDG",
+        desc: "NOTA CRÉDITO REVERSO TRANSACCIÓN CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 14,
+        docMov: "TCRDG",
+        desc: "NOTA CRÉDITO REVERSO COMISIÓN TRX CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 19,
+        docMov: "TRETN",
+        desc: "NOTA CRÉDITO TRANSACCIÓN ELECTRÓNICA"
+    },
+    {
+        tipoMov: 20,
+        docMov: "AJUST",
+        desc: "NOTA CRÉDITO POR AJUSTE INTERNO"
+    },
+    {
+        tipoMov: 26,
+        docMov: "TRETN",
+        desc: "REVERSO COMISIÓN TRANSACCIÓN ELECTRÓNICA"
+    },
+    {
+        tipoMov: 27,
+        docMov: "TCRDG",
+        desc: "REVERSO GMF TRX CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 27,
+        docMov: "TDBAN",
+        desc: "REVERSO GMF TRANSACCIÓN ELECTRÓNICA"
+    },
+    {
+        tipoMov: 37,
+        docMov: "TRETN",
+        desc: "REVERSO GMF RECHAZO TRANSACCIÓN ELECTRÓNICA"
+    },
+    {
+        tipoMov: 42,
+        docMov: "BCBTA",
+        desc: "NOTA CRÉDITO ABONO CORRESPONSAL FÍSICO"
+    },
+    {
+        tipoMov: 42,
+        docMov: "TCRDG",
+        desc: "NOTA CRÉDITO ABONO CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 42,
+        docMov: "TRETN",
+        desc: "NOTA CRÉDITO ABONO INTERBANCARIO"
+    },
+    {
+        tipoMov: 43,
+        docMov: "TRETN",
+        desc: "NOTA CRÉDITO REVERSO TRANSACCIÓN INTERBANCARIA"
+    },
+    {
+        tipoMov: 45,
+        docMov: "TDBAN",
+        desc: "REVERSO TRANSACCIÓN CON TARJETA DÉBITO"
+    },
+    {
+        tipoMov: 47,
+        docMov: "TDBAN",
+        desc: "REVERSO TRANSACCIÓN CON TARJETA DÉBITO POS"
+    },
+    {
+        tipoMov: 48,
+        docMov: "TDBAN",
+        desc: "REVERSO TRANSACCIÓN CON TARJETA DÉBITO ATM"
+    },
+    {
+        tipoMov: 49,
+        docMov: "TDBAN",
+        desc: "REVERSO COMISIÓN TRANSACCIÓN CON TD"
+    },
+    {
+        tipoMov: 70,
+        docMov: "AJUST",
+        desc: "NOTA DÉBITO POR AJUSTE INTERNO"
+    },
+    {
+        tipoMov: 73,
+        docMov: "TDBAN",
+        desc: "COBRO GMF TRANSACCIÓN ELECTRÓNICA"
+    },
+    {
+        tipoMov: 73,
+        docMov: "TCRDG",
+        desc: "COBRO GMF RETIRO CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 73,
+        docMov: "TRETN",
+        desc: "COBRO GMF TRANSACCIÓN ELECTRÓNICA"
+    },
+    {
+        tipoMov: 79,
+        docMov: "TCRDG",
+        desc: "COMISIÓN RETIRO CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 81,
+        docMov: "TCRDG",
+        desc: "NOTA DÉBITO RETIRO CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 81,
+        docMov: "TRETN",
+        desc: "NOTA DÉBITO RETIRO INTERBANCARIO"
+    },
+    {
+        tipoMov: 84,
+        docMov: "TCRDG",
+        desc: "NOTA DÉBITO REVERSO TRANSACCIÓN CORRESPONSAL DIGITAL"
+    },
+    {
+        tipoMov: 86,
+        docMov: "TRETN",
+        desc: "COMISIÓN RETIRO INTERBANCARIO"
+    },
+    {
+        tipoMov: 91,
+        docMov: "TDBAN",
+        desc: "NOTA DÉBITO RETIRO CON TARJETA DÉBITO COOPCENTRAL"
+    },
+    {
+        tipoMov: 92,
+        docMov: "TDBAN",
+        desc: "COMISIÓN RETIRO CON TARJETA DÉBITO COOPCENTRAL"
+    },
+    {
+        tipoMov: 96,
+        docMov: "TDBAN",
+        desc: "NOTA DÉBITO COMPRA CON TARJETA DÉBITO COOPCENTRAL"
+    }
+];
+
 export const documentType = {
     1: 'C',
     2: 'P',
