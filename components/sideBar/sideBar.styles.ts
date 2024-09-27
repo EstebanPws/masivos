@@ -11,16 +11,10 @@ export const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 20,
   },
-  buttonClose: {
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end'
-  },
   toggleButtonClose: {
     padding: 10,
     borderRadius: 50,
-    marginBottom: 20,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    marginBottom: 20
   },
   toggleButtonText: {
     color: 'white',
@@ -28,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   slideBar: {
     position: 'absolute',
-    top: -60,
+    top: -70,
     right: 0,
     left:  -10,
     width: 300,
@@ -40,7 +34,6 @@ export const styles = StyleSheet.create({
     overflow: 'hidden', 
   },
   slideBarText: {
-    marginTop: -50,
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -48,6 +41,12 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 30
+    paddingVertical: 15
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12
   }
 });

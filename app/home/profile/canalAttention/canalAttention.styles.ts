@@ -33,8 +33,10 @@ export const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         marginTop: 5
     },
-    image: {
-        maxWidth: 250,
-        borderRadius: 15,
-    }
+    image:{
+        width: 150,
+        height: 100,
+        margin: 'auto',
+        padding: 20
+    },
 });

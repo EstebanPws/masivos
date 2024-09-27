@@ -16,43 +16,49 @@ interface InfoModalConfirmProps {
     onPress: () => void;
     onCancel: () => void;
     id?: React.Key;
+    view?: boolean;
+    isBankTransfer?: boolean;
+    label1?: string;
+    label2?: string
 }
 
-export default function InfoModalConfirm({ title, onPress, onCancel, children, id}: InfoModalConfirmProps) {
-    const [visible, setVisible] = useState(true);
+export default function InfoModalConfirm({ title, onPress, onCancel, children, id, view, isBankTransfer, label1, label2}: InfoModalConfirmProps) {
+    const [visible, setVisible] = useState<boolean>(view ? view : true);
 
     const handlePress = () => {
-        setVisible(false);
+        setVisible(view ? view : false);
         setTimeout(onPress, 400);
     };
 
     const handleCancel = () => {
-        setVisible(false);
+        setVisible(view ? view : false);
         setTimeout(onCancel, 400);
     };
 
     return (
         <AnimatePresence key={id}>
             {visible && (
-                <BlurView intensity={80} tint="light" style={styles.blurView}>
+                <BlurView intensity={80} tint="light" style={[styles.blurView]}>
                     <MotiView
                         from={{ opacity: 0, translateY: -50 }}
                         animate={{ opacity: 1, translateY: 0 }}
                         exit={{ opacity: 0, translateY: -50 }}
                         transition={{ type: 'timing', duration: 300 }}
-                        style={styles.modalContainer}
+                        style={[isBankTransfer ? styles.modalContainerBankTransfer : styles.modalContainer]}
                     >
-                        <Text variant='bodyLarge' style={[primaryBold, styles.title]}>{title}</Text>
+                        {title && (
+                             <Text variant='bodyLarge' style={[primaryBold, styles.title]}>{title}</Text>
+                        )}
                         <ScrollView>
                             {children}
                         </ScrollView>
                         <View style={styles.row}>
                             <ButtonsPrimary
-                                label="Aceptar"
+                                label={label1 ? label1 : "Aceptar"}
                                 onPress={handlePress}
                             />
                              <ButtonsPrimary
-                                label="Rechazar"
+                                label={label2 ? label2 :"Rechazar"}
                                 onPress={handleCancel}
                             />
                         </View>

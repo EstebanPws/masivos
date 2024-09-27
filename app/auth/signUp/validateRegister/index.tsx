@@ -1,86 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Linking } from "react-native";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { Alert } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { styles } from "./validateRegister.styles";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
 import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes";
 import Loader from "@/components/loader/loader";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
-import * as FileSystem from 'expo-file-system'; 
-import * as Sharing from 'expo-sharing';
 
 export default function Page() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const { type, idRegister } = useLocalSearchParams();
-    const [urlPdf, setUrlPdf] = useState();
-
-    useEffect(() => {
-        const url = `https://registrobilletera.paymentsway.co/${type === '0' ? 'vinculacionpersonanatural' : 'vinculacionpersonajuridica'}?id=${idRegister}`;
-       console.log(url);
-       
-    }, []);
-
-    const handleDownloadPDF = async (blobUrl: string) => {
-        try {
-            const response = await fetch(blobUrl);
-            const blob = await response.blob();
-            const fileReader = new FileReader();
-            fileReader.onloadend = async () => {
-                
-                const base64data = fileReader.result as string;
-                const base64DataOnly = base64data.split(',')[1];
-                const fileName = 'formulario-coop.pdf';
-                const downloadDest = FileSystem.documentDirectory + fileName;
-
-                console.log(downloadDest);
-                
-    
-                await FileSystem.writeAsStringAsync(downloadDest, base64DataOnly, { encoding: FileSystem.EncodingType.Base64 });
-
-                // Usa el módulo Sharing para permitir al usuario compartir el archivo
-                if (await Sharing.isAvailableAsync()) {
-                    await Sharing.shareAsync(downloadDest, { mimeType: 'application/pdf' });
-                } else {
-                    Alert.alert("Share Unavailable", "Sharing is not available on this device.");
-                }
-            };
-            fileReader.readAsDataURL(blob);
-        } catch (error) {
-            Alert.alert("Download Failed", `Error: ${error}`);
-        }
-    };
 
     const handleShouldStartLoadWithRequest = (request: ShouldStartLoadRequest) => { 
         if (request.url.split('?')) {
-            const urlParams = request.url.split('?')[1];
-            console.log(urlParams);
-            
+            const urlParams = request.url.split('?')[1];  
             if(urlParams) {
-                if(urlParams.startsWith('success')){
-                    router.push('/');
+                if(urlParams.startsWith('success=true')){
+                    router.dismissAll();
+                    router.replace('/');
                 }
             }
         }
         return true;
     };
 
-    const handleOnNavigationStateChange = async (navState: { url: any; }) => {
+    const handleOnNavigationStateChange = (navState: { url: any; }) => {
         const currentUrl = navState.url;
         // Usamos la API URL para extraer los parámetros
         const url = new URL(currentUrl);
         const success = url.searchParams.get('success');
-        const pdf = url.searchParams.get('pdf');
-
+    
         if (success) {
-            router.push('/');
+            router.dismissAll();
+            router.replace('/');
         }
-
-        if(pdf){
-            const url = pdf.replaceAll('blob:', '');
-            await handleDownloadPDF(url);
-        }  
       };
 
     const handleError = (syntheticEvent: WebViewErrorEvent) => {

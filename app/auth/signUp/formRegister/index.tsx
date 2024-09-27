@@ -40,6 +40,7 @@ export default function Page() {
     const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
     const [listCiiu, setListCiiu] = useState<List[] | null>(null);
     const [listPaises, setListPaises] = useState<List[] | null>(null);
+    const [listPaisesExt, setListPaisesExt] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
     const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('info');
@@ -103,6 +104,18 @@ export default function Page() {
                 });
 
                 setListPaises(transformedPaises);
+
+                const paisesExtResponse = await instanceWallet.get('obtenerPais');
+                const paisesExrData = paisesExtResponse.data.message;
+
+                const transformedExtPaises: List[] = paisesExrData.map((item: any) => {
+                    return {
+                        name: item.name,
+                        value: item.name
+                    };
+                });
+
+                setListPaisesExt(transformedExtPaises);
                 
             } catch (err) {  
                 setMessageError("Ha ocurrido un error al intentar cargar los datos.");
@@ -256,15 +269,15 @@ export default function Page() {
     const renderStep = (step: number) => {
         switch (step) {
             case 0:
-                return type === '1' ? <BasicInfoJuridica listMunicipios={listMunicipios}  listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <BasicInfo type={0}listMunicipios={listMunicipios} onSubmit={handleFormSubmit} listPaises={listPaises}/>;
+                return type === '1' ? <BasicInfoJuridica listMunicipios={listMunicipios}  listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <BasicInfo type={0}listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 1:
-                return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} listPaises={listPaises}/> : <InfoGeneral type={type} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 2:
                 return type === '1' ? <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : type === '0' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 3:
                 return type === '1' ? <InfoWorking type={Number(type)} listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
             case 4:
-                return <OtherInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return <OtherInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaisesExt} onSubmit={handleFormSubmit} />;
             case 5:
                 return type === '1' ? <AuthorizationJuridica type={type} listPaises={listPaises} onSubmit={handleFormSubmit} /> :<Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             default:

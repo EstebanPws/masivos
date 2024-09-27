@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 12
     },
     code: {
-        width: "15%",
+        width: "16%",
         height:  40,
     },
     noCode: {

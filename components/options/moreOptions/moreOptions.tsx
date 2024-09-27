@@ -81,7 +81,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                                         size={24}
                                         color={colorPrimary}
                                     />
-                                    <Text variant="labelMedium" style={[primaryBold]}>Transferir</Text>
+                                    <Text variant="labelMedium" style={[primaryBold]}>Transferir entre entidades</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => handleRoute(2)} style={styles.touch}>
@@ -91,7 +91,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
                                         size={24}
                                         color={colorPrimary}
                                     />
-                                    <Text variant="labelMedium" style={[primaryBold]}>Enviar</Text>
+                                    <Text variant="labelMedium" style={[primaryBold]}>Enviar dinero</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => handleRoute(3)} style={styles.touch}>

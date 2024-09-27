@@ -13,7 +13,7 @@ import TitleLine from "@/components/titleLine/titleLine";
 import DateSelect from "../../select/dateSelect/dateSelect";
 import { formatDate, formatDateWithoutSlash } from "@/utils/fomatDate";
 import InfoModal from "@/components/modals/infoModal/infoModal";
-import { formatCurrency, validateNumber } from "@/utils/validationForms";
+import { formatCurrency, validateNumber, validatePhone } from "@/utils/validationForms";
 
 interface List {
     name: string;
@@ -115,6 +115,14 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
     }, [ingreMes, otroIngre]);
 
     const handleSubmit = () => {
+        if(actiCiiu !== '0020' && actiCiiu !== '9700' && actiCiiu !== '8522') {
+            if (!validatePhone(telEmpreNeg)) {
+                setMessageError("Número de celular o télefono de la empresa no es válido. Debe tener 10 dígitos.");
+                setShowError(true);
+                return;
+            }
+        }
+        
         if(parseInt(totalIngre.replace(/[^0-9]/g, ''), 10) < 650000){
             setMessageError('El total de ingresos no puede ser menor a $ 650.000');
             setShowError(true);
@@ -133,8 +141,8 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
             ...formData, 
             acti_CIIU: actiCiiu,
             desc_CIIU: descCiiu,
-            Nom_empre_neg: nomEmpreNeg,
-            ciu_empre_neg: ciuEmpreNeg,
+            Nom_empre_neg: actiCiiu === '0020' || actiCiiu === '9700' || actiCiiu === '8522' ? "No reporta" : nomEmpreNeg,
+            ciu_empre_neg: actiCiiu === '0020' || actiCiiu === '9700' || actiCiiu === '8522' ? "11001" : ciuEmpreNeg,
             dire_empre_neg: 'No reporta',
             tel_empre_neg: telEmpreNeg,
             cargo: actiCiiu === '' || actiCiiu === '0010' ? cargo : descCiiu,

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { styles } from "./infoGeneral.styles";
-import Inputs from "@/components/forms/inputs/inputs";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
-import { listCivilStatusType, listEducationType, listGenderType, listOcupationType, listUbicationZoneType } from "@/utils/listUtils";
+import { listCivilStatusType, listEducationType, listGenderType, listOcupationType } from "@/utils/listUtils";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { getData, setData } from "@/utils/storageUtils";
 import { AnimatePresence } from "moti";
@@ -31,7 +30,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
     const [civilStatus, setCivilStatus] = useState('');
     const [education, setEducation] = useState('');
     const [ocupation, setOcupation] = useState('');
-    const [ubicationZone, setUbicationZone] = useState(''); 
     const [ciudMuni, setCiudMuni] = useState('');
     const [address, setAddress] = useState('');
     const [isExtranjero, setIsExtranjero] = useState('');
@@ -41,7 +39,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
         estado_civil: '',
         niv_edu: '',
         ocupacion: '',
-        zon_ubi: '',
         ciud_muni: '',
         dire_domi: ''
     });
@@ -52,16 +49,16 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
     ];
 
     useEffect(() => {        
-        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && address && isExtranjero : ciudMuni && address;     
+        let allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ciudMuni && address && isExtranjero : ciudMuni && address;     
 
         if(isExtranjero === '1'){
-            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ubicationZone && ciudMuni && address && isExtranjero && paisNacimiento : ciudMuni && address;
+            allFieldsFilled = gender && type !== '8' ? civilStatus && education && ocupation && ciudMuni && address && isExtranjero && paisNacimiento : ciudMuni && address;
         } else {
             setPaisNacimiento('');
         }
 
         setIsButtonEnabled(!!allFieldsFilled);
-    }, [gender, civilStatus, education, ocupation, ubicationZone, ciudMuni, address, isExtranjero, paisNacimiento]);
+    }, [gender, civilStatus, education, ocupation, ciudMuni, address, isExtranjero, paisNacimiento]);
 
     useEffect(() => {  
         const fetchFormData = async () => {
@@ -71,7 +68,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                 setCivilStatus(savedData.estado_civil);
                 setEducation(savedData.niv_edu);
                 setOcupation(savedData.ocupacion);
-                setUbicationZone(savedData.zon_ubi);
                 setCiudMuni(savedData.ciud_muni)
                 setAddress(savedData.dire_domi);
                 setIsExtranjero(savedData.extrenjero);
@@ -79,7 +75,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                 if(savedData.extrenjero === '1'){
                     setPaisNacimiento(savedData.pais_nacimiento);
                 }
-
                 setIsVisible(true);
             }
         };
@@ -99,7 +94,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
             estado_civil: civilStatus,
             niv_edu: education,
             ocupacion: ocupation,
-            zon_ubi: ubicationZone,
             ciud_muni: ciudMuni,
             dire_domi: address,
             extrenjero: isExtranjero,
@@ -178,16 +172,6 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                         placeholder="Seleccione una opción"
                                         onSelect={handleSelect(setOcupation)}
                                         selectedValue={ocupation}
-                                    />
-                                </View>
-                                <View style={styles.mb5}>
-                                    <SearchSelect
-                                        isRequired
-                                        label="Zona de ubicación"
-                                        data={listUbicationZoneType}
-                                        placeholder="Seleccione una opción"
-                                        onSelect={handleSelect(setUbicationZone)}
-                                        selectedValue={ubicationZone}
                                     />
                                 </View>
                             </>

@@ -5,6 +5,21 @@ const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
 export const styles = StyleSheet.create({
+    headerContainer: {
+        position: 'absolute',
+        width:'90%',
+        top: 0,
+        left: 20,
+        right: 0,
+        zIndex: 1000,
+     },
+
+     contentContainer:{
+        marginTop: 70,
+        paddingHorizontal: 16,
+        flex: 1,
+     },
+    
     mt5: {
       marginTop: 10
     },
@@ -28,7 +43,7 @@ export const styles = StyleSheet.create({
     containerText: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 20
+        marginVertical: 10
     },
     title: {
         marginBottom: 5
@@ -38,5 +53,10 @@ export const styles = StyleSheet.create({
     },
     mrnPinEmpty: {
         marginRight: -25
+    },
+    gesture:{
+        width: '100%', 
+        height: '100%' ,
+        justifyContent: 'center'
     }
  });

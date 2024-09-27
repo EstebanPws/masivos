@@ -28,7 +28,7 @@ export default function Page() {
     <ViewFadeIn isWidthFull>
         <HeaderForm
             onBack={() => handleBack()}
-            title="Canales de atención"
+            title="Defensor del consumidor"
         />
         <View style={styles.info}>
           <ScrollView contentContainerStyle={[styles.container]} showsVerticalScrollIndicator={false}>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from "./addressDian.styles";
 import Modal from 'react-native-modal';
 import Constants from 'expo-constants';
@@ -21,8 +21,9 @@ interface AddressDianProps {
     placeholder: string;
     onSelect: (item: any) => void;
     selectedValue: any;
+    disabled?: boolean;
 }
-export default function AddressDian({ isRequired = false, label, placeholder, onSelect, selectedValue = '' }: AddressDianProps) {
+export default function AddressDian({ isRequired = false, label, placeholder, onSelect, selectedValue = '', disabled = false}: AddressDianProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedType, setSelectedType] = useState('');
@@ -42,7 +43,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
 
     const handleConfirm = () => {
 
-        const allFieldsFilled = selectedType && selectedNumber && selectedLetter && selectedSuffix;
+        const allFieldsFilled = selectedType && selectedNumber && selectedLetter;
         if (!!allFieldsFilled === false) {
             setError(true);
             return;    
@@ -61,7 +62,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
     return (
         <View>
             <Text style={{ ...styles.label, ...primaryBold }}>{isRequired ? `${label} *` : label}</Text>
-            <TouchableOpacity onPress={toggleModal} style={styles.inputContainer}>
+            <TouchableOpacity onPress={toggleModal} style={[styles.inputContainer, disabled ? { opacity: .5 } : null]} disabled={disabled}>
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>{selectedValue || searchQuery || placeholder}</Text>
                 <LinearGradient
                     colors={[colorPrimary, colorSecondary]}
@@ -116,7 +117,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                                 placeholder={'Seleccione una opción'} 
                                 onSelect={handleSelect(setSelectedSuffix)} 
                                 selectedValue={selectedSuffix}  
-                                isRequired                 
+                                isRequired={false}               
                             />
                         </View>
                         <View style={styles.mb5}>

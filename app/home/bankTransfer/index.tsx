@@ -1,19 +1,29 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
-import { useFocusEffect } from "expo-router";
-import { ScrollView, View, Image, Platform } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import { useBackHandler } from '@react-native-community/hooks';
+import { ScrollView, View, Image, Platform, PanResponder } from "react-native";
 import { styles } from "./bankTransfer.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import InfoModal from "@/components/modals/infoModal/infoModal";
-import { validateNumber } from "@/utils/validationForms";
 import AddAccount from "@/components/amount/addAccount/addAccount";
 import ConfirmBankTransfer from "@/components/amount/confirmBankTransfer/confirmBankTransfer";
 import Constants from "expo-constants";
+import InfoModalConfirm from "@/components/modals/infoModalConfirm/infoModalConfirm";
+import ConfirmBankTransferSuccess from "@/components/amount/confirmBankTransferSuccess/confirmBankTransferSuccess";
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { PDFDocument } from "pdf-lib";
+import { captureRef } from "react-native-view-shot";
+import { getBalance, getData, getNumberAccount } from "@/utils/storageUtils";
+import { validateNumber } from "@/utils/validationForms";
+import instanceWallet from "@/services/instanceWallet";
+import OtpValidationRegisterModal from "@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -24,17 +34,18 @@ interface Select {
     onSelect: (item: any) => void;
     selectedValue: any;
     name?: string;
+    digit?: string;
 }
 
 const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
-    const { setActiveTab, goBack, activeLoader, desactiveLoader } = useTab();
+    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [concepto, setConcepto] = useState('');
     const [valMax] = useState('2000000');
     const [valMin] = useState('10000');
-    const [comision] = useState('4300');
+    const [comision] = useState('0');
     const [showAddAccount, setShowAddAccount] = useState(false);
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -46,11 +57,17 @@ export default function Page() {
     const [typeBank, setTypeBank] = useState('');
     const [banks, setBanks] = useState('');
     const [bankName, setBankName] = useState('');
+    const [digitBank, setDigitBank] = useState('')
     const [disableContinue, setDisableContinue] = useState(true);
     const [step, setStep] = useState(0);
     const [confirmInfo, setConfirmInfo] = useState(false);
     const [typeModal, setTypeModal] = useState<'error' | 'info' | 'success'>('error');
     const [titleModal, setTitleModal] = useState<string | null>(null);
+    const [showConfirmTransfer, setShowConfirmTransfer] = useState(false);
+    const viewRef = useRef(null);
+    const [nullView, setNullView] = useState(true); 
+    const [showOtpValidation, setShowOtpValidation] = useState(false);
+    const [idTx, setIdTx] = useState('');
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -88,7 +105,8 @@ export default function Page() {
     }
 
     const handleSelectBank = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
-        setBankName(item.name)
+        setBankName(item.name);
+        setDigitBank(item.digit);
         setter(item.value);
     };
 
@@ -99,7 +117,8 @@ export default function Page() {
     const inputBanks: Select = {
         onSelect: handleSelectBank(setBanks),
         selectedValue: banks,
-        name: bankName
+        name: bankName,
+        digit: digitBank
     }
 
     const inputTypeBank: Select = {
@@ -115,32 +134,24 @@ export default function Page() {
         goBack();
     }; 
 
-    const handleNext = () => {
-        const valueFinal = validateNumber(valRecharge);
-        
+    const handleNext = async () => {
+        const balance = await getBalance();
+
         if(!valRecharge){
             setTypeModal('error');
             setTitleModal(null);
             setMessageError('Por favor ingresa un monto valido.');
             setShowError(true);
             return;
-        } 
-
-        if(valueFinal > valMax){
-            setTypeModal('error');
-            setTitleModal(null);
-            setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
-            setShowError(true);
-            return;
-        } 
-
-        if(valueFinal < valMin){
-            setTypeModal('error');
-            setTitleModal(null);
-            setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
-            setShowError(true);
-            return;
         }
+
+        if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
+            setTypeModal('error');
+            setTitleModal(null);
+            setMessageError('Saldo insuficiente');
+            setShowError(true);
+            return;
+        } 
 
         setShowAddAccount(true);
         setStep(1);
@@ -149,22 +160,83 @@ export default function Page() {
     const handleBackStep = () => {
         if (step === 1) {
             setShowAddAccount(false);
+            setStep(0);
         } else if (step === 2) {
             setShowAddAccount(true);
             setDisableContinue(true);
             setConfirmInfo(false);
-            setStep(1)
+            setStep(1);
+        } else {
+            setShowConfirmTransfer(false);
+            setShowAddAccount(false);
+            setDisableContinue(true);
+            setConfirmInfo(false);
+            setStep(0);
+            setValRecharge('');
+            setConcepto('');
+            setNames('');
+            setSurnames('');
+            setAlias('');
+            setAccountNumber('');
+            setDocument('');
+            setBanks('');
+            setTypeBank('');
+            router.push('/home');
         }
     }
 
-    const handleFinal = () => {
+    const handleFinal = async () => {
         activeLoader();
-        setMessageError('Hubo un error al intentar realizar la transacción.');
-        setShowError(true);
-        setTypeModal('error');
-        setTitleModal(null);
+
+        const account = await getNumberAccount();
+        const infoClient = await getData('infoClient');
+        
+        const body = {
+            header: {
+                OriginatorAccount: account?.startsWith('0') ? account.slice(1) : account,
+                OriginatorIdentification: infoClient.numDoc,
+                OriginatorName: `${infoClient.firstName.trim()} ${infoClient.firstSurname.trim()}`
+            },
+            transaction: {
+                RecipientIdentification: document,
+                TransactionValue: String(validateNumber(valRecharge)),
+                Name: names.replaceAll('\n', ' ').trim(),
+                AccountNumber: accountNumber,
+                BankCode: banks,
+                BankAccountType: typeBank,
+                TransactionType: "32",
+                ExternalUuid: "c7e30f88-98cc-4f92-b809-491cc837c5ed",
+                AdditionalInformation: {
+                    UniqueCode: ""
+                }
+            }
+        }
+
+        console.log(body);
+        
+
+        await instanceWallet.post('interBankFile', body)
+        .then(async (response) => {
+            const data = response.data;
+            if(data.status === 200 && data.message.includes('correctamente')) {
+                setIdTx(data.data.ID);
+                setShowOtpValidation(true);
+            }
+        })
+        .catch((error) => {
+            setTypeModal('error');
+            setTitleModal(null);
+            setMessageError('Hubo un error al intentar realizar la transacción, por favor intentelo más tarde.');
+            setShowError(true);
+        });
+
+        
         desactiveLoader();
-        /**setShowAddAccount(false);
+    };
+
+    const handleFinish = () => {
+        setShowConfirmTransfer(false);
+        setShowAddAccount(false);
         setDisableContinue(true);
         setConfirmInfo(false);
         setStep(0);
@@ -176,20 +248,134 @@ export default function Page() {
         setAccountNumber('');
         setDocument('');
         setBanks('');
-        setTypeBank('');*/
+        setTypeBank('');
+        router.replace('/home')
     };
+
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`¿Cuáles son los topes y limites de mi Deposito ordinario?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
         setShowError(true);
         setTypeModal('info');
     }
+
+    const handleShare = async () => {
+        try {
+            activeLoader();
+            const imageUri = await captureRef(viewRef, {
+                format: 'png',
+                quality: 0.8,
+            });
+
+            const pdfUri = await createPdfFromImage(imageUri);
+    
+            if (await Sharing.isAvailableAsync()) {
+                await Sharing.shareAsync(pdfUri, {
+                    mimeType: 'application/pdf',
+                    dialogTitle: 'Compartir comprobante',
+                });
+            } else {
+                console.log('Sharing is not available on this device.');
+            }
+
+            handleFinish();
+            desactiveLoader();
+        } catch (error) {
+            desactiveLoader();
+            console.error('Error capturing and sharing PDF:', error);
+        }
+    };
+
+    const createPdfFromImage = async (imageUri: string) => {
+        const imageBase64 = await FileSystem.readAsStringAsync(imageUri, {
+            encoding: FileSystem.EncodingType.Base64,
+        });
+
+        const pdfDoc = await PDFDocument.create();
+        const page = pdfDoc.addPage();
+
+        const jpgImage = await pdfDoc.embedPng(`data:image/png;base64,${imageBase64}`);
+        const { width, height } = page.getSize();
+        const imageDims = jpgImage.scale(0.5); 
+        const x = (width - imageDims.width) / 2;
+        const y = (height - imageDims.height) / 2;
+
+        page.drawImage(jpgImage, {
+            x,
+            y,
+            width: imageDims.width,
+            height: imageDims.height,
+        });
+    
+        const pdfBytes = await pdfDoc.save();
+        const pdfBase64 = uint8ArrayToBase64(pdfBytes); 
+        const pdfUri = FileSystem.documentDirectory + `Comprobante.pdf`;
+        await FileSystem.writeAsStringAsync(pdfUri, pdfBase64, {
+            encoding: FileSystem.EncodingType.Base64,
+        });
+    
+        return pdfUri;
+    };
+
+    const uint8ArrayToBase64 = (uint8Array: Iterable<number>) => {
+        let binary = '';
+        const bytes = new Uint8Array(uint8Array);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+    };
+
+    const handleGesture = (event: any) => {
+        if (event.nativeEvent.translationX > 100) {
+          handleBackStep();
+        }
+      };
+
+    const panResponder = PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderMove: (event, gestureState) => {
+            handleGesture(gestureState);
+        },
+    });
+
+    useBackHandler(() => { 
+        handleBackStep();
+        return true;
+    });
+
+    useEffect(() => {
+        setNullView(true);
+        if(activeTab === '/home/bankTransfer/'){
+            setShowAddAccount(false);
+            setStep(0);
+            setNullView(false);
+        }
+     }, [activeTab]);
+
+    const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
+        setMessageError(message);
+        setTypeModal(type);
+        setShowError(true);
+    };
+
+    const handleOnFinish = (modalidad?:string) => {
+       if(modalidad === '1') {
+        setShowOtpValidation(false);
+        setShowConfirmTransfer(true);
+       }
+    }
+
+    if(nullView){
+        return null;
+    }
     
     return(
-        <ViewFadeIn isWidthFull>
+        <ViewFadeIn {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
-                onBack={() => handleBack()}
+                onBack={() => handleBackStep()}
                 title="Transferir Fondos"
             />
             {!showAddAccount && (
@@ -207,8 +393,6 @@ export default function Page() {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {!showAddAccount &&(
                             <SelectAmount
-                                valMax={valMax}
-                                valMin={valMin}
                                 comision={comision}
                                 isConcepto
                                 concepto={inputConcepto}
@@ -227,7 +411,14 @@ export default function Page() {
                                 banks={inputBanks}
                                 typeBank={inputTypeBank}
                                 isDisabled
-                                selectAccount={() => {
+                                selectAccount={(account) => {
+                                    setNames(account.name);
+                                    setDocument(account.document);
+                                    setBankName(account.bankName);
+                                    setBanks(account.bank);
+                                    setDigitBank(account.digit);
+                                    setTypeBank(account.typeAccount);
+                                    setAccountNumber(account.numberAccount);
                                     setDisableContinue(false);
                                     setConfirmInfo(true);
                                     setStep(2);
@@ -238,10 +429,10 @@ export default function Page() {
                             <ConfirmBankTransfer 
                                 amount={valRecharge} 
                                 comision={comision} 
-                                names={names} 
+                                names={`${names}\n${surnames}`} 
                                 document={document} 
                                 account={accountNumber} 
-                                bank={banks}
+                                bank={bankName}
                                 concepto={concepto} 
                             />
                         )}
@@ -267,6 +458,36 @@ export default function Page() {
                     )}
                 </KeyboardAwareScrollView>
             </View>
+            {showConfirmTransfer && (
+                <InfoModalConfirm 
+                    label1="Compartir"
+                    label2="Cerrar"
+                    onPress={handleShare} 
+                    onCancel={handleFinish}
+                    isBankTransfer
+                    view={showConfirmTransfer}
+                >
+                     <ConfirmBankTransferSuccess
+                        amount={valRecharge} 
+                        comision={comision} 
+                        names={names} 
+                        document={document} 
+                        account={accountNumber} 
+                        bank={bankName}
+                        concepto={concepto}
+                        viewRef={viewRef} 
+                    />
+                </InfoModalConfirm>
+            )}
+            {showOtpValidation && (
+                <OtpValidationRegisterModal 
+                    type={1}
+                    id={idTx}
+                    onClose={handleOtpValidationResponse} 
+                    onView={()  =>  setShowOtpValidation(false)} 
+                    onFinish={handleOnFinish}                    
+                />
+            )}
             {showError &&(
                 <InfoModal 
                     title={titleModal!}

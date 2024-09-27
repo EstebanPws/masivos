@@ -55,7 +55,7 @@ export default function Page() {
         
         activeLoader();
         const account = await getNumberAccount();
-        const infoClient = await getData('infoClient');
+        const infoClient = await getData('infoClient'); 
         const body = {
             entidad: "9011569983",
             no_cuenta: account,
@@ -101,7 +101,7 @@ export default function Page() {
                     date: `${year}/${month}/${day}`,
                     time: `${hour}:${minutes}:${seconds} ${zoneTime}`,
                     type: transactions.tipo_operacion_movi === 'A' ? "Recibido" : "Enviado",
-                    infoType: dataType[0].desc,
+                    infoType: dataType.length !== 0 ? dataType[0].desc : "",
                     onPress: () => {
                         setTransactionSelected(transactions);
                     }
@@ -115,7 +115,7 @@ export default function Page() {
             desactiveLoader();
         })
         .catch((err) => {
-            console.log(err.response.data);
+            console.log(err);
             
             desactiveLoader();
             setFilteredTransactions([]);
@@ -133,7 +133,11 @@ export default function Page() {
     });
     
     const handleBack = () => {
-        goBack();
+        if(!transactionSelected) {
+            goBack();
+        } else {
+            setTransactionSelected(false);
+        }
     };
 
     const handleFilter = async () => {
@@ -234,7 +238,7 @@ export default function Page() {
         <ViewFadeIn isWidthFull>
             <HeaderForm
                 onBack={() => handleBack()}
-                title="Transacciones"
+                title="Consulta de movimientos"
             />
             {!transactionSelected ? (
                 <View style={[styles.container]}>

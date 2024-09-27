@@ -169,8 +169,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         setShowErrorModal(true);
     };
 
-    const handleOnFinish = (modalidad:string) => {
-        setModalidad(modalidad);
+    const handleOnFinish = (modalidad?:string) => {
+        setModalidad(modalidad!);
         setShowOtpValidation(false);
         modalidad === '0' ? router.replace('/account') : router.replace('/home/');
     }
@@ -182,6 +182,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             </AuthenticationContext.Provider>
              {showOtpValidation && (
                 <OtpValidationRegisterModal 
+                    type={0}
                     numberDocument={documentNumber!}
                     onClose={handleOtpValidationResponse} 
                     onView={()  =>  setShowOtpValidation(false)} 

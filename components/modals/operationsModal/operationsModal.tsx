@@ -16,7 +16,7 @@ interface BntOptions {
 }
 
 interface OperationsModalProps {
-    button1: BntOptions;
+    button1?: BntOptions;
     button2: BntOptions;
     onPress: () => void;
 }

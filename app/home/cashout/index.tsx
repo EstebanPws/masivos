@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
-import { useFocusEffect } from "expo-router";
-import { ScrollView, View, Image, Platform } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import { ScrollView, View, Image, Platform, PanResponder } from "react-native";
 import { styles } from "./cashout.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -13,6 +13,8 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 import { validateNumber } from "@/utils/validationForms";
 import CountdownTimer from "@/components/amount/countdownTimer/countdownTimer";
 import Constants from "expo-constants";
+import { useBackHandler } from "@react-native-community/hooks/lib/useBackHandler";
+import { getBalance } from "@/utils/storageUtils";
 
 
 interface Input {
@@ -23,11 +25,11 @@ interface Input {
 const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
-    const { setActiveTab, goBack } = useTab();
+    const { setActiveTab, goBack, activeTab} = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [valMax] = useState('2000000');
     const [valMin] = useState('10000');
-    const [comision] = useState('4300');
+    const [comision] = useState('0');
     const [showCountDown, setShowCountDown] = useState(false);
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -35,6 +37,7 @@ export default function Page() {
     const [typeModal, setTypeModal] = useState<'error' | 'info' | 'success'>('error');
     const [titleModal, setTitleModal] = useState<string | null>(null);
     const [typeCloseModal, setTypeCloseModal] = useState(1);
+    const [nullView, setNullView] = useState(true); 
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -45,14 +48,35 @@ export default function Page() {
         setActiveTab('/home/cashout/');
     });
     
-    const handleBack = () => {
-        handleBackStep();
-        goBack();
-    }; 
+    const handleGesture = (event: any) => {
+        if (event.nativeEvent.translationX > 100) {
+           handleBackStep
+        }
+      };
 
-    const handleNext = () => {
-        const valueFinal = validateNumber(valRecharge);
-        
+    const panResponder = PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderMove: (event, gestureState) => {
+            handleGesture(gestureState);
+        },
+    });
+
+    useBackHandler(() => {
+        setShowCountDown(false);
+        return true;
+    });
+
+    useEffect(() => {
+        setNullView(true);
+        if(activeTab === '/home/cashout/'){
+            setShowCountDown(false);
+            setNullView(false);
+        }
+     }, [activeTab]);
+
+    const handleNext = async () => {
+        const balance = await getBalance();
+
         if(!valRecharge){
             setMessageError('Por favor ingresa un monto valido.');
             setShowError(true);
@@ -62,21 +86,11 @@ export default function Page() {
             return;
         } 
 
-        if(valueFinal > valMax){
-            setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
-            setShowError(true);
+        if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
             setTypeModal('error');
-            setTypeCloseModal(1);
             setTitleModal(null);
-            return;
-        } 
-
-        if(valueFinal < valMin){
-            setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
+            setMessageError('Saldo insuficiente');
             setShowError(true);
-            setTypeModal('error');
-            setTypeCloseModal(1);
-            setTitleModal(null);
             return;
         }
 
@@ -84,10 +98,13 @@ export default function Page() {
         setStep(1);
     }
 
-    const handleBackStep = () => {
+    const handleBackStep = (type: number) => {
         setValRecharge('');
         setStep(0);
         setShowCountDown(false);
+        if(type === 1){
+            router.replace('/home')
+        }
     }
 
     const handleErrorCode = (response: any) => {
@@ -99,23 +116,27 @@ export default function Page() {
 
     const handelCloseModal = (type: number) => {
         if(type === 0){
-            handleBackStep();
+            handleBackStep(0);
         }
         setShowError(false);
     }
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`¿Cuáles son los topes y limites de mi Deposito ordinario?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
         setShowError(true);
         setTypeCloseModal(1);
         setTypeModal('info');
     }
     
+    if(nullView){
+        return null;
+    }
+
     return(
-        <ViewFadeIn isWidthFull>
+        <ViewFadeIn {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
-                onBack={() => handleBack()}
+                onBack={() => handleBackStep(step === 0 ? 1 : 0)}
                 title="Retirar Fondos"
             />
             <View style={styles.mV1}>
@@ -131,8 +152,6 @@ export default function Page() {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {!showCountDown &&(
                             <SelectAmount
-                                valMax={valMax}
-                                valMin={valMin}
                                 comision={comision}
                                 amount={inputAmount}
                                 type={3}
@@ -143,7 +162,7 @@ export default function Page() {
                            <CountdownTimer
                                 amount={valRecharge}
                                 onError={handleErrorCode}
-                                onFinish={handleBackStep}
+                                onFinish={() => handleBackStep(1)}
                            />
                         )}
                     </ScrollView>
@@ -155,8 +174,8 @@ export default function Page() {
                         />
                     ): (
                         <ButtonsPrimary 
-                            label={'Volver'}
-                            onPress={handleBackStep}
+                            label={'Finalizar'}
+                            onPress={() => handleBackStep(1)}
                         />
                     )}
                 </KeyboardAwareScrollView>

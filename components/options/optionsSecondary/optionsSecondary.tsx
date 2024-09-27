@@ -31,7 +31,7 @@ export default function OptionsSecondary() {
                         color={colorPrimary}
                     />
                 </TouchableOpacity>
-                <Text variant="labelSmall" style={[primaryBold, styles.text]}>Transacciones</Text>
+                <Text variant="labelSmall" style={[primaryBold, styles.text]}>Consulta de{'\n'}movimientos</Text>
             </View>
             <View>
                 <TouchableOpacity style={styles.containerBtn} onPress={() => router.replace('/home/profile/canalAttention')}>

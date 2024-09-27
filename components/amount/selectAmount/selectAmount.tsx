@@ -1,11 +1,10 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper"; 
 import Inputs from "../../forms/inputs/inputs";
 import { styles } from "./selectAmount.styles";
 import Constants from "expo-constants";
 import { formatCurrency } from "@/utils/validationForms";
-import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -27,8 +26,6 @@ interface SelectAmountProps {
 }
 
 export default function SelectAmount({valMax, valMin, comision, isConcepto = false, amount, concepto = { onChangeText: () => {}, value: '' }, type, onShowLimits}:SelectAmountProps) {
-    const [showLimiits, setShowLimits] = useState(false);
-
     return(
         <View style={styles.container}>
             {(valMax || valMin) &&(
@@ -53,9 +50,6 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
             />
             {comision && (
                 <Text style={[primaryBold, styles.text]}>Comisión: {formatCurrency(comision)} COP</Text>
-            )}
-            {type === 3 && (
-                <Text variant='labelMedium' style={[primaryBold, styles.text]}>Nota: Recuerda que puedes retirar en cualquier efecty a nivel nacional.</Text>
             )}
             <Text style={[primaryRegular, styles.text]}>
                 Limites transaccionales 

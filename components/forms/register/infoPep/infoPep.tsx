@@ -11,6 +11,8 @@ import AddressDian from "@/components/forms/addressDian/addressDian";
 import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
 import { listTaxesType } from "@/utils/listUtils";
+import { validatePhone } from "@/utils/validationForms";
+import InfoModal from "@/components/modals/infoModal/infoModal";
 
 interface List {
     name: string;
@@ -36,6 +38,9 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
     const [nombPep, setNombPep] = useState('');
     const [impuesSobVent, setImpuesSobVent] = useState('');
     const [impuesRenta, setImpuesRenta] = useState('');
+    const [viewImpRenta, setViewImpRenta] = useState(false);
+    const [messageError, setMessageError] = useState('');
+    const [showError, setShowError] = useState(false);
     const [formData] = useState({
         Expu_publi: '',
         Reco_publi: '',
@@ -100,6 +105,14 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
     }, []);
 
     const handleSubmit = () => {
+        if(expuPubli === 'S' ||  recoPubli === 'S') {
+            if (!validatePhone(telEstaPeps)) {
+                setMessageError("Número de celular o télefono de la referecia financiera PEPS no es válido. Debe tener 10 dígitos.");
+                setShowError(true);
+                return;
+            }
+        }
+
         setIsVisible(false);
 
         const updatedFormData = { 
@@ -141,6 +154,13 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
         if (type === 'expuPubli') {
             setExpuPubli(value);
         } else if (type === 'impuesSobVent') {
+            if(value === 'N') {
+                setImpuesRenta("4");
+                setViewImpRenta(false);
+            } else {
+                setImpuesRenta("");
+                setViewImpRenta(true);
+            }
             setImpuesSobVent(value);
         } else {
             setRecoPubli(value);
@@ -205,6 +225,7 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
                                         keyboardType="numeric"
                                         onChangeText={setTelEstaPeps}
                                         value={telEstaPeps}
+                                        maxLength={10}
                                     />
                                 </View>
                                 <View style={styles.mb5}>
@@ -243,19 +264,23 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
                                 selectedValue={impuesSobVent}
                             />
                         </View>
-                        <TitleLine 
-                            label="Impuesto de renta"
-                        />
-                        <View style={styles.mb5}>
-                            <SearchSelect
-                                isRequired
-                                label="Régimen al que pertenece"
-                                data={listTaxesType}
-                                placeholder="Seleccione una opción"
-                                onSelect={handleSelect(setImpuesRenta)}
-                                selectedValue={impuesRenta}
-                            />
-                        </View>
+                        {viewImpRenta && (
+                            <>
+                                <TitleLine 
+                                    label="Impuesto de renta"
+                                />
+                                <View style={styles.mb5}>
+                                    <SearchSelect
+                                        isRequired
+                                        label="Régimen al que pertenece"
+                                        data={listTaxesType}
+                                        placeholder="Seleccione una opción"
+                                        onSelect={handleSelect(setImpuesRenta)}
+                                        selectedValue={impuesRenta}
+                                    />
+                                </View>
+                            </>
+                        )}
                         <View style={styles.mV2}>
                             <ButtonsPrimary 
                                 disabled={!isButtonEnabled}
@@ -264,6 +289,14 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
                             />
                         </View>
                     </View>
+                    {showError && (
+                        <InfoModal
+                            isVisible={showError}
+                            type="info"
+                            message={messageError}
+                            onPress={() => setShowError(false)}
+                        />
+                    )}
                 </FadeInOut>
             )}
         </AnimatePresence>

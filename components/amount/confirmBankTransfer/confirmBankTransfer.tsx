@@ -52,7 +52,7 @@ export default function ConfirmBankTransfer({amount, comision, names, document, 
                 {bank && (
                     <View style={[styles.row]}>
                         <Text style={primaryBold}>Entidad:</Text>
-                        <Text style={primaryRegular}>{bank}</Text>
+                        <Text numberOfLines={2} style={[primaryRegular, styles.text]}>{bank}</Text>
                     </View>
                 )}
                 {phone && (

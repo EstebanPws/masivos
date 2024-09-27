@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
     back: {
         position: 'absolute', 
         top: 25,
-        left: -55,
+        left: -25,
         padding: 50,
         zIndex: 2
     },
@@ -15,8 +15,15 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center"
     },
+    headerRelative:{
+        backgroundColor: '#fff',
+        width: 250,
+        borderBottomEndRadius: 20,
+        borderBottomStartRadius: 20,
+        paddingTop: 30,
+        alignItems: 'center',
+    },
     logo: {
-        marginTop: 30,
         width: 200
     },
 })

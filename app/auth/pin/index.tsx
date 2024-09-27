@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { TextInput, View, Image, TouchableOpacity, Platform } from "react-native"
-import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { TextInput, View, Image, TouchableOpacity, Text } from "react-native"
+import { useRouter, useLocalSearchParams } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import NumericKeyboard from "@/components/numericKeyboard/numericKeyboard";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -50,7 +50,7 @@ export default function Page() {
     };
 
     const handleBack = () => {
-        router.back();
+        router.replace('/');
     }
 
     const handleAuthenticate = async () => {
@@ -86,29 +86,35 @@ export default function Page() {
     }
 
     return (
-      <ViewFadeIn>
+      <ViewFadeIn isWidthFull>
         <HeaderGeneral onBack={handleBack}/>
-        <View style={styles.row}>
-            {otpValues.map((value, index) => (
-                <OtpInputs
-                    key={index}
-                    style={index === 3 ? null : styles.otp}
-                    editable={false}
-                    value={value}
-                    isSecure={isSecure}
+        <GestureHandlerRootView style={styles.gesture}>
+            <View style={styles.row}>
+                {otpValues.map((value, index) => (
+                    <OtpInputs
+                        key={index}
+                        style={index === 3 ? null : styles.otp}
+                        editable={false}
+                        value={value}
+                        isSecure={isSecure}
+                    />
+                ))}
+            </View>
+            <View style={styles.rowPin}> 
+                <TouchableOpacity style={styles.pReset}  onPress={() => router.push('/auth/pin/recoverPin/recoverPin')}>
+                    <Text style={{...styles.link, ...primaryBold}}>
+                        ¿Olvidaste tu PIN?
+                    </Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.mAuto}>
+                <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress } onPress={handleAuthenticate}onView={handleViewPin}/>
+                <ButtonsPrimary
+                    label="Acceder a la billetera"
+                    style={styles.mt5}
+                    onPress={handleLogin}
                 />
-            ))}
-        </View>
-        <View style={styles.row}> 
-            <Link href={'/'} style={{...styles.link, ...primaryBold}}>¿Olvidaste tu PIN?</Link>
-        </View>
-        <GestureHandlerRootView>
-            <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress } onPress={handleAuthenticate}onView={handleViewPin}/>
-            <ButtonsPrimary
-                label="Acceder a la billetera"
-                style={styles.mt5}
-                onPress={handleLogin}
-            />
+            </View>
         </GestureHandlerRootView>
         {showError && (
             <InfoModal

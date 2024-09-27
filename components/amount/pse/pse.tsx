@@ -95,7 +95,8 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     isRequired 
                     onChangeText={names.onChangeText}
                     value={names.value}  
-                    keyboardType="default"          
+                    keyboardType="default"
+                    readonly          
                 />
             </View>
             <View style={styles.mb5}>
@@ -106,7 +107,8 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     isRequired 
                     onChangeText={surnames.onChangeText}
                     value={surnames.value}  
-                    keyboardType="default"          
+                    keyboardType="default"
+                    readonly          
                 />
             </View>
             <View style={styles.mb5}>
@@ -117,7 +119,8 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     isRequired 
                     onChangeText={document.onChangeText}
                     value={document.value}  
-                    keyboardType="numeric"          
+                    keyboardType="numeric"
+                    readonly          
                 />
             </View>
             <View style={styles.mb5}>
@@ -128,7 +131,8 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     isRequired 
                     onChangeText={email.onChangeText}
                     value={email.value}  
-                    keyboardType="email-address"          
+                    keyboardType="email-address"
+                    readonly          
                 />
             </View>
             <View style={styles.mb5}>
@@ -138,6 +142,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     onSelect={address.onSelect} 
                     selectedValue={address.selectedValue}
                     isRequired
+                    disabled
                 />
             </View>
             <View style={styles.mb5}>
@@ -149,7 +154,8 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     onChangeText={phone.onChangeText}
                     value={phone.value}  
                     keyboardType="numeric"    
-                    maxLength={10}      
+                    maxLength={10}
+                    readonly      
                 />
             </View>
             <View style={styles.mb5}>

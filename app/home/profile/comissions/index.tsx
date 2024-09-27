@@ -28,15 +28,10 @@ export default function Page() {
     { label: "Cuota de manejo", amount: "$0" },
     { label: "Recarga billetera desde redes aliados de puntos físicos", amount: "$0" },
     { label: "Recargar billetera desde PSE", amount: "$0" },
-    { label: "Tarjeta débito Visa física (La primera vez)", amount: "$0" },
-    { label: "Tarjeta débito Visa virtual", amount: "$0" },
-    { label: "Reposición de tarjeta", amount: "$22.000" },
-    { label: "Compras con tarjetas débito", amount: "$0" },
-    { label: "Retiro dinero puntos físicos aliados", amount: "$4.300" },
+    { label: "Retiro dinero puntos físicos aliados", amount: "$0" },
     { label: "Retiro de dinero en cajeros automáticos (ATM's)", amount: "$6.000" },
-    { label: "Retiro de dinero en cajeros automáticos (ATM's) internacionales", amount: "$10.000" },
     { label: "Transferencias entre billeteras", amount: "$0" },
-    { label: "Transferencias interbancarias (otros bancos)", amount: "$4.300" },
+    { label: "Transferencias interbancarias (otros bancos)", amount: "$0" },
     { label: "Compras en plataformas de contenidos digital", amount: "$0" },
     { label: "Pagos de servicios y recargas móviles", amount: "$0" }
   ];

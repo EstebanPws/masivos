@@ -12,6 +12,7 @@ import { styles } from "./signUp.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 import { setData } from '@/utils/storageUtils';
+import { esConsecutivo } from "@/utils/validationForms";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
@@ -23,6 +24,7 @@ export default function Page() {
     const [isSecure, setIsSecure] = useState(true);
     const [step, setStep] = useState(0);
     const [showErrorPin, setShowErrorPin] = useState(false);
+    const [showMessErrorPin, setShowMessErrorPin] = useState('');
     const [firstPin, setFirstPin] = useState('');
     const [validateAfterSettingPin, setValidateAfterSettingPin] = useState(false);
     const router = useRouter();
@@ -65,6 +67,13 @@ export default function Page() {
     const handleNext = () => {
       if (step === 0) {
         const otpIsEmpty = otpValues.some((val) => val === '');
+        const consecutivo = esConsecutivo(Number(otpValues.join('')));
+        if (consecutivo) {
+          setShowMessErrorPin('El PIN no puede ser consecutivo ó los 4 dígitos no pueden ser iguales.');
+          setShowErrorPin(true);
+          return;
+        }
+
         setPinEmpty(otpIsEmpty);
         if (otpIsEmpty) {
           return;
@@ -77,6 +86,13 @@ export default function Page() {
         setValidateAfterSettingPin(false);
       } else if (step === 1) {
         const otpIsEmpty = otpValues.some((val) => val === '');
+        const consecutivo = esConsecutivo(Number(otpValues.join('')));
+        if (consecutivo) {
+          setShowMessErrorPin('El PIN no puede ser consecutivo ó los 4 dígitos no pueden ser iguales.');
+          setShowErrorPin(true);
+          return;
+        }
+        
         setPinEmpty(otpIsEmpty);
         if (otpIsEmpty) {
           return;
@@ -92,10 +108,12 @@ export default function Page() {
           const fetchFormData = async () => {
             await setData('registrationForm', updatedFormData);
             router.push('/auth/signUp/selectTypeAccount');
+            //router.push('/auth/signUp/videoIdentification');
           };
 
           fetchFormData();
         } else {
+          setShowMessErrorPin(`Los datos ingresados no coinciden. ${'\n\n'} Por favor verifique los datos e intentelo nuevamente.`);
           setShowErrorPin(true);
         }
         setValidateAfterSettingPin(false);
@@ -108,42 +126,45 @@ export default function Page() {
 
     return (
       <>
-        <ViewFadeIn>
-          <HeaderSecondary type={1} onBack={handleBack}/>
-          <View style={styles.mt5}>
-            <View style={styles.containerText}>
-              <Text variant="titleLarge" style={{...primaryBold, ...styles.title}}>Configurar un nuevo PIN</Text>
-              <Text variant="titleMedium" style={{...primaryRegular}}>{step === 0 ? 'Selecciona un código de 4 dígitos' : 'Confirmar nuevo PIN'}</Text>
-            </View>
-            <View style={[styles.row, (pinEmpty ? styles.mrnPinEmpty : styles.mrn)]}>
-                {otpValues.map((value, index) => (
-                    <OtpInputs
-                        key={index}
-                        style={index === 3 ? (pinEmpty ? styles.otpError : null) : (pinEmpty ? styles.otpError : styles.otp)}
-                        editable={false}
-                        isSecure={isSecure}
-                        value={value}
-                    />
-                ))}
-            </View>
-            <GestureHandlerRootView>
-                <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress} onView={handleViewPin}/>
-                <ButtonsPrimary
-                    label="Siguiente"
-                    style={styles.mt5}
-                    onPress={handleNext}
-                />
-            </GestureHandlerRootView>
+      <View style={styles.headerContainer}>
+        <HeaderSecondary type={1} onBack={handleBack} />
+      </View>
+          
+      <ViewFadeIn>
+        <View style={[styles.mt5, styles.contentContainer]}>
+          <GestureHandlerRootView style={styles.gesture}>
+          <View style={styles.containerText}>
+            <Text variant="titleLarge" style={{...primaryBold, ...styles.title}}>Configurar un nuevo PIN</Text>
+            <Text variant="titleMedium" style={{...primaryRegular}}>{step === 0 ? 'Selecciona un código de 4 dígitos' : 'Confirmar nuevo PIN'}</Text>
           </View>
-        </ViewFadeIn>
-        {showErrorPin && (
-          <InfoModal
-              isVisible={showErrorPin}
-              type="info"
-              message={`Los datos ingresados no coinciden. ${'\n\n'} Por favor verifique los datos e intentelo nuevamente.`}
-              onPress={() => setShowErrorPin(false)}
-          />
-        )}
-      </>
-    );
+          <View style={[styles.row, (pinEmpty ? styles.mrnPinEmpty : styles.mrn)]}>
+              {otpValues.map((value, index) => (
+                  <OtpInputs
+                      key={index}
+                      style={index === 3 ? (pinEmpty ? styles.otpError : null) : (pinEmpty ? styles.otpError : styles.otp)}
+                      editable={false}
+                      isSecure={isSecure}
+                      value={value}
+                  />
+              ))}
+          </View>
+              <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress} onView={handleViewPin}/>
+              <ButtonsPrimary
+                  label="Siguiente"
+                  style={styles.mt5}
+                  onPress={handleNext}
+              />
+          </GestureHandlerRootView>
+        </View>
+      </ViewFadeIn>
+      {showErrorPin && (
+        <InfoModal
+            isVisible={showErrorPin}
+            type="info"
+            message={showMessErrorPin}
+            onPress={() => setShowErrorPin(false)}
+        />
+      )}
+    </>
+  );
 }

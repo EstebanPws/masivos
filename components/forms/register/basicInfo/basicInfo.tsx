@@ -88,32 +88,46 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
         setIsButtonEnabled(!!allFieldsFilled);
     }, [names, surnames, birthDate, placeBirthDate, typeDocument, inputDocument, birthDateDoc, placeBirthDateDoc, phone, email, isExtranjero, paisNacimiento, namesRefPer, phoneRefPer]);
 
-    useEffect(() => {  
-        const fetchFormData = async () => {
-            const savedData = await getData('registrationForm');
-            if (savedData) {
+    const fetchFormData = async () => {
+        const savedData = await getData('registrationForm');
+        if (savedData) {
+            if (savedData.nombre1 !== undefined && savedData.nombre1 !== undefined && savedData.apellido1  !== undefined && savedData.apellido2 !== undefined && type !== 1) {
                 setNames(type === 1 ? savedData.r_l_nombres : `${savedData.nombre1} ${savedData.nombre2}`);
                 setSurnames(type === 1 ?`${savedData.r_l_pri_ape} ${savedData.r_l_seg_ape}` : `${savedData.apellido1} ${savedData.apellido2}`);
-                setBirthDate(type === 1 ? savedData.r_l_fecnacimie : savedData.fecha_nac);
-                setPlaceBirthDate(type === 1 ? savedData.r_l_ciu_nacimiento : savedData.lug_nac);
-                setTypeDocument(type === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc);
-                setInputDocument(type === 1 ? savedData.r_l_ced : savedData.no_docum);
-                setBirthDateDoc(type === 1 ? savedData.r_l_fecha_expdoc : savedData.fecha_exp);
-                setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.expedida_en);
-                setPhone(type === 1 ? savedData.r_l_tel : savedData.numero_celular);
-                setEmail(type === 1 ? savedData.r_l_email : savedData.correo);
-                if(type === 1){
-                    setCiudMuniJur(savedData.r_l_ciu);
-                    setAddressJur(savedData.r_l_dir);
-                    setIsExtranjero(savedData.extrenjero);
-                    setNamesRefPer(savedData.r_l_ref_per_nombres);
-                    setPhoneRefPer(savedData.r_l_ref_per_tel);
-                }
-                setTipoPer(savedData.tipo_pers);
-                setIsVisible(true);
-            }
-        };
+            } 
 
+            if (type === 1 && savedData.r_l_fecnacimie) {
+                setBirthDate(savedData.r_l_fecnacimie ? savedData.r_l_fecnacimie  : '');
+            } else if (type === 0 && savedData.fecha_nac) {
+                setBirthDate(savedData.fecha_nac ? savedData.fecha_nac  : '');
+            }
+            setPlaceBirthDate(type === 1 ? savedData.r_l_ciu_nacimiento : savedData.lug_nac);
+            setTypeDocument(type === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc);
+            setInputDocument(type === 1 ? savedData.r_l_ced : savedData.no_docum);
+
+            if (type === 1 && savedData.r_l_fecha_expdoc) {
+                setBirthDateDoc(savedData.r_l_fecha_expdoc ? savedData.r_l_fecha_expdoc : '');
+            } else if (type === 0 && savedData.fecha_exp) {
+                setBirthDateDoc(savedData.fecha_exp ? savedData.fecha_exp: '');
+            }
+           
+            setPlaceBirthDateDoc(type === 1 ? savedData.r_l_expedida : savedData.expedida_en);
+            setPhone(type === 1 ? savedData.r_l_tel : savedData.numero_celular);
+            setEmail(type === 1 ? savedData.r_l_email : savedData.correo);
+            if(type === 1){
+                setCiudMuniJur(savedData.r_l_ciu);
+                setAddressJur(savedData.r_l_dir);
+                setIsExtranjero(savedData.extrenjero);
+                setNamesRefPer(savedData.r_l_ref_per_nombres);
+                setPhoneRefPer(savedData.r_l_ref_per_tel);
+            }
+            setTipoPer(savedData.tipo_pers);
+            setIsVisible(true);
+        }
+      
+    };
+
+    useEffect(() => {  
         fetchFormData();
     }, []);
 
@@ -142,6 +156,27 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
         }
         if (!validateEmail(email)) {
             setMessageError("Correo electrónico no es válido.");
+            setShowError(true);
+            return;
+        }
+
+        const year1 = formatDateWithoutSlash(birthDate).substring(0, 4);
+        const year2 = formatDateWithoutSlash(birthDateDoc).substring(0, 4);
+        
+        if ((Number(year2) - Number(year1)) < 18) {
+            setMessageError("La persona debe ser mayor de edad.");
+            setShowError(true);
+            return;
+        }
+
+        if (Number(formatDateWithoutSlash(birthDate)) > Number(formatDateWithoutSlash(birthDateDoc))) {
+            setMessageError("La fecha de nacimiento no puede ser menor a la fecha de expedición del documento.");
+            setShowError(true);
+            return;
+        }
+
+        if (Number(formatDateWithoutSlash(birthDate)) === Number(formatDateWithoutSlash(birthDateDoc))) {
+            setMessageError("La fecha de nacimiento no puede ser igual a la fecha de expedición del documento.");
             setShowError(true);
             return;
         }

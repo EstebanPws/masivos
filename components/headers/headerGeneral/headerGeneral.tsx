@@ -17,7 +17,9 @@ export default function HeaderGeneral ({onBack} : HeaderGeneral) {
                 />
             </TouchableOpacity>
             <View style={styles.row}>
-                <Image source={require('../../../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
+                <View style={styles.headerRelative}>
+                    <Image source={require('../../../assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
+                </View>
             </View>
         </View>
     )

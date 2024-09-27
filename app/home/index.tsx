@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { View } from "moti";
 import { Image, ImageSourcePropType } from "react-native";
 import { styles } from "./home.styles";
@@ -12,8 +12,8 @@ import OptionsSecondary from "@/components/options/optionsSecondary/optionsSecon
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import OperationsModal from "@/components/modals/operationsModal/operationsModal";
-import instanceWallet from "@/services/instanceWallet";
 import { getData, setData } from "@/utils/storageUtils";
+import instanceWallet from "@/services/instanceWallet";
 
 interface BntOptions {
   name: string;
@@ -22,7 +22,7 @@ interface BntOptions {
 }
 
 export default function Page() {
-  const { setActiveTab } = useTab();
+  const { setActiveTab, activeLoader } = useTab();
   const [showOperationsRecharge, setShowOperationsRecharge] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const { type } = useLocalSearchParams();
@@ -52,14 +52,15 @@ export default function Page() {
           ciudadRes: data.ciudadRes,
           barrio: data.account[0].barrio,
           direRes: data.dirRes.trim()
-        };
+      };
         
         await setData('infoClient', infoClient);
   
-        return data.nombres1;
+        return data.cliente.nombres1;
       } catch (error) {
         const infoClient = { infoClient: false };
         await setData('infoClient', infoClient);
+  
         return null; 
       }
     }
@@ -101,11 +102,15 @@ export default function Page() {
     })
   };
 
+  if (!shouldRefresh) {
+    return null;
+  }
+
   return (
     <ViewFadeIn isWidthFull>
       <View style={styles.container}>
         <View style={styles.main}>
-          <View style={styles.row}>
+          <View style={[styles.row]}>
             <Image source={require('@/assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
             <ButtonLogOut />
           </View>

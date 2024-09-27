@@ -3,8 +3,8 @@ import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { ScrollView, View, Image, Platform, Linking, Alert } from "react-native";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { ScrollView, View, Image, Platform, Linking, Alert, PanResponder } from "react-native";
 import { styles } from "./recharge.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -14,12 +14,13 @@ import RequestRecharge from "@/components/amount/requestRecharge/requestRecharge
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { validateNumber } from "@/utils/validationForms";
 import Constants from "expo-constants";
-import { getData, getNumberAccount } from "@/utils/storageUtils";
+import { getBalance, getData, getNumberAccount } from "@/utils/storageUtils";
 import { generateUniqueId } from "@/utils/fomatDate";
 import instanceWallet from "@/services/instanceWallet";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
 import { ShouldStartLoadRequest, WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
+import { useBackHandler } from "@react-native-community/hooks";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -34,10 +35,11 @@ interface Select {
 const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
-    const { setActiveTab, goBack, activeLoader, desactiveLoader} = useTab();
+    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [valMax] = useState('2000000');
     const [valMin] = useState('10000');
+    const [comision] = useState('0');
     const [showPse, setShowPse] = useState(false);
     const [names, setNames] = useState('');
     const [surnames, setSurnames] = useState('');
@@ -54,6 +56,7 @@ export default function Page() {
     const [titleModal, setTitleModal] = useState<string | null>(null);
     const [urlPse, setUrlPse] = useState('');
     const [finalTransaction, setFinalTransaction] = useState(false);
+    const [nullView, setNullView] = useState(true); 
 
     const fetchInfoClient = async () => {
         const infoClient = await getData('infoClient');
@@ -67,7 +70,7 @@ export default function Page() {
 
     const fetchCrateTransaction = async () => {
         const account = await getNumberAccount();
-        let accountFinal = account?.startsWith('0') ? account.slice(1, -1) : account;
+        let accountFinal = account?.startsWith('0') ? account.slice(1) : account;
         const body = {
             amount : validateNumber(valRecharge),
             no_cuenta: accountFinal,
@@ -153,6 +156,35 @@ export default function Page() {
         onSelect: handleSelectBanks(setBanks),
         selectedValue: banks
     }
+
+    const handleGesture = (event: any) => {
+        if (event.nativeEvent.translationX > 100) {
+            setShowPse(false);
+        }
+      };
+
+    const panResponder = PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderMove: (event, gestureState) => {
+            handleGesture(gestureState);
+        },
+    });
+
+    useBackHandler(() => {
+        setShowPse(false);
+        if(!showPse){
+            router.push('/home');
+        }
+        return true;
+    });
+
+    useEffect(() => {
+        setNullView(true);
+        if(activeTab === '/home/recharge/'){
+            setShowPse(false);
+            setNullView(false);
+        }
+     }, [activeTab]) 
     
     useFocusEffect(() => {
         setActiveTab('/home/recharge/');
@@ -188,9 +220,9 @@ export default function Page() {
         }
     };
 
-    const handleNext = (type: number) => {
+    const handleNext = async (type: number) => {
        if(type === 0){
-        const valueFinal = validateNumber(valRecharge);
+        const balance = await getBalance();
         
         if(!valRecharge){
             setTitleModal(null);
@@ -198,21 +230,13 @@ export default function Page() {
             setShowError(true);
             setTypeModal('error');
             return;
-        } 
+        }
 
-        if(valueFinal > valMax){
-            setTitleModal(null);
-            setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
-            setShowError(true);
+        if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
             setTypeModal('error');
-            return;
-        } 
-
-        if(valueFinal < valMin){
             setTitleModal(null);
-            setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
+            setMessageError('Saldo insuficiente');
             setShowError(true);
-            setTypeModal('error');
             return;
         }
         
@@ -231,7 +255,7 @@ export default function Page() {
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`¿Cuáles son los topes y limites de mi Deposito ordinario?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
         setShowError(true);
         setTypeModal('info');
     }
@@ -269,8 +293,12 @@ export default function Page() {
         setFinalTransaction(false);
     }
 
+    if(nullView){
+        return null;
+    }
+
     return(
-        <ViewFadeIn isWidthFull>
+        <ViewFadeIn {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
                 onBack={() => handleBack()}
                 title={`Recargar - ${type === '0'? 'Solicitar recarga' : 'PSE'}`}
@@ -292,8 +320,6 @@ export default function Page() {
                                     <>
                                         {!showPse &&(
                                             <SelectAmount
-                                                valMax={valMax}
-                                                valMin={valMin}
                                                 comision="0"
                                                 amount={inputAmount}
                                                 type={0}

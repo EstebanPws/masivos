@@ -27,6 +27,16 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       maxHeight: 700
     },
+    modalContainerBankTransfer: {
+      width: width * 0.8,
+      padding: 10,
+      backgroundColor: '#ffffff',
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: colorPrimary,
+      maxHeight: 700,
+      marginTop: 50
+    },
     message: {
       fontSize: 16,
       textAlign: 'center',

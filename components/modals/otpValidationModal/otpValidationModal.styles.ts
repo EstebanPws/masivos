@@ -67,7 +67,8 @@ export const styles = StyleSheet.create({
         fontSize: 13
     },
     ml5: {
-        marginLeft: 15
+        marginRight: -10,
+        marginLeft: 10
     },
     textCenter: {
         textAlign: 'center'

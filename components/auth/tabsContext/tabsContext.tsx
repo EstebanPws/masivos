@@ -69,6 +69,7 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
             BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         };
     });
+    
     return (
         <>
             <TabContext.Provider value={{ activeTab, tabHistory, setActiveTab: handleSetActiveTab, goBack: handleGoBack, activeLoader: handleLoaderActive ,desactiveLoader: handleLoaderDesactive}}>

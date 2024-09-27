@@ -33,6 +33,36 @@ export const validateNumber = (value) => {
     return Number(numberValue);
 };
 
+export const esConsecutivo = (numero) => {
+    const str = numero.toString();
+    let esAscendente = true;
+    let esDescendente = true;
+  
+    const todosIguales = str.split('').every(digito => digito === str[0]);
+    
+    for (let i = 0; i < str.length - 1; i++) {
+      if (parseInt(str[i]) + 1 !== parseInt(str[i + 1])) {
+        esAscendente = false;
+      }
+      if (parseInt(str[i]) - 1 !== parseInt(str[i + 1])) {
+        esDescendente = false;
+      }
+    }
+    
+    return esAscendente || esDescendente || todosIguales;
+  }
+  
+  export const eliminarCaracteresEspeciales = (texto) => {
+    if (typeof texto !== 'string') {
+        return '';
+    }
+  
+    return texto
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9 ]/g, '');
+  };
+
 export const transformDataDbm = (input) => {
     const output = {
         operacion: "C",
@@ -94,13 +124,13 @@ export const transformData = (input) => {
         niv_edu: input.niv_edu,
         lug_nac: input.lug_nac,
         fecha_nac: input.fecha_nac,
-        zon_ubi: input.zon_ubi,
+        zon_ubi: "U",
         dire_domi: input.dire_domi,
         barrio: "No reporta",
         numero_celular: input.numero_celular,
         correo: input.correo,
         ocupacion: parseInt(input.ocupacion, 10),
-        extrenjero: parseInt(input.extrenjero, 10),
+        extrenjero: input.extrenjero,
         tip_vivien: '4',
         acti_CIIU: input.acti_CIIU,
         desc_CIIU: input.desc_CIIU,
@@ -123,7 +153,7 @@ export const transformData = (input) => {
         dire_esta_PEPS: input.dire_esta_PEPS || "",
         ciu_esta_PEPS: input.ciu_esta_PEPS || "",
         tel_esta_PEPS: input.tel_esta_PEPS || "",
-        fami_PEP: input.fami_PEP || "",
+        fami_PEP: "N",
         nomb_PEP: input.nomb_PEP || "",
         impues_sob_vent: input.impues_sob_vent,
         impues_renta: parseInt(input.impues_renta, 10),
@@ -143,7 +173,7 @@ export const transformData = (input) => {
         ciud_opera_extr: input.ciud_opera_extr || "",
         pais_opera_extr: input.pais_opera_extr || "",
         moneda: parseInt(input.moneda, 10),
-        monto: parseInt(input.monto, 10),
+        monto: parseInt(input.monto.replace(/[^0-9]/g, ''), 10),
         env_extractos: input.env_extractos,
         env_cert_costos: input.env_cert_costos,
         auta_env_sms: input.auta_env_sms,
@@ -286,7 +316,7 @@ export const transformDataJuridica = (input) => {
         correo: input.r_l_email || "",
         orig_fondos_jur: "",
         indTinFatca: input.reseeeuu,
-        extrenjero: parseInt(input.extrenjero, 10),
+        extrenjero: 2,
         pais_nacimiento: input.pais_nacimiento || "169",
         terms: true,
         autorizacion: true

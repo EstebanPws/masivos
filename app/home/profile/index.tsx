@@ -145,17 +145,10 @@ export default function Page() {
       <View style={styles.center}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.mb5}>
-            <Text variant="labelLarge" style={[primaryBold]}>Listado de tarjetas</Text>
-            <OptionsProfile
-              onPress={() => router.replace('/home/cards')}
-              title="Gestión de tarjetas"
-            />
-          </View>
-          <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Cuentas bancarias</Text>
             <OptionsProfile
               onPress={() => router.replace('/home/profile/adminAccounts')}
-              title="Administración de cuentas"
+              title="Administración de Contactos de Transferencias"
             />
           </View>
           <View style={styles.mb5}>
@@ -164,10 +157,10 @@ export default function Page() {
               onPress={() => router.replace('/home/profile/personalInfo')}
               title="Datos personales"
             />
-            <OptionsProfile
+            {/*<OptionsProfile
               onPress={() => router.replace('/home/profile/addressInfo')}
               title="Dirección"
-            />
+            />*/}
           </View>
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Seguridad</Text>

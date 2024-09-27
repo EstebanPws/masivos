@@ -12,6 +12,7 @@ import CheckboxCustom from "../../checkbox/checkbox";
 import TitleLine from "@/components/titleLine/titleLine";
 import {listBienesJurType, listBienesType, listCurrencyType, listOperationType } from "@/utils/listUtils";
 import InfoModal from "@/components/modals/infoModal/infoModal";
+import { validatePhone } from "@/utils/validationForms";
 
 interface List {
     name: string;
@@ -41,7 +42,6 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
     const [moneda, setMoneda] = useState('');
     const [monto, setMonto] = useState('');
     const [nombRefPers, setNombRefPers] = useState('');
-    const [direcRefPers, setDirecRefPers] = useState('');
     const [telRefPers, setTelRefPers] = useState('');
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
@@ -64,7 +64,6 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
         moneda: '0',
         monto: '0',
         nomb_ref_pers: '',
-        direc_ref_pers: '',
         tel_ref_pers: ''
     });
 
@@ -91,7 +90,6 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                 setMoneda(savedData.moneda);
                 setMonto(savedData.monto);
                 setNombRefPers(savedData.nomb_ref_pers);
-                setDirecRefPers(savedData.direc_ref_pers);
                 setTelRefPers(savedData.tel_ref_pers);
                 setIsVisible(true);
             }
@@ -102,7 +100,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
 
     useEffect(() => {        
         const checkAllFieldsFilled = () => {
-            let allFieldsFilled = tipoBienRaices && operaMonedaExtr && nombRefPers && direcRefPers && telRefPers;
+            let allFieldsFilled = tipoBienRaices && operaMonedaExtr && nombRefPers && telRefPers;
 
             if (tipoBienRaices && tipoBienRaices !== '0') {
                 allFieldsFilled = allFieldsFilled && direcBienRaices && ciudBienRaices && valorComerPropi;
@@ -116,7 +114,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
         };
 
         setIsButtonEnabled(!!checkAllFieldsFilled());
-    }, [tipoBienRaices, operaMonedaExtr, nombRefPers, direcBienRaices, ciudBienRaices, valorComerPropi, tipoOpera, nombEntidad, numctaOperint, ciudOperaextr, paisOperaextr, moneda, monto, direcRefPers, telRefPers]);
+    }, [tipoBienRaices, operaMonedaExtr, nombRefPers, direcBienRaices, ciudBienRaices, valorComerPropi, tipoOpera, nombEntidad, numctaOperint, ciudOperaextr, paisOperaextr, moneda, monto, telRefPers]);
 
     useEffect(() => {
         if (isInitial) {
@@ -146,6 +144,18 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
             return;
         }
 
+        if (!validatePhone(telRefPers)) {
+            setMessageError("Número de celular o télefono de la referencia personal no es válido. Debe tener 10 dígitos.");
+            setShowError(true);
+            return;
+        }
+
+        if (nombRefPers.length < 6) {
+            setMessageError("El nombre de la referencia debe tener mínimo 6 carácteres.");
+            setShowError(true);
+            return;
+        }
+
         setIsVisible(false);
 
         const updatedFormData = { 
@@ -163,7 +173,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
             moneda: moneda,
             monto: monto,
             nomb_ref_pers: nombRefPers,
-            direc_ref_pers: direcRefPers,
+            direc_ref_pers: "No reporta",
             tel_ref_pers: telRefPers,
         }; 
 
@@ -349,15 +359,6 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                 keyboardType="default"
                                 onChangeText={setNombRefPers}
                                 value={nombRefPers}
-                            />
-                        </View>
-                        <View style={styles.mb5}>
-                            <AddressDian 
-                                label="Dirección" 
-                                placeholder="Escribe la dirección" 
-                                onSelect={handleSelect(setDirecRefPers)} 
-                                selectedValue={direcRefPers}
-                                isRequired
                             />
                         </View>
                         <View style={styles.mb5}>

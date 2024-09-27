@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";
-import { ScrollView, View, Image, Platform } from "react-native";
+import { ScrollView, View, Image, Platform, PanResponder } from "react-native";
 import { styles } from "./sendMoney.styles";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -14,10 +14,12 @@ import ContactList from "@/components/amount/contactList/contactList";
 import ContactSend from "@/components/amount/contactSend/contactSend";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ConfirmBankTransfer from "@/components/amount/confirmBankTransfer/confirmBankTransfer";
-import { getData, getNumberAccount } from "@/utils/storageUtils";
+import { getBalance, getData, getNumberAccount } from "@/utils/storageUtils";
 import { generateUniqueId } from "@/utils/fomatDate";
 import instanceWallet from "@/services/instanceWallet";
 import Constants from "expo-constants";
+import { useBackHandler } from "@react-native-community/hooks";
+import OtpValidationRegisterModal from "@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -32,11 +34,11 @@ interface ContactSelect {
 const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
-    const { setActiveTab, goBack, activeLoader, desactiveLoader } = useTab();
+    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [valMax] = useState('2000000');
     const [valMin] = useState('10000');
-    const [comision] = useState('4300');
+    const [comision] = useState('0');
     const [showContactList, setShowContactList] = useState(true);
     const [showError, setShowError] = useState(false);
     const [messageError, setMessageError] = useState('');
@@ -46,6 +48,9 @@ export default function Page() {
     const [contactInfo, setContactInfo] = useState<any>(null);
     const [typeFinish, setTypeFinish] = useState(0);
     const [titleModal, setTitleModal] = useState<string | null>(null);
+    const [nullView, setNullView] = useState(true); 
+    const [showOtpValidation, setShowOtpValidation] = useState(false);
+    const [idTx, setIdTx] = useState('');
 
     const fetchSendTransaction = async () => {
         activeLoader();
@@ -56,7 +61,7 @@ export default function Page() {
            orig_ope:"13",
            tipo_mov_ori:"",
            tipo_mov_des:"",
-           prod_orig: account?.startsWith('0') ? account.slice(1,9) : account,
+           prod_orig: account?.startsWith('0') ? account.slice(1) : account,
            doc_prod_orig: `${infoClient.numDoc}`,
            nom_orig:`${infoClient.names} ${infoClient.surnames}`,
            id_tx_entidad: generateUniqueId(),
@@ -68,23 +73,16 @@ export default function Page() {
            tipo_canal_proce:"04",
            valor_comision: Number(comision)
         }
-
+        
         await instanceWallet.post('atc', body)
         .then((response) => {
             const data = response.data;
-            if(!data.message.includes('[')){
-                setTitleModal(null);
-                setMessageError('Transacción completada con éxito.');
-                setShowError(true);
-                setTypeMessage('success');
-
-                setValRecharge('');
-                setShowContactList(true);
-                setStep(0);
-                setTypeFinish(1)
+            if(data.status === 200 && data.message.includes('éxito')){
+                setIdTx(data.data.ID);
+                setShowOtpValidation(true);
             } else {
                 setTitleModal(null);
-                setMessageError('La transacción ha sido rechazada. Por favor intetelo de nuevo más tarde.');
+                setMessageError('La transacción ha sido rechazada. Por favor intentelo de nuevo más tarde.');
                 setShowError(true);
                 setTypeMessage('error');
                 setTypeFinish(0);
@@ -110,16 +108,43 @@ export default function Page() {
         setActiveTab('/home/sendMoney/');
     });
 
+    const handleGesture = (event: any) => {
+        if (event.nativeEvent.translationX > 100) {
+           handleBackStep
+        }
+      };
+
+    const panResponder = PanResponder.create({
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderMove: (event, gestureState) => {
+            handleGesture(gestureState);
+        },
+    });
+
+    useBackHandler(() => {
+        handleBackStep();
+        return true;
+    });
+
+    useEffect(() => {
+        setNullView(true);
+        if(activeTab === '/home/sendMoney/'){
+            setShowContactList(true);
+            setStep(0);
+            setNullView(false);
+        }
+     }, [activeTab]) 
+
     const handleBack = () => {
         goBack();
     };
 
-    const handleNext = (type: number) => {
+    const handleNext = async (type: number) => {
         if(type === 0){
             setShowContactList(false);
             setStep(1);
         } else if (type === 1){
-            const valueFinal = validateNumber(valRecharge);
+            const balance = await getBalance();
 
             if(!valRecharge){
                 setMessageError('Por favor ingresa un monto valido.');
@@ -129,19 +154,11 @@ export default function Page() {
                 return;
             }
 
-            if(valueFinal > valMax){
-                setMessageError('El valor ingresado no puede ser mayor al valor máximo.');
-                setShowError(true);
-                setTypeFinish(0);
+            if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
+                setTypeMessage('error');
                 setTitleModal(null);
-                return;
-            }
-
-            if(valueFinal < valMin){
-                setMessageError('El valor ingresado no puede ser menor al valor mínimo.');
+                setMessageError('Saldo insuficiente');
                 setShowError(true);
-                setTypeFinish(0);
-                setTitleModal(null);
                 return;
             }
 
@@ -157,9 +174,16 @@ export default function Page() {
 
     const handleBackStep = () => {
         if (step === 1) {
+            setValRecharge('');
             setShowContactList(true);
+            setStep(0);
         } else if (step === 2) {
             setStep(1);
+        } else {
+            setValRecharge('');
+            setShowContactList(true);
+            setStep(0);
+            router.push('/home')
         }
     }
 
@@ -190,16 +214,41 @@ export default function Page() {
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`¿Cuáles son los topes y limites de mi Deposito ordinario?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
         setShowError(true);
         setTypeMessage('info');
     }
 
+    const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
+        setMessageError(message);
+        setTypeMessage(type);
+        setShowError(true);
+    };
+
+    const handleOnFinish = (modalidad?:string) => {
+        if(modalidad === '1') {
+         setShowOtpValidation(false);
+         setTitleModal(null);
+         setMessageError('Transacción completada con éxito.');
+         setShowError(true);
+         setTypeMessage('success');
+
+         setValRecharge('');
+         setShowContactList(true);
+         setStep(0);
+         setTypeFinish(1)
+        }
+     }
+
+    if(nullView){
+        return null;
+    }
+
     return(
-        <ViewFadeIn isWidthFull>
+        <ViewFadeIn  {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
-                onBack={() => handleBack()}
-                title="Enviar Fondos"
+                onBack={() => handleBackStep()}
+                title="Enviar fondos a otra moradita"
             />
             {!showContactList && (
                 <View style={styles.mV1}>
@@ -228,8 +277,6 @@ export default function Page() {
                         )}
                         {(!showContactList && step === 1) &&(
                             <SelectAmount
-                                valMax={valMax}
-                                valMin={valMin}
                                 comision={comision}
                                 amount={inputAmount}
                                 type={2}
@@ -262,6 +309,15 @@ export default function Page() {
                     )}
                 </KeyboardAwareScrollView>
             </View>
+            {showOtpValidation && (
+                <OtpValidationRegisterModal 
+                    type={2}
+                    id={idTx}
+                    onClose={handleOtpValidationResponse} 
+                    onView={()  =>  setShowOtpValidation(false)} 
+                    onFinish={handleOnFinish}                    
+                />
+            )}
             {showError &&(
                 <InfoModal 
                     type={typeMessage} 

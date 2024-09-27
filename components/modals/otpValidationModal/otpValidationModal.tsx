@@ -184,7 +184,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                         style={styles.modalContainer}
                     >   
                         {step === 0 &&(
-                            <Text variant='bodyLarge' style={primaryRegular}>Al continuar, acepta recibir correos electrónicos y mensajes de texto relacionados con el proceso. {'\n\n'} A tu dirección de correo electrónico y número de teléfono se enviará un código de verificación. {'\n\n'}Debes verificar primero el código enviado a tu correo electrónico. {'\n\n'}Por favor, revisa tu bandeja de entrada y ingresa el código enviado dando continuar para completar la verificación.</Text>
+                            <Text variant='bodyLarge' style={primaryRegular}>Al continuar, acepta recibir correos electrónicos y mensajes de texto relacionados con el proceso.{'\n\n'}A su dirección de correo electrónico y número de teléfono se enviará un código de verificación.{'\n\n'}Debe verificar primero el código enviado a su correo electrónico.{'\n\n'}Por favor, revise su bandeja de entrada e ingrese el código enviado dando continuar para completar la verificación.</Text>
                         )}
                         {step === 1 && (
                            <>

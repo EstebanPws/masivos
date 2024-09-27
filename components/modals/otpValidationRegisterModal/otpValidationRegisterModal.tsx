@@ -12,18 +12,22 @@ import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button"
 import { Text } from "react-native-paper";
 import instanceWallet from "@/services/instanceWallet";
 import { setSessionToken } from "@/utils/storageUtils";
+import { useTab } from "@/components/auth/tabsContext/tabsContext";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
 
 interface OtpValidationRegisterModalProps {
-    numberDocument: string;
+    type: number;
+    numberDocument?: string;
+    id?: string;
     onClose: (message: string, type: "info" | "success" | "error") => void;
     onView: () => void;
-    onFinish: (modalidad: string) => void;
+    onFinish: (modalidad?: string) => void;
 }
 
-export default function OtpValidationRegisterModal({ numberDocument, onClose, onView, onFinish }: OtpValidationRegisterModalProps) {
+export default function OtpValidationRegisterModal({ type, numberDocument, id, onClose, onView, onFinish }: OtpValidationRegisterModalProps) {
+    const {activeLoader, desactiveLoader} = useTab();
     const [visible] = useState(true);
     const inputRefs = useRef<TextInput[]>([]);
     const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '', '', '']);
@@ -57,6 +61,75 @@ export default function OtpValidationRegisterModal({ numberDocument, onClose, on
         setIsSecure(!isSecure);
     }
 
+    const fetchValidateCodeP2P = async () => {
+        activeLoader();
+        let message;
+        let responseType: "info" | "success" | "error" = "info";
+        let modalidad = "";
+        const code = otpValues.join('');
+        const bodyValidate = {
+            id_tx_entidad: id,
+            codeOtp: code
+        }
+
+        try {
+            const codeEmailValidateResponse = await instanceWallet.post('code', bodyValidate);
+            const responseMessage = codeEmailValidateResponse.data.message;
+           
+            if (responseMessage.includes('completó con éxito')) {
+                modalidad = "1";
+            } else {
+                message = "El código ingresado es incorrecto.";
+                responseType = "error";
+            }
+        } catch (error) {    
+            message = "Hubo un error al intentar verificar el código";
+            responseType =  "error";
+        }
+
+        desactiveLoader();
+
+        return { message, responseType, modalidad };
+    }
+
+    const fetchValidateCodeInter = async () => {
+        activeLoader();
+        let message;
+        let responseType: "info" | "success" | "error" = "info";
+        let modalidad = "";
+        const code = otpValues.join('');
+        const bodyValidate = {
+            header: {},
+            transaction: {
+                AdditionalInformation: {
+                    UniqueCode: id,
+                    code: code
+                }
+            
+            }
+        }
+        
+        try {
+            const codeEmailValidateResponse = await instanceWallet.post('interBankTx', bodyValidate);
+            const responseMessage = codeEmailValidateResponse.data.message;
+            if (responseMessage.includes('Proceso exitoso')) {
+                modalidad = "1";
+            } else {
+                message = "El código ingresado es incorrecto.";
+                responseType = "error";
+            }
+        } catch (error) {    
+            console.log(error);
+            
+            message = "Hubo un error al intentar verificar el código";
+            responseType =  "error";
+        }
+
+        desactiveLoader();
+
+        return { message, responseType, modalidad };
+    }
+
     const fetchValidateCode = async () => {
         let message;
         let responseType: "info" | "success" | "error" = "info";
@@ -67,7 +140,6 @@ export default function OtpValidationRegisterModal({ numberDocument, onClose, on
             no_doc: numberDocument,
             code: code
         }
-
         try {
             const codeEmailValidateResponse = await instanceWallet.post('codeCheck', bodyValidate);
             const responseMessage = codeEmailValidateResponse.data.message;
@@ -88,7 +160,7 @@ export default function OtpValidationRegisterModal({ numberDocument, onClose, on
     }
 
     const handleNext = async () => {
-        let response = await fetchValidateCode();  
+        let response = type === 0 ? await fetchValidateCode() : type === 1 ? await fetchValidateCodeInter() : await fetchValidateCodeP2P();  
         if (response!.responseType !== 'error') {
             const modalidad = response!.modalidad;
             onFinish(modalidad);

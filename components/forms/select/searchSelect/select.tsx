@@ -21,45 +21,49 @@ interface SearchSelectProps {
     disabled?: boolean;
 }
 
-export default function SearchSelect({ isRequired = false, label = '', data, placeholder, onSelect, selectedValue = '', disabled = false}: SearchSelectProps) {
+export default function SearchSelect({ isRequired = false, label = '', data, placeholder, onSelect, selectedValue = '', disabled = false }: SearchSelectProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [filteredData, setFilteredData] = useState(data);
     const [errorOptionSelected, setErrorOptionSelected] = useState('');
 
     useEffect(() => {
+        // Ordena los datos al inicio
         if (data) {
             data.sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name));
         }
     }, [data]);
 
     useEffect(() => {
-        if (data) {
-            const itemSelected = data.find((item: { value: any; }) => item.value === selectedValue) || { name: '', value: '' };
-            setSearchQuery(itemSelected.name);
-            setFilteredData(
-                data.filter((item: { name: string }) => item.name.toLowerCase().includes(itemSelected.name.toLowerCase()))
-            );
-        }
+        // Al seleccionar un valor, solo se actualiza el texto del campo
+       if(data){
+        const itemSelected = data.find((item: { value: any; }) => item.value === selectedValue) || { name: '', value: '' };
+        setSearchQuery(itemSelected.name);
+       }
     }, [data, selectedValue]);
 
     const toggleModal = (type: number) => {
-        if(type === 0){
+        if (type === 0) {
             let isMatch;
-            if(filteredData){
+            if (filteredData) {
                 isMatch = filteredData.some((item: { name: string }) => item.name === searchQuery);
             }
 
             if (isMatch || !isModalVisible) {
                 setModalVisible(!isModalVisible);
+            } else if (!isMatch && !isRequired) {
+                setModalVisible(false);
             } else {
                 setErrorOptionSelected('Debe seleccionar una opción.');
                 setTimeout(() => {
-                    setErrorOptionSelected(''); 
+                    setErrorOptionSelected('');
                 }, 5000);
             }
         } else {
-                setModalVisible(!isModalVisible);
+            // Restablece los datos filtrados cuando se abre el modal
+            setFilteredData(data);
+            setSearchQuery(''); // Limpia la búsqueda
+            setModalVisible(!isModalVisible);
         }
     };
 
@@ -77,7 +81,7 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
     return (
         <View>
             <Text style={{ ...styles.label, ...primaryBold }}>{isRequired ? `${label} *` : label}</Text>
-            <TouchableOpacity disabled={disabled} onPress={() => toggleModal(1)} style={[styles.inputContainer, disabled ? {opacity:  .7} : null]}>
+            <TouchableOpacity disabled={disabled} onPress={() => toggleModal(1)} style={[styles.inputContainer, disabled ? { opacity: .7 } : null]}>
                 <Text style={{ ...styles.inputText, ...primaryRegular }}>{searchQuery || placeholder}</Text>
                 <LinearGradient
                     colors={[colorPrimary, colorSecondary]}
@@ -116,7 +120,7 @@ export default function SearchSelect({ isRequired = false, label = '', data, pla
                         )}
                     />
                     {errorOptionSelected && (
-                        <Text style={[primaryRegular, {color: colorPrimary}]}>{errorOptionSelected}</Text>
+                        <Text style={[primaryRegular, { color: colorPrimary }]}>{errorOptionSelected}</Text>
                     )}
                     <ButtonsPrimary
                         label='Cerrar'

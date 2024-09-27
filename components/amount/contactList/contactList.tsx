@@ -39,7 +39,7 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
   const fetchListContacts = async () => {
     try {
       const response = await instanceWallet.get('getAccountP2P');
-      const dataFinal = response.data.filter((contact: any) => {
+      const dataFinal = response.data.data.filter((contact: any) => {
         let data: any;
         const infoContact = contact.account.filter((contactAccount: any) => {
           if(contactAccount.no_cuenta.startsWith('73000') || contactAccount.no_cuenta.startsWith('87300')) {
@@ -69,18 +69,22 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
         const listContacts = await fetchListContacts();
         const listNumbers = listContacts?.map((contact: any) => {
           let number;
-          contact.account.filter((numberPhone: any) => {
-            if(numberPhone) {
-              number = numberPhone.numero_celular
-            }
-          });
+          if  (contact.account[0].no_cuenta.startsWith('73000') || contact.account[0].no_cuenta.startsWith('87300')) {
+            contact.account.filter((numberPhone: any) => {
+              if(numberPhone) {
+                number = numberPhone.numero_celular
+              }
+            });
+          }
 
           return number;
         });
 
         const filteredContacts = data.filter(contact => {
           return contact.phoneNumbers && contact.phoneNumbers.some(phone => {
-            let number = phone.number?.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '');
+            let number = phone.number?.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '').trim();
+            
+            number?.startsWith('57') ? number = number.slice(-10) : number;
             return listNumbers.includes(number) 
           });
         });
@@ -119,32 +123,39 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
       let final;
       if(response.data.length !== 0) {
         const data = response.data;
-        const document = response.data[0].docCli;
-        const account = response.data[0].account[0].no_cuenta;
+        const accountValid = data.filter((account: any) => {
+            let accValid
+            if(account.account[0].no_cuenta.startsWith('73000') || account.account[0].no_cuenta.startsWith('87300')){
+                accValid = account.account[0].no_cuenta;
+            }
+            return accValid
+        })
+
+        const document = accountValid[0].docCli;
+        const account = accountValid[0].account[0].no_cuenta;
+        
         if(account.startsWith('73000') || account.startsWith('87300')){
             const stateAccounts = await fetchListAccounts(document, account);
-            const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");
+            const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");   
             const uniqueAccounts = new Set<number>();
             const result = data.filter((item: { account: any; }) => {
-                let accountNumbers = item.account.filter((accounts: { no_cuenta: string; }) => parseInt(accounts.no_cuenta)); 
-                
-                const listAccountNumbers = accountNumbers.filter((accountNumber: any) => {
-                    const isActiveAccount = activeAccounts.some((activeAccount: { number: number; }) => { 
-                        return activeAccount.number === parseInt(accountNumber.no_cuenta);
-                    });
+              let accountNumbers = item.account.filter((accounts: { no_cuenta: string; }) => parseInt(accounts.no_cuenta)); 
+              
+              const listAccountNumbers = accountNumbers.filter((accountNumber: any) => {
+                  const isActiveAccount = activeAccounts.some((activeAccount: { number: number; }) => { 
+                      return activeAccount.number === parseInt(accountNumber.no_cuenta);
+                  });
 
-                    if (isActiveAccount && !uniqueAccounts.has(accountNumber.no_cuenta)) {
-                        uniqueAccounts.add(accountNumber.no_cuenta); 
-                        return true; 
-                    }
+                  if (isActiveAccount && !uniqueAccounts.has(accountNumber.no_cuenta)) {
+                      uniqueAccounts.add(accountNumber.no_cuenta); 
+                      return true; 
+                  }
 
-                    return false;
-                })
-                
-                return listAccountNumbers;
-                
+                  return false;
+              })
+              return listAccountNumbers.length > 0;
             });
-
+            
             let contactSelectInfo = {
                 docCli: data[0].docCli,
                 nombres1: data[0].nombres1,
@@ -216,9 +227,9 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
 
   const handleSelect = async (item: Contact) => {
     const number = item.phoneNumbers ? item.phoneNumbers[0].number?.replaceAll(' ', '') : '';
-    const sendNumber = number!.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '')
-    
-    const contactSelect = await fetchListContactSelect(sendNumber);
+    const sendNumber = number!.replace(/^(\+57)?\D+/g, '').replace(/\D+/g, '');
+
+    const contactSelect = await fetchListContactSelect(sendNumber.startsWith('57') ? sendNumber.substring(2, 12) : sendNumber);
     if(contactSelect !== 'success') {
       onResponseContact(contactSelect);
     }

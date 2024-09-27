@@ -16,7 +16,8 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         width: 50,
         height: 50,
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        marginBottom: 10
     },
     text: {
         textAlign: 'center'

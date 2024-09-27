@@ -46,20 +46,23 @@ export default function SideBar() {
         }}
         style={styles.slideBar}
       >
-        <TouchableOpacity onPress={toggleSlideBar} style={styles.buttonClose}>
-            <LinearGradient
-                colors={[colorPrimary, colorSecondary]}
-                style={styles.toggleButtonClose}
-            >
-              <Icon
-                source={'close'}
-                size={24}
-                color='white'
-              />
-            </LinearGradient>
-        </TouchableOpacity>
-        <Text variant="titleLarge" style={[styles.slideBarText, primaryBold]}>Menú</Text>
-        <TouchableOpacity style={{height: 100}} onPress={() => router.push('/account')}>
+       <View style={styles.row}>
+          <Text variant="titleLarge" style={[styles.slideBarText, primaryBold]}>Menú</Text>
+          <TouchableOpacity onPress={toggleSlideBar}>
+              <LinearGradient
+                  colors={[colorPrimary, colorSecondary]}
+                  style={styles.toggleButtonClose}
+              >
+                <Icon
+                  source={'close'}
+                  size={24}
+                  color='white'
+                />
+              </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={{marginTop: 10, height: 100}} onPress={() => router.push('/account')}>
           <View style={styles.rowOption}>
             <Text variant="titleMedium"  style={[primaryRegular]}>Mis cuentas</Text>
             <Icon

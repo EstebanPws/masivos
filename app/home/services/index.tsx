@@ -37,7 +37,7 @@ interface Option {
 }
 
 export default function Page() {
-  const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
+  const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
   const [packageService, setPackageService] = useState('');
   const [valueRecharge, setValueRecharge] = useState('');
   const [recharge, setRecharge] = useState('');
@@ -203,7 +203,7 @@ export default function Page() {
     if(activeTab === '/home/services/'){
       fetchGetServices();
     }
- }, [activeTab])
+ }, [activeTab]) 
   
   useFocusEffect(() => {
     setActiveTab('/home/services/');
@@ -292,7 +292,7 @@ export default function Page() {
           setTypeMessage('success');
           setTypeFinish(1);
       } else {
-          setMessageError('La transacción ha sido rechazada. Por favor intetelo de nuevo más tarde.');
+          setMessageError('La transacción ha sido rechazada. Por favor intentelo de nuevo más tarde.');
           setShowError(true);
           setTypeMessage('error');
           setTypeFinish(0);
@@ -449,7 +449,7 @@ export default function Page() {
           setTypeFinish(1);
           setTypeMessage('success');
       } else {
-          setMessageError('La transacción ha sido rechazada. Por favor intetelo de nuevo más tarde.');
+          setMessageError('La transacción ha sido rechazada. Por favor intentelo de nuevo más tarde.');
           setShowError(true);
           setTypeMessage('error');
           setTypeFinish(0);

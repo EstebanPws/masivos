@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 30,
-        height:'92%',
+        height:'80%',
         padding: 20,
         marginTop: 15
     },
@@ -17,5 +17,9 @@ export const styles = StyleSheet.create({
     },
     mb5:{
         marginBottom: 20
-    }
+    },
+    centerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 })

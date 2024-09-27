@@ -24,7 +24,7 @@ export default function Page() {
   const [address, setAddress] = useState('CL 17 21 32 S');
   const [neighborhood, setNeighborhood] = useState('Ciudad Verde');
   const [ciudMuni, setCiudMuni] = useState('05001');
-  const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
+  const [listMunicipios, setListMunicipios] = useState<List[] | null>([]);
   const [messageError, setMessageError] = useState('');
   const [showError, setShowError] = useState(false);
 
@@ -34,44 +34,42 @@ export default function Page() {
       setCiudMuni(infoClient.ciudadRes);
       setNeighborhood(infoClient.barrio);
       setAddress(infoClient.direRes);
+
+      await fetchData();
     }
 
     fetchInfo();
   }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            activeLoader();
-            const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
-            const municipiosData = municipiosResponse.data;
+  const fetchData = async () => {
+    try {
+        activeLoader();
+        const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
+        const municipiosData = municipiosResponse.data;
 
-            const transformedMunicipios: List[] = municipiosData.map((item: any) => {
-                const municipio = item.municipio;
-                const departamento = item.departamento;
-                let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
+        const transformedMunicipios: List[] = municipiosData.map((item: any) => {
+            const municipio = item.municipio;
+            const departamento = item.departamento;
+            let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
 
-                if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
-                    codigoDane = `0${codigoDane}`;
-                }
+            if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
+                codigoDane = `0${codigoDane}`;
+            }
 
-                return {
-                    name: `${municipio} - ${departamento}`,
-                    value: codigoDane
-                };
-            });
+            return {
+                name: `${municipio} - ${departamento}`,
+                value: codigoDane
+            };
+        });
 
-            setListMunicipios(transformedMunicipios);
-        } catch (err) {  
-            setMessageError("Ha ocurrido un error al intentar cargar los datos.");
-            setShowError(true);
-        } finally {
-           desactiveLoader();
-        }
-    };
-
-    fetchData();
-  }, []);
+        setListMunicipios(transformedMunicipios);
+    } catch (err) {  
+        setMessageError("Ha ocurrido un error al intentar cargar los datos.");
+        setShowError(true);
+    } finally {
+       desactiveLoader();
+    }
+  };
   
   useFocusEffect(() => {
     setActiveTab('/home/profile/addressInfo/');
@@ -103,17 +101,6 @@ export default function Page() {
                   onSelect={handleSelect(setCiudMuni)}
                   selectedValue={ciudMuni}
                 />
-              </View>
-              <View style={styles.mb5}>
-                  <Inputs
-                    label="Barrio"
-                    placeholder="Escribe el barrio donde resides"
-                    isSecureText={false}
-                    isRequired={true}
-                    keyboardType="default"
-                    onChangeText={setNeighborhood}
-                    value={neighborhood}
-                  />
               </View>
               <View style={styles.mb5}>
                 <AddressDian 

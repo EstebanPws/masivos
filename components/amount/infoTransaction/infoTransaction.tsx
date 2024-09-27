@@ -157,14 +157,14 @@ export default function InfoTransaction ({transaction, onPress}: InfoTransaction
                     end={{ x: 1, y: 0 }}
                     style={styles.containerInfo}
                 >
-                    <View style={styles.row}>
+                    {/*<View style={styles.row}>
                         <Text numberOfLines={5} ellipsizeMode='tail' variant='bodySmall' style={[primaryBold, styles.textCenter]}>
                             Id Transacción:
                         </Text>
                         <Text numberOfLines={5} ellipsizeMode='tail' variant='bodySmall' style={[primaryRegular, styles.textCenter, { width: '50%' }]}>
                             {idTx}
                         </Text>
-                    </View>
+                    </View>*/}
                     <View style={styles.row}>
                         <Text numberOfLines={5} ellipsizeMode='tail' variant='bodySmall' style={[primaryBold, styles.textCenter]}>
                             Fecha:
