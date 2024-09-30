@@ -51,5 +51,9 @@ export const styles = StyleSheet.create({
     mb5:{
         marginBottom: 20,
         maxWidth: '100%'
+    },
+    lastLogin: {
+        marginTop: 20,
+        marginHorizontal: 10
     }
 })

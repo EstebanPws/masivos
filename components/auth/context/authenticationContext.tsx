@@ -7,7 +7,7 @@ import instanceWallet from '@/services/instanceWallet';
 import Loader from '@/components/loader/loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtpValidationRegisterModal from '@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal';
-import { setSessionToken } from '@/utils/storageUtils';
+import { getSessionToken, setData, setSessionToken } from '@/utils/storageUtils';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -85,6 +85,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     setDocumentNumber(docWithOtp);
                     setPassword(password);
                     if(response.data.message.startsWith('ey')){
+                        await setData('lastLogin', response.data.data.lastLogin);
                         setSessionToken(response.data.message);
                         setModalidad(response.data.data.modalidad);
                         response.data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
@@ -123,6 +124,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                 setIsAuthenticated(true);
                 setDocumentNumber(docWithOtp);
                 if(response.data.message.startsWith('ey')){
+                    await setData('lastLogin', response.data.data.lastLogin);
                     setSessionToken(response.data.message);
                     setModalidad(response.data.data.modalidad);
                     response.data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
@@ -140,18 +142,40 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             setIsLoading(false);
             setShowErrorModal(true);
         }
-    };    
+    }; 
+    
+    const fetchSessionToken = async () => {
+        const token = await getSessionToken();
+        const body = {
+            token: token,
+            no_docum: documentNumber
+        }
+    
+        await instanceWallet.post('time', body)
+        .then((response) => {
+            if(response.data.status = 200){
+                return 'ok';
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            return 'no save';
+        })
+    }
 
     const logout = async () => {
+        await fetchSessionToken();
         await SecureStore.deleteItemAsync('documentNumber');
         await SecureStore.deleteItemAsync('password');
         await AsyncStorage.removeItem('session_token');
         await AsyncStorage.removeItem('number_account');
         await AsyncStorage.removeItem('balance');
         await AsyncStorage.removeItem('infoClient');
+        await AsyncStorage.removeItem('lastLogin');
         await AsyncStorage.removeItem('listBanks');
         setIsAuthenticated(false);
         setModalidad(null);
+        router.dismissAll();
         router.replace('/');
     };
 

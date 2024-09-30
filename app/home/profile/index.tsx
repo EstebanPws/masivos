@@ -31,13 +31,33 @@ export default function Page() {
   const [messageModal, setMessageModal] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [typeModal, setTypeModal] = useState<'error' | 'success'>('error');
+  const [lastLogin, setLastLogin] = useState('');
 
   useEffect(() => {
     const fetchInfo = async () => {
       const infoClient = await getData('infoClient');
-      setInfo(infoClient);
+      const lastLog = await getData('lastLogin');
+      let utcDate;
+      if(lastLog){
+        utcDate = new Date(lastLog);
+      } else {
+        utcDate = new Date();
+      }
+
+      const lastLogFinal = utcDate.toLocaleString('es-CO', { 
+        hour12: true, 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
 
       const account = await getNumberAccount();
+
+      setInfo(infoClient);
+      setLastLogin(lastLogFinal);
       setNumberAccount(account!);
     }
 
@@ -157,10 +177,10 @@ export default function Page() {
               onPress={() => router.replace('/home/profile/personalInfo')}
               title="Datos personales"
             />
-            {/*<OptionsProfile
+            <OptionsProfile
               onPress={() => router.replace('/home/profile/addressInfo')}
               title="Dirección"
-            />*/}
+            />
           </View>
           <View style={styles.mb5}>
             <Text variant="labelLarge" style={[primaryBold]}>Seguridad</Text>
@@ -187,6 +207,10 @@ export default function Page() {
               onPress={() => setShowModalConfirm(true)}
               title={`Darse de baja de ${expo}`}
             />
+            <View style={styles.lastLogin}>
+              <Text style={primaryBold}>Fecha y hora de última conexión:</Text>
+              <Text style={primaryRegular}>{lastLogin}</Text>
+            </View>
           </View>
           <View style={styles.mb5}>
             <ButtonsPrimary 

@@ -12,7 +12,6 @@ import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button"
 import { Text } from "react-native-paper";
 import instanceWallet from "@/services/instanceWallet";
 import { setSessionToken } from "@/utils/storageUtils";
-import { useTab } from "@/components/auth/tabsContext/tabsContext";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
@@ -27,7 +26,6 @@ interface OtpValidationRegisterModalProps {
 }
 
 export default function OtpValidationRegisterModal({ type, numberDocument, id, onClose, onView, onFinish }: OtpValidationRegisterModalProps) {
-    const {activeLoader, desactiveLoader} = useTab();
     const [visible] = useState(true);
     const inputRefs = useRef<TextInput[]>([]);
     const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '', '', '']);
@@ -62,7 +60,6 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
     }
 
     const fetchValidateCodeP2P = async () => {
-        activeLoader();
         let message;
         let responseType: "info" | "success" | "error" = "info";
         let modalidad = "";
@@ -87,13 +84,10 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
             responseType =  "error";
         }
 
-        desactiveLoader();
-
         return { message, responseType, modalidad };
     }
 
     const fetchValidateCodeInter = async () => {
-        activeLoader();
         let message;
         let responseType: "info" | "success" | "error" = "info";
         let modalidad = "";
@@ -124,8 +118,6 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
             message = "Hubo un error al intentar verificar el código";
             responseType =  "error";
         }
-
-        desactiveLoader();
 
         return { message, responseType, modalidad };
     }
