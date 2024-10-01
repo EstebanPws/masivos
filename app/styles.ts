@@ -10,35 +10,49 @@ export const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     containerImage: {
-      position: 'relative',
       flex: 1,
+      width: '100%',   
+      height: '100%',
+      position: 'relative',
+      zIndex: 1, 
+    },
+    containerImage1: {
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center'
     },
     image: {
-      maxHeight: '100%',
-      paddingBottom: 50,
-      borderBottomEndRadius: 30,
-      borderBottomStartRadius: 30,
-    },
-    containerText: {
       position: 'absolute',
-      bottom: '46%',
-      left: 30,
-      right: 30,
+      width: '100%',
+      top: 0,
+      height: '100%',
+      borderBottomStartRadius: 30, 
+    },
+    
+    containerText: {
+      position: 'relative',
+      marginBottom: 10,
+      paddingHorizontal: 5,
       zIndex: 2,
     },
+
     containerForm: {
-      marginVertical: 30,
-      paddingHorizontal: 40
+      position: 'absolute',
+      bottom: -30,
+      left: 0,
+      right: 0,
+      padding: 20, 
+      borderRadius: 20,
+      backgroundColor: '#fff',
+      marginVertical: 20, 
+      paddingHorizontal: 20, 
+
     },
     row: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingLeft: 20,
-      paddingRight: 30
-    },
-    textWhite: {
-      color: '#fff'
+      alignItems: 'center'
     },
     icon: {
       borderWidth: 2,

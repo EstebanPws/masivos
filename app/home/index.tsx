@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { View } from "moti";
-import { Image, ImageSourcePropType } from "react-native";
+import { Image, ImageSourcePropType, ScrollView } from "react-native";
 import { styles } from "./home.styles";
 import SideBar from "@/components/sideBar/sideBar";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
@@ -121,15 +121,19 @@ export default function Page() {
             />
           </View>
         </View>
-        <View style={styles.imageContainer}>
-          <Image source={require('@/assets/images/general/visa.png')} resizeMode="contain" style={styles.image} />
-          <ButtonsPrimary
-            label="Solicitar tarjeta"
-            style={styles.mt5}
-            onPress={() => router.replace('/home/cards')}
-          />
+        <View style={styles.containerScroll}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.imageContainer}>
+              <Image source={require('@/assets/images/general/visa.png')} resizeMode="contain" style={styles.image} />
+              <ButtonsPrimary
+                label="Solicitar tarjeta"
+                style={styles.mt5}
+                onPress={() => router.replace('/home/cards')}
+              />
+            </View>
+            <OptionsSecondary />
+          </ScrollView>
         </View>
-        <OptionsSecondary />
         <View style={styles.sideBar}>
           <SideBar />
         </View>

@@ -53,57 +53,61 @@ export default function Page() {
     <ViewFadeIn isWidthFull>
       <KeyboardAwareScrollView
         contentContainerStyle={styles.container}
-        enableOnAndroid={true}
-        extraHeight={Platform.select({ ios: 100, android: 120 })}
+        enableOnAndroid={false}
+        extraHeight={Platform.select({ ios: 100, android: 0 })}
       >
         <View style={styles.containerImage}>
-          <Image source={require('../assets/images/general/home.webp')} resizeMode="cover" style={styles.image} />
+          <View style={styles.containerImage1}>
+            <Image source={require('../assets/images/general/home.webp')} style={styles.image} />
+          </View>
           <HeaderSecondary type={0}/>
-          <View style={styles.containerText}>
-              <Text style={{ ...primaryBold, ...styles.textWhite }} variant="headlineMedium">¡Bienvenido!</Text>
-              <Text style={{ ...primaryRegular, ...styles.textWhite }} variant="titleLarge">Por favor identificate para entrar en tu cuenta.</Text>
+          <View style={styles.containerForm}>
+            <View style={styles.containerText}>
+              <Text style={{ ...primaryBold }} variant="headlineMedium">¡Bienvenido!</Text>
+              <Text style={{ ...primaryRegular }} variant="titleLarge">Por favor identificate para entrar en tu cuenta.</Text>
             </View>
-          <ScrollView>
-            <View style={styles.containerForm}>
-              <Inputs
-                label="Número del documento"
-                placeholder="Escribe tu número de documento"
-                isSecureText={false}
-                isRequired={false}
-                keyboardType="numeric"
-                onChangeText={setInputDocument}
-                value={inputDocument}
-              />
-              <ButtonsPrimary
-                label="Acceder a la billetera"
-                style={styles.mt5}
-                onPress={handleLogin}
-              />
-            </View>
-            <View style={{...styles.row, ...styles.mt5}}>
-              {password  ? (
-                <TouchableOpacity onPress={handleAuthenticate}>
-                  <View style={styles.row}>
-                    <View style={styles.icon}>
-                      <Icon
-                        source="account"
-                        color={colorPrimary}
-                        size={20}
-                      />
+            <View style={{paddingHorizontal: 10, paddingVertical: 20}}>
+              <View >
+                <Inputs
+                  label="Número del documento"
+                  placeholder="Escribe tu número de documento"
+                  isSecureText={false}
+                  isRequired={false}
+                  keyboardType="numeric"
+                  onChangeText={setInputDocument}
+                  value={inputDocument}
+                />
+                <ButtonsPrimary
+                  label="Acceder a la billetera"
+                  style={styles.mt5}
+                  onPress={handleLogin}
+                />
+              </View>
+              <View style={{...styles.row, ...styles.mt5}}>
+                {password  ? (
+                  <TouchableOpacity onPress={handleAuthenticate}>
+                    <View style={styles.row}>
+                      <View style={styles.icon}>
+                        <Icon
+                          source="account"
+                          color={colorPrimary}
+                          size={20}
+                        />
+                      </View>
+                      <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
                     </View>
-                    <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
-                  </View>
-                </TouchableOpacity>
-              ) : (
-                <View />
-              )}
-              <ButtonsSecondary
-                label="Registrarse"
-                onPress={() => setShowTerms(true)}
-              />
+                  </TouchableOpacity>
+                ) : (
+                  <View />
+                )}
+                <ButtonsSecondary
+                  label="Registrarse"
+                  onPress={() => setShowTerms(true)}
+                />
+              </View>
             </View>
-          </ScrollView>
-        </View>
+          </View>
+        </View>    
       </KeyboardAwareScrollView>
       {showAlertAuth && (
         <InfoModal

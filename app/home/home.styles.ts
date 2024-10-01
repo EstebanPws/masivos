@@ -42,11 +42,15 @@ export const styles = StyleSheet.create({
     },
     image:{
         width: 280,
-        marginTop: -70,
         height: 200
     },
     mt5:{
         marginTop: -50,
         width: '80%'
+    },
+    containerScroll: {
+        position: "relative", 
+        marginTop: -70, 
+        height: "40%"
     }
 })
