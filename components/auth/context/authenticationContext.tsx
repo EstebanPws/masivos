@@ -175,7 +175,9 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         await AsyncStorage.removeItem('listBanks');
         setIsAuthenticated(false);
         setModalidad(null);
-        router.dismissAll();
+        if (router.canGoBack()) {
+            router.dismissAll();
+        }
         router.replace('/');
     };
 

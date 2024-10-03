@@ -10,7 +10,7 @@ import Constants from "expo-constants";
 import { useAuth } from "@/components/auth/context/authenticationContext";
 import instanceWallet from "@/services/instanceWallet";
 import { getData, setData, setNumberAccount } from "@/utils/storageUtils";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
@@ -22,9 +22,54 @@ interface ListAccounts {
 }
 
 export default function Page() {
-    const {documentNumber, modalidad, activeLoader, desactiveLoader} = useAuth();
+    const {documentNumber, modalidad, activeLoader, desactiveLoader, isAuthenticated} = useAuth();
     const [listAccounts, setListAccounts] = useState<ListAccounts[]>([]);
     const [name, setName] = useState('');
+
+    useFocusEffect(() => {
+        if (!isAuthenticated) {
+            router.replace('/');
+        }
+    });
+
+    const fetchInfoAccount = async (account: string) => {
+        const existInfoClient = await getData('infoClient');
+        if (!existInfoClient) {
+          try {
+            const accountConsult = account;
+            const body = { id: String(accountConsult) }; 
+
+            const response = await instanceWallet.post('formView', body);
+            const data = response.data;
+
+            const infoClient = {
+                infoClient: true,
+                id: data.id,
+                numDoc: data.account[0].no_docum,
+                tipoDoc: data.account[0].tipo_doc,
+                firstName: data.nombres1,
+                firstSurname: data.apellido1,
+                names: `${data.nombres1} ${data.nombres2}`,
+                surnames: `${data.apellido1} ${data.apellido2}`,
+                birthDate: data.account[0].fecha_nac,
+                phoneNumber: data.account[0].numero_celular,
+                email: data.account[0].correo,
+                ciudadRes: data.ciudadRes,
+                barrio: data.account[0].barrio,
+                direRes: data.dirRes.trim()
+            };
+            
+            setName(`${data.nombres1} ${data.apellido1}`);
+            await setData('infoClient', infoClient);
+          } catch (error) {
+            console.log('error', error);
+            const infoClient = { infoClient: false };
+            await setData('infoClient', infoClient);
+          }
+        } else {
+            setName(`${existInfoClient.firstName} ${existInfoClient.firstSurname}`);
+        }
+    };  
 
     const fetchListAccounts = async () => {
         activeLoader();
@@ -75,45 +120,6 @@ export default function Page() {
     useEffect(() =>{
         fetchListAccounts();
     }, []);
-
-    const fetchInfoAccount = async (account: string) => {
-        const existInfoClient = await getData('infoClient');
-        if (!existInfoClient) {
-          try {
-            const accountConsult = account;
-            const body = { id: String(accountConsult) }; 
-
-            const response = await instanceWallet.post('formView', body);
-            const data = response.data;
-
-            const infoClient = {
-                infoClient: true,
-                id: data.id,
-                numDoc: data.account[0].no_docum,
-                tipoDoc: data.account[0].tipo_doc,
-                firstName: data.nombres1,
-                firstSurname: data.apellido1,
-                names: `${data.nombres1} ${data.nombres2}`,
-                surnames: `${data.apellido1} ${data.apellido2}`,
-                birthDate: data.account[0].fecha_nac,
-                phoneNumber: data.account[0].numero_celular,
-                email: data.account[0].correo,
-                ciudadRes: data.ciudadRes,
-                barrio: data.account[0].barrio,
-                direRes: data.dirRes.trim()
-            };
-            
-            setName(`${data.nombres1} ${data.apellido1}`);
-            await setData('infoClient', infoClient);
-          } catch (error) {
-            console.log('error', error);
-            const infoClient = { infoClient: false };
-            await setData('infoClient', infoClient);
-          }
-        } else {
-            setName(`${existInfoClient.firstName} ${existInfoClient.firstSurname}`);
-        }
-    };  
 
     const handleSelectAccount = async (item: ListAccounts) => {
         await setNumberAccount(`0${item.number}`);
