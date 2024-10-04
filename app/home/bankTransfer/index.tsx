@@ -129,10 +129,6 @@ export default function Page() {
     useFocusEffect(() => {
         setActiveTab('/home/bankTransfer/');
     });
-    
-    const handleBack = () => {
-        goBack();
-    }; 
 
     const handleNext = async () => {
         const balance = await getBalance();
@@ -211,9 +207,6 @@ export default function Page() {
                 }
             }
         }
-
-        console.log(body);
-        
 
         await instanceWallet.post('interBankFile', body)
         .then(async (response) => {
@@ -349,8 +342,20 @@ export default function Page() {
     useEffect(() => {
         setNullView(true);
         if(activeTab === '/home/bankTransfer/'){
+            setShowConfirmTransfer(false);
             setShowAddAccount(false);
+            setDisableContinue(true);
+            setConfirmInfo(false);
             setStep(0);
+            setValRecharge('');
+            setConcepto('');
+            setNames('');
+            setSurnames('');
+            setAlias('');
+            setAccountNumber('');
+            setDocument('');
+            setBanks('');
+            setTypeBank('');
             setNullView(false);
         }
      }, [activeTab]);

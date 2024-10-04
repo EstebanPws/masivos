@@ -65,30 +65,30 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
     }, []);
 
     const authenticate = async (docWithOtp: string, password: string) => {
-        try {
-            const body = {
-                no_docum: docWithOtp,
-                contrasena: password
-            };
+        const body = {
+            no_docum: docWithOtp,
+            contrasena: password
+        };
 
-            setIsLoading(true);
-            const response = await instanceWallet.post('LoginCliente', body);
-            
-            if (response.status === 200) {
+        setIsLoading(true);
+        await instanceWallet.post('LoginCliente', body)
+        .then(async (response) => {
+            const data = response.data;
+            if (data.status === 200) {
                 const result = await LocalAuthentication.authenticateAsync({
                     promptMessage: 'Validando...',
                 });
-    
+
                 if (result.success) {
                     await SecureStore.setItemAsync('documentNumber', docWithOtp);
                     await SecureStore.setItemAsync('password', password);
                     setDocumentNumber(docWithOtp);
                     setPassword(password);
-                    if(response.data.message.startsWith('ey')){
-                        await setData('lastLogin', response.data.data.lastLogin);
-                        setSessionToken(response.data.message);
-                        setModalidad(response.data.data.modalidad);
-                        response.data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
+                    if(data.message.startsWith('ey')){
+                        await setData('lastLogin', data.data.lastLogin);
+                        setSessionToken(data.message);
+                        setModalidad(data.data.modalidad);
+                        data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
                     } else {
                         setShowOtpValidation(true);
                     }
@@ -97,51 +97,62 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     setMessage('Usuario o contraseña incorrectos.');
                     setShowErrorModal(true);
                 }
-                setIsLoading(false);
             } else {
                 setMessage('Usuario o contraseña incorrectos.');
                 setShowErrorModal(true);
-                setIsLoading(false);
             }
-        } catch (error) {
-            setMessage(String(error).includes('404') ? 'Usuario o contraseña incorrectos.' : 'Hubo un error al intentar autenticarse');
-            setIsLoading(false);
+        })
+        .catch((err) => {
+            if (err.response && err.response.data && err.response.data.message) {
+                setMessage(err.response.data.message);
+            }  else {
+                setMessage("Hubo un error al intentar autenticarse.");
+            }
             setShowErrorModal(true);
-        }
+        })
+        .finally(() => {
+            setIsLoading(false);
+        })
     };    
 
     const authenticateWithoutFaceId = async (docWithOtp: string, password: string) => {
-        try {
-            const body = {
-                no_docum: docWithOtp,
-                contrasena: password
-            };
 
-            setIsLoading(true);
+        const body = {
+            no_docum: docWithOtp,
+            contrasena: password
+        };
 
-            const response = await instanceWallet.post('LoginCliente', body);
-            if (response.status === 200) {
+        setIsLoading(true);
+        await instanceWallet.post('LoginCliente', body)
+        .then(async (response) => {
+            const data = response.data;
+            if (data.status === 200) {
                 setIsAuthenticated(true);
                 setDocumentNumber(docWithOtp);
-                if(response.data.message.startsWith('ey')){
-                    await setData('lastLogin', response.data.data.lastLogin);
-                    setSessionToken(response.data.message);
-                    setModalidad(response.data.data.modalidad);
-                    response.data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
+                if(data.message.startsWith('ey')){
+                    await setData('lastLogin', data.data.lastLogin);
+                    setSessionToken(data.message);
+                    setModalidad(data.data.modalidad);
+                    data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
                 } else {
                     setShowOtpValidation(true);
                 }
-                setIsLoading(false);
             } else {
                 setMessage('Usuario o contraseña incorrectos.');
                 setShowErrorModal(true);
-                setIsLoading(false);
             }
-        } catch (error) {
-            setMessage(String(error).includes('404') ? 'Usuario o contraseña incorrectos.' : 'Hubo un error al intentar autenticarse');
-            setIsLoading(false);
+        })
+        .catch((err) => {
+            if (err.response && err.response.data && err.response.data.message) {
+                setMessage(err.response.data.message);
+            }  else {
+                setMessage("Hubo un error al intentar autenticarse.");
+            }
             setShowErrorModal(true);
-        }
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
     }; 
     
     const fetchSessionToken = async () => {

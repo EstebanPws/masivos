@@ -23,5 +23,19 @@ instanceWallet.interceptors.request.use(
     }
 );
 
+instanceWallet.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.message === 'Network Error') {
+        error.messsage = 'Error de red detectado. Verifique su conexión.';
+      } else if (error.code === 'ECONNABORTED') {
+        error.messsage = 'La solicitud ha tardado demasiado y ha sido cancelada.';
+      }
+
+      return Promise.reject(error);
+    }
+);
 
 export default instanceWallet;
