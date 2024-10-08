@@ -16,7 +16,7 @@ import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
 const {primaryRegular, primaryBold} = extra.text;
-const {colorPrimary, colorSecondary} = extra;
+const {colorPrimary, colorSecondary, idApp} = extra;
 
 interface ListAccounts {
   number: number;
@@ -38,7 +38,10 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
 
   const fetchListContacts = async () => {
     try {
-      const response = await instanceWallet.get('getAccountP2P');
+      const body = {
+        idWsc: idApp
+      }
+      const response = await instanceWallet.post('getAccountP2P', body);
       const dataFinal = response.data.data.filter((contact: any) => {
         let data: any;
         const infoContact = contact.account.filter((contactAccount: any) => {
@@ -116,7 +119,10 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
   });
 
   const fetchListContactSelect = async (phone: string) => {
-    const body = { numero_celular: phone};
+    const body = {
+      numero_celular: phone,
+      idWsc: idApp
+    };
 
     try {
       const response = await instanceWallet.post('getcelularP2P', body);
@@ -161,7 +167,8 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
                 nombres1: data[0].nombres1,
                 nombres2: data[0].nombres2,
                 apellido1: data[0].apellido1,
-                apellido2: data[0].apellido2
+                apellido2: data[0].apellido2,
+                phone: data[0].account[0].numero_celular
             };
 
             setContactSelect(contactSelectInfo);
@@ -186,8 +193,8 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
     const bodyAccount = {
         no_doc : document,
         modalidad : account.startsWith('7') ? '0' : '8',
-        oficina: "73",
-        estado: "T"
+        estado: "T",
+        idWsc: idApp
     }
 
     let accounts: any = [];

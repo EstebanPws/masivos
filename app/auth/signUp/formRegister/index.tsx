@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { Platform, ScrollView, View } from "react-native";
-import { MD2Colors, MD3Colors, ProgressBar, Text } from "react-native-paper";
+import { MD2Colors, ProgressBar, Text } from "react-native-paper";
 import BasicInfo from '@/components/forms/register/basicInfo/basicInfo';
 import { router, useLocalSearchParams } from "expo-router";
 import { styles } from "./formRegister.styles";
@@ -26,8 +26,7 @@ import { errorMessageRegister } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
-const { colorPrimary } = extra;
-const secretKey = '4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e';
+const { colorPrimary, idApp, secretEncypt} = extra;
 
 interface List {
     name: string;
@@ -180,13 +179,14 @@ export default function Page() {
                                 setTypeResponse('success');
                                 setFinishRegister(1);
                                 if(type !== '8'){
-                                    const idRegistro = await encryptIdWithSecret(data.idRegistro, secretKey);      
-                                    
+                                    const idRegistro = await encryptIdWithSecret(data.idRegistro, secretEncypt);    
+                                    const idWsc = await encryptIdWithSecret(idApp, secretEncypt);    
                                     router.push({
                                         pathname: '/auth/signUp/validateRegister',
                                         params: { 
                                             type: type,
-                                            idRegister: idRegistro
+                                            idRegister: idRegistro,
+                                            wsc: idWsc
                                         }
                                     });
                                 }

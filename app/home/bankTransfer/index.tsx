@@ -40,7 +40,7 @@ interface Select {
 const expo = Constants.expoConfig?.name || '';
 
 export default function Page() {
-    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
+    const { setActiveTab, activeLoader, desactiveLoader, activeTab } = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [concepto, setConcepto] = useState('');
     const [valMax] = useState('2000000');
@@ -217,6 +217,7 @@ export default function Page() {
             }
         })
         .catch((error) => {
+            console.log('interbank', error);
             setTypeModal('error');
             setTitleModal(null);
             setMessageError('Hubo un error al intentar realizar la transacción, por favor intentelo más tarde.');

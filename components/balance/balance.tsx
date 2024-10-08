@@ -12,7 +12,7 @@ import { usePathname } from "expo-router";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary} = extra;
+const {colorPrimary, colorSecondary, idApp} = extra;
 
 interface BalanceProps {
     isWelcome?: boolean;
@@ -37,8 +37,8 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
                     const bodyAccount = {
                         no_doc : documentNumber,
                         modalidad : modalidad,
-                        oficina: "73",
-                        estado: "T"
+                        estado: "T",
+                        idWsc: idApp
                     }
 
                     const account = await instanceWallet.post('getAccounts', bodyAccount);
@@ -74,10 +74,10 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
 
                 try {
                     const bodySaldo = {
-                        entidad: "9011569983",
                         no_cuenta: existNumber ? existNumber : myNumberAccount,
                         no_docum: documentNumber,
-                        valor_comision: 0
+                        valor_comision: 0,
+                        idWsc: idApp
                     }
 
                     const response = await instanceWallet.post('getBalance', bodySaldo);

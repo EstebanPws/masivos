@@ -15,7 +15,7 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary} = extra;
+const {colorPrimary, colorSecondary, idApp} = extra;
 
 interface ListAccounts {
     number: number;
@@ -66,7 +66,7 @@ export default function Page() {
                 await setData('infoClient', infoClient);
             })
             .catch(async (err) => {
-                if (err.response && err.response.data && err.response.data.message) {
+                if (err && err.message) {
                     setMessage(err.response.data.message);
                 }  else {
                     setMessage("Hubo un error al realizar la petición.");
@@ -88,8 +88,8 @@ export default function Page() {
         const bodyAccount = {
             no_doc : documentNumber,
             modalidad : modalidad,
-            oficina: "73",
-            estado: "T"
+            estado: "T",
+            idWsc: idApp
         }
 
         await instanceWallet.post('getAccounts', bodyAccount)
@@ -124,7 +124,7 @@ export default function Page() {
             setListAccounts(accounts);
         })
         .catch((err) => {
-            if (err.response && err.response.data && err.response.data.message) {
+            if (err && err.message) {
                 setMessage(err.response.data.message);
             }  else {
                 setMessage("Hubo un error al realizar la petición.");

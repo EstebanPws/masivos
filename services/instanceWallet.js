@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getSessionToken } from '@/utils/storageUtils';
 
 const instanceWallet = axios.create({
-    baseURL: 'https://coopcentral-backwallet.vepay.com.co/',
+    baseURL: process.env.EXPO_PUBLIC_API_URL,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
@@ -11,7 +11,7 @@ const instanceWallet = axios.create({
 });
 
 instanceWallet.interceptors.request.use(
-    async (config) => {
+    async (config) => {       
         const token = await getSessionToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -29,11 +29,10 @@ instanceWallet.interceptors.response.use(
     },
     (error) => {
       if (error.message === 'Network Error') {
-        error.messsage = 'Error de red detectado. Verifique su conexión.';
+        error.message = 'Error de red detectado. Verifique su conexión.';
       } else if (error.code === 'ECONNABORTED') {
-        error.messsage = 'La solicitud ha tardado demasiado y ha sido cancelada.';
+        error.message = 'La solicitud ha tardado demasiado y ha sido cancelada.';
       }
-
       return Promise.reject(error);
     }
 );

@@ -13,7 +13,7 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
 const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary} = extra;
+const {colorPrimary, colorSecondary, idApp} = extra;
 
 interface ListAccounts {
     number: number;
@@ -34,7 +34,10 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
     const fetchListContacts = async () => {
         let body;
         if (number) {
-            body = { numero_celular: number }
+            body = { 
+                numero_celular: number,
+                idWsc: idApp
+            }
         } else {
             return "Debe ingresar el número de celular.";
         }
@@ -78,13 +81,14 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                         return listAccountNumbers.length > 0;
                         
                     });
-
+                                      
                     let contactSelectInfo = {
                         docCli: data[0].docCli,
                         nombres1: data[0].nombres1,
                         nombres2: data[0].nombres2,
                         apellido1: data[0].apellido1,
-                        apellido2: data[0].apellido2
+                        apellido2: data[0].apellido2,
+                        phone: data[0].account[0].numero_celular
                     };
 
                     setContactSelect(contactSelectInfo);
@@ -110,8 +114,8 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
         const bodyAccount = {
             no_doc : document,
             modalidad : account.startsWith('7') ? '0' : '8',
-            oficina: "73",
-            estado: "T"
+            estado: "T",
+            idWsc: idApp
         }
 
         let accounts: any = [];

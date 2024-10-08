@@ -21,6 +21,7 @@ import { typeTransactionResponse } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
+const {idApp} = extra;
 
 interface Transaction {
     merchant: string;
@@ -57,11 +58,11 @@ export default function Page() {
         const account = await getNumberAccount();
         const infoClient = await getData('infoClient'); 
         const body = {
-            entidad: "9011569983",
             no_cuenta: account,
             no_docum: infoClient.numDoc,
             fecha_inicio: oldSevenDateFinal,
-            fecha_final : todayFinal
+            fecha_final : todayFinal,
+            idWsc: idApp
         }
 
         await instanceWallet.post('getMovements', body)
@@ -167,11 +168,11 @@ export default function Page() {
         const account = await getNumberAccount();
         const infoClient = await getData('infoClient');
         const body = {
-            entidad: "9011569983",
             no_cuenta: account,
             no_docum: infoClient.numDoc,
             fecha_inicio: startDate.replaceAll('-', ''),
-            fecha_final : endDate.replaceAll('-', '')
+            fecha_final : endDate.replaceAll('-', ''),
+            idWsc: idApp
         }
 
         await instanceWallet.post('getMovements', body)

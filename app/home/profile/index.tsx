@@ -18,7 +18,7 @@ import InfoModalConfirm from "@/components/modals/infoModalConfirm/infoModalConf
 import { errorCancelAccount } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
-const {colorPrimary, colorSecondary} = extra;
+const {colorPrimary, colorSecondary, idApp} = extra;
 const {primaryBold, primaryRegular} = extra.text;
 const expo = Constants.expoConfig?.name || '';
 
@@ -79,7 +79,8 @@ export default function Page() {
         tipo_doc : infoClient.tipoDoc,
         no_doc: infoClient.numDoc,
         cuenta: account,
-        tipo_oper_cta:"3"
+        tipo_oper_cta:"3",
+        idWsc: idApp
       }
 
       await instanceWallet.post('accountOperations', body)

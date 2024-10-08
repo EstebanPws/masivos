@@ -20,6 +20,7 @@ import instanceWallet from "@/services/instanceWallet";
 import Constants from "expo-constants";
 import { useBackHandler } from "@react-native-community/hooks";
 import OtpValidationRegisterModal from "@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal";
+import * as Contacts from 'expo-contacts';
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -32,6 +33,7 @@ interface ContactSelect {
 }
 
 const expo = Constants.expoConfig?.name || '';
+const idApp = Constants.expoConfig?.extra?.idApp;
 
 export default function Page() {
     const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
@@ -51,6 +53,7 @@ export default function Page() {
     const [nullView, setNullView] = useState(true); 
     const [showOtpValidation, setShowOtpValidation] = useState(false);
     const [idTx, setIdTx] = useState('');
+    const [disabledSaveContact, setDisabledSaveContact] = useState(false);
 
     const fetchSendTransaction = async () => {
         activeLoader();
@@ -71,14 +74,15 @@ export default function Page() {
            descrip_tx: "Envio de billetera a billetera",
            valor_tx: validateNumber(valRecharge),
            tipo_canal_proce:"04",
-           valor_comision: Number(comision)
+           valor_comision: Number(comision),
+           idWsc: idApp
         }
         
         await instanceWallet.post('atc', body)
         .then((response) => {
             const data = response.data;
-            if(data.status === 200 && data.message.includes('éxito')){
-                setIdTx(data.data.ID);
+            if(data.status === 200 && data.message.includes('exito')){
+                setIdTx(data.data.respuesta);
                 setShowOtpValidation(true);
             } else {
                 setTitleModal(null);
@@ -135,10 +139,6 @@ export default function Page() {
         }
      }, [activeTab]) 
 
-    const handleBack = () => {
-        goBack();
-    };
-
     const handleNext = async (type: number) => {
         if(type === 0){
             setShowContactList(false);
@@ -178,11 +178,13 @@ export default function Page() {
             setShowContactList(true);
             setStep(0);
         } else if (step === 2) {
+            setDisabledSaveContact(false);
             setStep(1);
         } else {
             setValRecharge('');
             setShowContactList(true);
             setStep(0);
+            setDisabledSaveContact(false);
             router.push('/home')
         }
     }
@@ -236,10 +238,53 @@ export default function Page() {
          setValRecharge('');
          setShowContactList(true);
          setStep(0);
-         setTypeFinish(1)
+         setTypeFinish(1);
+         setDisabledSaveContact(false);
         }
-     }
+    }
 
+    const saveContact = async () => {
+        const { status } = await Contacts.requestPermissionsAsync();
+        
+        if (status === 'granted') {
+            const contact = {
+                name: `${contactSelect?.name || "Nombre desconocido"}`,
+                [Contacts.Fields.FirstName]: contactSelect?.name || "Nombre desconocido",
+                [Contacts.Fields.LastName]: "",
+                [Contacts.Fields.PhoneNumbers]: [
+                  { 
+                    number: contactSelect?.phone || "",
+                    isPrimary: true, 
+                    label: 'mobile'
+                  }
+                ],
+                contactType: Contacts.ContactTypes.Person,
+              };
+        
+            try {
+                await Contacts.addContactAsync(contact);
+                setTitleModal(null);
+                setMessageError('El contacto se guardo con éxito.');
+                setShowError(true);
+                setTypeMessage('success');
+                setDisabledSaveContact(true);
+            } catch (error) {
+                setTitleModal(null);
+                setMessageError('Error al guardar el contacto.');
+                setShowError(true);
+                setTypeMessage('error');
+                setDisabledSaveContact(false);
+                console.error(error);
+            }
+        } else {
+            setTitleModal(null);
+            setMessageError('No tienes permiso para guardar contactos.');
+            setShowError(true);
+            setTypeMessage('error');
+            setDisabledSaveContact(false);
+        }
+    };
+      
     if(nullView){
         return null;
     }
@@ -248,7 +293,7 @@ export default function Page() {
         <ViewFadeIn  {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
                 onBack={() => handleBackStep()}
-                title="Enviar fondos a otra moradita"
+                title="Enviar fondos"
             />
             {!showContactList && (
                 <View style={styles.mV1}>
@@ -295,6 +340,15 @@ export default function Page() {
                     {!showContactList && (
                         <>
                             <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain"/>
+                            {step === 2 && (
+                                 <View style={[styles.mb5, styles.row]}>
+                                    <ButtonsPrimary 
+                                        label={'Guardar contacto'}
+                                        onPress={() => saveContact()}
+                                        disabled={disabledSaveContact}
+                                    />
+                                 </View>
+                            )}
                             <View style={styles.row}>
                                 <ButtonsPrimary 
                                     label={'Volver'}

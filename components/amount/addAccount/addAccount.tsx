@@ -106,7 +106,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
                 desactiveLoader();
             })
             .catch((error) => {
-                console.log(error.response.data);
+                console.log('1', error);
                 desactiveLoader();
             });
         }
@@ -150,7 +150,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
             desactiveLoader();
         })
         .catch((error) => {
-            console.log(error.response.data);
+            console.log('2', error);
             desactiveLoader();
         });
     }
@@ -202,7 +202,7 @@ export default function addAccount({names, surnames,  alias, accountNumber, docu
             desactiveLoader();
         })
         .catch((error) => {
-            console.log(error.response.data);
+            console.log('3', error.response.data);
             desactiveLoader();
         });
     }

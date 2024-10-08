@@ -20,7 +20,7 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
-const { colorPrimary } = extra;
+const { colorPrimary, idApp} = extra;
 
 interface ListService {
   name: string;
@@ -275,6 +275,7 @@ export default function Page() {
       descrip_tx: packageService === '2' ? 'Pago de recargas' : packageService === '3' ? "Pago de paquetes moviles" : "Pago de pines",
       productId: selectedOption.id,
       amount: packageService === '2' ? validateNumber(valueRecharge) : selectedOption.amount,
+      idWsc: idApp,
       moveTmpBalance: true,
       data: {
           cellphone: recharge,
@@ -430,6 +431,7 @@ export default function Page() {
       descrip_tx: `Pago de factura referencia ${selectedOption.reference}`,
       productId: selectedOption.id,
       amount: validateNumber(selectedOption.amount),
+      idWsc: idApp,
       sellType: "Bill",
       moveTmpBalance: true,
       hash: selectedOption.hash,

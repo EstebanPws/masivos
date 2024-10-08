@@ -74,7 +74,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                 desactiveLoader();
             })
             .catch((error) => {
-                console.log(error.response.data);
+                console.log(error);
                 desactiveLoader();
             });
         }

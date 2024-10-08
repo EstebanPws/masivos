@@ -1,3 +1,5 @@
+const idApp = process.env.EXPO_ID_APP;
+
 export const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -96,7 +98,8 @@ export const transformDataDbm = (input) => {
         departamento: input.ciud_muni.substring(0, 2),
         terms: true,
         autorizacion: true,
-        tdTerms: true
+        tdTerms: true,
+        idWsc: idApp
     };
 
     return output;
@@ -196,7 +199,8 @@ export const transformData = (input) => {
         orig_fondos: "",
         pais_nacimiento: input.pais_nacimiento || "169",
         terms: true,
-        autorizacion: true
+        autorizacion: true,
+        idWsc: idApp
     };
 
     return output;
@@ -319,7 +323,8 @@ export const transformDataJuridica = (input) => {
         extrenjero: 2,
         pais_nacimiento: input.pais_nacimiento || "169",
         terms: true,
-        autorizacion: true
+        autorizacion: true,
+        idWsc: idApp
     };
 
     return output;

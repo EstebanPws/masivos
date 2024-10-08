@@ -12,8 +12,10 @@ import { setData, getData } from "@/utils/storageUtils";
 import { stateMessages , documentType } from '@/utils/listUtils';
 import Loader from "@/components/loader/loader";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
+import Constants from "expo-constants";
 
-const urlAdo = process.env.EXPO_PUBLIC_URL_ADO;
+const extra = Constants.expoConfig?.extra || {};
+const urlAdo = extra.adoUrl;
 
 export default function Page() {
     const router = useRouter();

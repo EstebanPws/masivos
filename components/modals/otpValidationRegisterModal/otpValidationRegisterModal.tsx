@@ -15,6 +15,7 @@ import { setSessionToken } from "@/utils/storageUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
+const idApp = extra.idApp;
 
 interface OtpValidationRegisterModalProps {
     type: number;
@@ -66,7 +67,8 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
         const code = otpValues.join('');
         const bodyValidate = {
             id_tx_entidad: id,
-            codeOtp: code
+            codeOtp: code,
+            idWsc: idApp
         }
 
         try {
@@ -97,7 +99,8 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
             transaction: {
                 AdditionalInformation: {
                     UniqueCode: id,
-                    code: code
+                    code: code,
+                    idWsc: idApp
                 }
             
             }

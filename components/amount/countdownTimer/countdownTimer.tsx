@@ -11,7 +11,7 @@ import { useTab } from '@/components/auth/tabsContext/tabsContext';
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold, primaryRegular } = extra.text;
-const { colorPrimary, colorSecondary } = extra;
+const { colorPrimary, colorSecondary, idApp} = extra;
 
 interface CountdownTimerProps {
   onError?: (response: any) => void;
@@ -34,6 +34,7 @@ export default function CountdownTimer({ onError, onFinish, amount }: CountdownT
       cuenta: account?.startsWith('0') ? account.slice(1) : account,
       no_doc: infoClient.numDoc,
       valor_tx: validateNumber(amount),
+      idWsc: idApp
     };
 
     try {
