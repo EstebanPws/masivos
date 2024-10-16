@@ -168,25 +168,24 @@ export default function Page() {
             const savedData = await getData('registrationForm');
 
             if (savedData) {
-                const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);    
+                const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);  
                 activeLoader();
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                     .then(async response => {
                         const data = response.data.data;
-                        
                         if (data) {
                             if(data.idRegistro) {
                                 setTypeResponse('success');
                                 setFinishRegister(1);
                                 if(type !== '8'){
                                     const idRegistro = await encryptIdWithSecret(data.idRegistro, secretEncypt);    
-                                    const idWsc = await encryptIdWithSecret(idApp, secretEncypt);    
+                                    const idWscEncrypt = await encryptIdWithSecret(idApp, secretEncypt);  
                                     router.push({
                                         pathname: '/auth/signUp/validateRegister',
                                         params: { 
                                             type: type,
                                             idRegister: idRegistro,
-                                            wsc: idWsc
+                                            wsc: idWscEncrypt
                                         }
                                     });
                                 }

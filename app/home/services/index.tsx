@@ -275,7 +275,7 @@ export default function Page() {
       descrip_tx: packageService === '2' ? 'Pago de recargas' : packageService === '3' ? "Pago de paquetes moviles" : "Pago de pines",
       productId: selectedOption.id,
       amount: packageService === '2' ? validateNumber(valueRecharge) : selectedOption.amount,
-      idWsc: idApp,
+      idApp: idApp,
       moveTmpBalance: true,
       data: {
           cellphone: recharge,
@@ -431,7 +431,7 @@ export default function Page() {
       descrip_tx: `Pago de factura referencia ${selectedOption.reference}`,
       productId: selectedOption.id,
       amount: validateNumber(selectedOption.amount),
-      idWsc: idApp,
+      idApp: idApp,
       sellType: "Bill",
       moveTmpBalance: true,
       hash: selectedOption.hash,

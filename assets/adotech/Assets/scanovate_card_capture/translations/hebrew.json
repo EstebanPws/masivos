@@ -1,0 +1,17 @@
+{
+  "LANDSCAPE_MODE_NEEDED": "אנא סובב את הטלפון למצב אופקי",
+  "POSITION_INSTRUCTION": "נא למקם את התעודה בגבולות המסגרת",
+  "POSITION_INSTRUCTION_FRONT": "אנא וודא שהכרטיס נמצא בתוך המסגרת וצידו הקדמי מופנה למצלמה",
+  "POSITION_INSTRUCTION_BACK": "אנא וודא שהכרטיס נמצא בתוך המסגרת וצידו האחורי מופנה למצלמה",
+  "NO_CAMERA_ACCESS": "Please allow camera access",
+  "CHROME_CAMERA_OPEN_INSTRUCTIONS": "In Chrome, please go to 'Settings' -> 'Site settings' -> 'Camera' -> 'Blocked' tab, press on our website, press 'CLEAR & RESET and then refresh the page",
+  "SAFARI_CAMERA_OPEN_INSTRUCTIONS": "In Safari, please refresh the page and then press 'Allow' when the camera notification appear",
+  "UNKNOWN_CAMERA_OPEN_INSTRUCTIONS": "Please enable our site to access the camera",
+  "FIREFOX_CAMERA_OPEN_INSTRUCTIONS": "In Firefox, please refresh the page and then press 'Allow' when the camera notification appear",
+
+  "CONFIRM_BUTTON": "בסדר",
+  "POPUP_TEXT": "צלם צד אחורי",
+  "POSITION_INSTRUCTION_FRONT_SIDE": "מקם את התעודה (צדק קידמי) בתוך המסגרת",
+  "POSITION_INSTRUCTION_BACK_SIDE": "מקם את התעודה (צדק אחורי) בתוך המסגרת"
+
+}

@@ -1,0 +1,16 @@
+{
+  "LANDSCAPE_MODE_NEEDED": "Please rotate phone to landscape mode",
+  "POSITION_INSTRUCTION": "Please make sure the card is within the frame",
+  "POSITION_INSTRUCTION_FRONT": "Please make sure the card is within the frame and turned <b>front side</b> to the camera",
+  "POSITION_INSTRUCTION_BACK": "Please make sure the card is within the frame and turned <b>back side</b> to the camera",
+  "NO_CAMERA_ACCESS": "Please allow camera access",
+  "CHROME_CAMERA_OPEN_INSTRUCTIONS": "In Chrome, please go to 'Settings' -> 'Site settings' -> 'Camera' -> 'Blocked' tab, press on our website, press 'CLEAR & RESET and then refresh the page",
+  "SAFARI_CAMERA_OPEN_INSTRUCTIONS": "In Safari, please refresh the page and then press 'Allow' when the camera notification appear",
+  "UNKNOWN_CAMERA_OPEN_INSTRUCTIONS": "Please enable our site to access the camera",
+  "FIREFOX_CAMERA_OPEN_INSTRUCTIONS": "In Firefox, please refresh the page and then press 'Allow' when the camera notification appear",
+
+  "CONFIRM_BUTTON": "OK",
+  "POPUP_TEXT": "Capture back side",
+  "POSITION_INSTRUCTION_FRONT_SIDE": "Align your ID (front side) in the frame",
+  "POSITION_INSTRUCTION_BACK_SIDE": "Align your ID (back side) in the frame"
+}

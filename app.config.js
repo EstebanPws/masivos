@@ -28,6 +28,7 @@ export default ({ config }) => ({
         },
         adoUrl: process.env.EXPO_PUBLIC_URL_ADO,
         secretEncypt: process.env.EXPO_SECRET_KEY,
-        idApp: process.env.EXPO_ID_APP
+        idWsc: process.env.EXPO_ID_APP_WSC,
+        idApp: process.env.EXPO_PUBLIC_ID_APP
     },
 });

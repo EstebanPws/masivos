@@ -2,15 +2,11 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { View } from "react-native";
 import Inputs from "../../forms/inputs/inputs";
 import { styles } from "./pse.styles";
-import Constants from "expo-constants";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import { getData, setData } from "@/utils/storageUtils";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import instanceWallet from "@/services/instanceWallet";
-
-const extra = Constants.expoConfig?.extra || {};
-const {primaryBold, primaryRegular} = extra.text;
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;

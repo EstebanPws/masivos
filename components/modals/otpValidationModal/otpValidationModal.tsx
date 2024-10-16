@@ -15,6 +15,7 @@ import { getData } from "@/utils/storageUtils";
 import { useAuth } from "@/components/auth/context/authenticationContext";
 
 const extra = Constants.expoConfig?.extra || {};
+const { idApp } = extra;
 const { primaryBold, primaryRegular } = extra.text;
 
 interface OtpValidationModalProps {
@@ -74,7 +75,8 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                 tipo_doc: typePerson === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc,
                 no_doc: typePerson === 1 ? savedData.r_l_ced : savedData.no_docum,
                 correo: "",
-                numero_celular: ""
+                numero_celular: "",
+                idApp: idApp
             }
             
             if (type === 0) { 

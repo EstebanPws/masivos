@@ -13,7 +13,7 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
 const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary, idApp} = extra;
+const {colorPrimary, colorSecondary} = extra;
 
 interface ListAccounts {
     number: number;
@@ -35,8 +35,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
         let body;
         if (number) {
             body = { 
-                numero_celular: number,
-                idWsc: idApp
+                numero_celular: number
             }
         } else {
             return "Debe ingresar el número de celular.";
@@ -114,8 +113,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
         const bodyAccount = {
             no_doc : document,
             modalidad : account.startsWith('7') ? '0' : '8',
-            estado: "T",
-            idWsc: idApp
+            estado: "T"
         }
 
         let accounts: any = [];

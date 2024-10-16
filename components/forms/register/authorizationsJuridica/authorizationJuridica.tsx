@@ -479,7 +479,7 @@ export default function AuthorizationJuridica({type, listPaises, onSubmit }: Aut
                             <ButtonsPrimary 
                                 disabled={!isButtonEnabled}
                                 onPress={handleSubmit}
-                                label="Continuar y enviar"
+                                label="Continuar"
                             />
                         </View>
                     </View>

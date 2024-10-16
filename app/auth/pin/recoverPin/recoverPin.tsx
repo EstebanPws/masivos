@@ -15,6 +15,7 @@ import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button"
 import { esConsecutivo } from "@/utils/validationForms";
 
 const extra = Constants.expoConfig?.extra || {};
+const { idApp } = extra;
 const { primaryRegular } = extra.text;
 
 export default function Page() {
@@ -108,7 +109,8 @@ export default function Page() {
     }
 
     const body = {
-      no_doc: documentNumber
+      no_doc: documentNumber,
+      idApp: idApp
     }
 
     await instanceWallet.put('resetPassword', body)

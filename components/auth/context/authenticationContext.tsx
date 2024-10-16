@@ -8,6 +8,10 @@ import Loader from '@/components/loader/loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtpValidationRegisterModal from '@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal';
 import { getSessionToken, setData, setSessionToken } from '@/utils/storageUtils';
+import Constants from 'expo-constants';
+
+const extra = Constants.expoConfig?.extra || {};
+const {idApp} = extra;
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -67,7 +71,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
     const authenticate = async (docWithOtp: string, password: string) => {
         const body = {
             no_docum: docWithOtp,
-            contrasena: password
+            contrasena: password,
+            idApp: idApp
         };
 
         setIsLoading(true);
@@ -103,8 +108,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             }
         })
         .catch((err) => {
-            if (err && err.message) {
-                setMessage(err.response.data.message);
+            if (err && err.response) {
+                setMessage(err.response.data.message.includes('404') ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
             }  else {
                 setMessage("Hubo un error al intentar autenticarse.");
             }
@@ -119,7 +124,8 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
 
         const body = {
             no_docum: docWithOtp,
-            contrasena: password
+            contrasena: password,
+            idApp: idApp
         };
 
         setIsLoading(true);
@@ -144,7 +150,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         })
         .catch((err) => {
             if (err && err.message) {
-                setMessage(err.message);
+                setMessage(err.response.data.message.includes('404') ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
             }  else {
                 setMessage("Hubo un error al intentar autenticarse.");
             }

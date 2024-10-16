@@ -71,12 +71,12 @@ export const errorCancelAccount = {
 export const typeTransactionResponse = [
     {
         tipoMov: 13,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "NOTA CRÉDITO REVERSO TRANSACCIÓN CORRESPONSAL DIGITAL"
     },
     {
         tipoMov: 14,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "NOTA CRÉDITO REVERSO COMISIÓN TRX CORRESPONSAL DIGITAL"
     },
     {
@@ -96,7 +96,7 @@ export const typeTransactionResponse = [
     },
     {
         tipoMov: 27,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "REVERSO GMF TRX CORRESPONSAL DIGITAL"
     },
     {
@@ -116,7 +116,7 @@ export const typeTransactionResponse = [
     },
     {
         tipoMov: 42,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "NOTA CRÉDITO ABONO CORRESPONSAL DIGITAL"
     },
     {
@@ -161,7 +161,7 @@ export const typeTransactionResponse = [
     },
     {
         tipoMov: 73,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "COBRO GMF RETIRO CORRESPONSAL DIGITAL"
     },
     {
@@ -171,12 +171,12 @@ export const typeTransactionResponse = [
     },
     {
         tipoMov: 79,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "COMISIÓN RETIRO CORRESPONSAL DIGITAL"
     },
     {
         tipoMov: 81,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "NOTA DÉBITO RETIRO CORRESPONSAL DIGITAL"
     },
     {
@@ -186,7 +186,7 @@ export const typeTransactionResponse = [
     },
     {
         tipoMov: 84,
-        docMov: "TCRDG",
+        docMov: "TPWAY",
         desc: "NOTA DÉBITO REVERSO TRANSACCIÓN CORRESPONSAL DIGITAL"
     },
     {

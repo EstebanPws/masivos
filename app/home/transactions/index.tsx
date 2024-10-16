@@ -21,7 +21,6 @@ import { typeTransactionResponse } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
-const {idApp} = extra;
 
 interface Transaction {
     merchant: string;
@@ -61,8 +60,7 @@ export default function Page() {
             no_cuenta: account,
             no_docum: infoClient.numDoc,
             fecha_inicio: oldSevenDateFinal,
-            fecha_final : todayFinal,
-            idWsc: idApp
+            fecha_final : todayFinal
         }
 
         await instanceWallet.post('getMovements', body)
@@ -171,8 +169,7 @@ export default function Page() {
             no_cuenta: account,
             no_docum: infoClient.numDoc,
             fecha_inicio: startDate.replaceAll('-', ''),
-            fecha_final : endDate.replaceAll('-', ''),
-            idWsc: idApp
+            fecha_final : endDate.replaceAll('-', '')
         }
 
         await instanceWallet.post('getMovements', body)

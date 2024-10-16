@@ -33,7 +33,6 @@ interface ContactSelect {
 }
 
 const expo = Constants.expoConfig?.name || '';
-const idApp = Constants.expoConfig?.extra?.idApp;
 
 export default function Page() {
     const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
@@ -74,8 +73,7 @@ export default function Page() {
            descrip_tx: "Envio de billetera a billetera",
            valor_tx: validateNumber(valRecharge),
            tipo_canal_proce:"04",
-           valor_comision: Number(comision),
-           idWsc: idApp
+           valor_comision: Number(comision)
         }
         
         await instanceWallet.post('atc', body)

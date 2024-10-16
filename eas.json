@@ -11,7 +11,8 @@
         "EXPO_PUBLIC_API_URL": "https://coopcentral-backwallet.vepay.com.co/",
         "EXPO_PUBLIC_URL_ADO": "adocolombia-qa.ado-tech.com/CoopcentralQA",
         "EXPO_SECRET_KEY": "4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e",
-        "EXPO_ID_APP": "d47b1fc6-2a7d-47a1-9fd3-9c5516ef81f2"
+        "EXPO_ID_APP_WSC": "d47b1fc6-2a7d-47a1-9fd3-9c5516ef81f2",
+        "EXPO_PUBLIC_ID_APP": "dac10b57-d675-4651-acdb-e0c58e5eb378"
       }
     },
     "preview": {
@@ -21,7 +22,8 @@
         "EXPO_PUBLIC_API_URL": "https://coopcentral-backwallet.vepay.com.co/",
         "EXPO_PUBLIC_URL_ADO": "adocolombia-qa.ado-tech.com/CoopcentralQA",
         "EXPO_SECRET_KEY": "4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e",
-        "EXPO_ID_APP": "d47b1fc6-2a7d-47a1-9fd3-9c5516ef81f2"
+        "EXPO_ID_APP_WSC": "d47b1fc6-2a7d-47a1-9fd3-9c5516ef81f2",
+        "EXPO_PUBLIC_ID_APP": "dac10b57-d675-4651-acdb-e0c58e5eb378"
       }
     },
     "production": {
@@ -30,7 +32,8 @@
         "EXPO_PUBLIC_API_URL": "https://coopcentral-backwallet.vepay.com.co/",
         "EXPO_PUBLIC_URL_ADO": "adocolombia-qa.ado-tech.com/",
         "EXPO_SECRET_KEY": "4bfa1b2d8e4e4d3e9b7a7a9c1d9a2f7e",
-        "EXPO_ID_APP": "d47b1fc6-2a7d-47a1-9fd3-9c5516ef81f2"
+        "EXPO_ID_APP_WSC": "d47b1fc6-2a7d-47a1-9fd3-9c5516ef81f2",
+        "EXPO_PUBLIC_ID_APP": "dac10b57-d675-4651-acdb-e0c58e5eb378"
       }
     }
   },

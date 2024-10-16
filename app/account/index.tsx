@@ -15,7 +15,7 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary, idApp} = extra;
+const {colorPrimary, colorSecondary} = extra;
 
 interface ListAccounts {
     number: number;
@@ -88,8 +88,7 @@ export default function Page() {
         const bodyAccount = {
             no_doc : documentNumber,
             modalidad : modalidad,
-            estado: "T",
-            idWsc: idApp
+            estado: "T"
         }
 
         await instanceWallet.post('getAccounts', bodyAccount)

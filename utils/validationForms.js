@@ -1,4 +1,4 @@
-const idApp = process.env.EXPO_ID_APP;
+const idApp = process.env.EXPO_PUBLIC_ID_APP;
 
 export const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -99,7 +99,7 @@ export const transformDataDbm = (input) => {
         terms: true,
         autorizacion: true,
         tdTerms: true,
-        idWsc: idApp
+        idApp: idApp
     };
 
     return output;
@@ -200,7 +200,7 @@ export const transformData = (input) => {
         pais_nacimiento: input.pais_nacimiento || "169",
         terms: true,
         autorizacion: true,
-        idWsc: idApp
+        idApp: idApp
     };
 
     return output;
@@ -229,9 +229,9 @@ export const transformDataJuridica = (input) => {
         mes_info_finan: input.mes_info_finan.replaceAll('/', '') || "",
         declarante: input.declarante || "N",
         ingre_mes: parseInt(input.ingre_mes.replace(/[^0-9]/g, ''), 10) || 0,
-        otro_ingre: parseInt(input.otro_ingre.replace(/[^0-9]/g, ''), 10) || 0,
-        total_ingre: parseInt(input.total_ingre.replace(/[^0-9]/g, ''), 10) || 0,
-        total_engreso: parseInt(input.total_engreso.replace(/[^0-9]/g, ''), 10) || 0,
+        otro_ingre: input.otro_ingre || 0,
+        total_ingre: input.total_ingre  || 0,
+        total_engreso: input.total_engreso  || 0,
         dire_esta_PEPS: input.dire_esta_PEPS || "",
         ciu_esta_PEPS: input.ciu_esta_PEPS || "",
         tel_esta_PEPS: input.tel_esta_PEPS || "",
@@ -263,8 +263,8 @@ export const transformDataJuridica = (input) => {
         fec_est_finan: input.mes_info_finan.replaceAll('/', ''),
         des_otros_ingresos: input.des_otros_ingresos || "",
         ingre_adic: 0,
-        total_activo: parseInt(input.total_activo.replace(/[^0-9]/g, ''), 10) || 0,
-        total_pasivo: parseInt(input.total_pasivo.replace(/[^0-9]/g, ''), 10) || 0,
+        total_activo: input.total_activo || 0,
+        total_pasivo: input.total_pasivo || 0,
         reseeeuu: input.reseeeuu || "",
         nacion_americana: input.nacion_americana || "",
         rel_contractual: input.rel_contractual || "",
@@ -324,7 +324,7 @@ export const transformDataJuridica = (input) => {
         pais_nacimiento: input.pais_nacimiento || "169",
         terms: true,
         autorizacion: true,
-        idWsc: idApp
+        idApp: idApp
     };
 
     return output;

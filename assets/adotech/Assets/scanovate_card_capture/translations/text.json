@@ -1,0 +1,24 @@
+{
+  "NUMBER_OF_IMAGES": 2,
+  "POSITION_INSTRUCTION_FRONT_SIDE": "Align your front side with in the frame",
+  "POSITION_INSTRUCTION_BACK_SIDE": "Align your back side with in the frame",
+  "SIDE_A": "Side A",
+  "SIDE_B": "Side B",
+  "RESULTS_PAGE_TITLE": "Confirm photo",
+  "RESULTS_CONDITIONS_TITLE": "Make Sure:",
+  "CONDITIONS" : [
+    {"CONDITION": "The entire ID was scanned"},
+    {"CONDITION": "No glare on the certificate"},
+    {"CONDITION": "The text fields are readable"}
+  ],
+  "CONFIRM BUTTON": "OK",
+  "TRY_AGAIN_BUTTON": "Try Again",
+  "COLORS": {
+    "instructionsColor": "white",
+    "loaderColor": "white",
+    "popupBackgroundColor": "black",
+    "popupTextColor": "white",
+    "primaryColor": "#1616ff"
+  },
+  "FONT": "'Roboto', sans-serif"
+}

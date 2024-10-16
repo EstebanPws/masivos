@@ -1,0 +1,113 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0, user-scalable = 0, minimal-ui ">
+    <title>Demo ADO Components</title>
+    <script type="text/javascript" src="Assets/scanovate_card_capture/script.js"></script>
+    <script type="text/javascript" src="Assets/ComponentsManager.js"></script>
+    <link rel="stylesheet" href="Assets/scanovate_card_capture/assets/main.css" />
+    <link rel="stylesheet" href="Assets/scanovate_card_capture/assets/loader.css" />
+</head>
+
+<body>
+    <div class="js-main-liveness fullscreen">
+        <div class="column liveness-cont" id="livenessContainer"></div>
+    </div>
+
+    <div id="container"></div>
+    <label>Seleccione tipo de captura</label>
+    <br>
+    <select style="width: 200px;" name=" functionCapture" id="ddlfunctionCapture">
+        <option value="1">Liveness</option>
+        <option value="2">Card Capture</option>
+        <option value="3">Card Capture V3</option>
+        <option value="4">Liveness V3</option>
+    </select>
+    <br>
+    <br>
+    <label>Url Base</label>
+    <br>
+    <input type="text" id="UrlBase" style="width: 500px;" value="https://adocolombia-qa.ado-tech.com/Desarrollo">
+    <br>
+    <br>
+    <label>ProyectName</label>
+    <br>
+    <input type="text" id="ProyectName" value="desarrollo">
+    <br>
+    <br>
+    <label>ApiKey</label>
+    <br>
+    <input type="text" id="ApiKey" value="db92efc69991">
+    <br>
+    <br>
+    <label>ProductId</label>
+    <br>
+    <input type="text" id="ProductId" value="1">
+    <br>
+    <br>
+    <label>IsFrontSide</label>
+    <br>
+    <input type="checkbox" id="IsFrontSide">
+    <br>
+    <br>
+    <label>UidDevice</label>
+    <br>
+    <input type="text" id="UidDevice" value="">
+    <br>
+    <br>
+    <label>Token</label>
+    <br>
+    <input type="text" id="Token" value="">
+    <br>
+    <br>
+    <label>ProcessId</label>
+    <br>
+    <input type="text" id="ProcessId" value="">
+    <br>
+    <br>
+    <button onclick="InitCapture()" id="btnStartCapture">Iniciar</button>
+    <br>
+    <img id="imgResult">
+    </div>
+
+</body>
+<script>
+    function InitCapture() {
+
+        document.getElementById("container").style.display = "none";
+        var image = document.getElementById("imgResult");
+        image.src = '' ;
+
+
+        Start(document.getElementById("UrlBase").value,
+            document.getElementById("ProyectName").value,
+            document.getElementById("ApiKey").value,
+            parseInt(document.getElementById("ProductId").value),
+            parseInt(document.getElementById("ddlfunctionCapture").value),
+            document.getElementById('IsFrontSide').checked,
+            document.getElementById("UidDevice").value,
+            document.getElementById("Token").value,
+            document.getElementById("ProcessId").value,
+            onSuccess,
+            onError);
+
+        function onSuccess(response) {
+
+            document.getElementById("container").style.display = "";
+            var image = document.getElementById("imgResult");
+            image.src = 'data:image/png;base64,' + response.Image;
+            response.Image = "";
+            alert("SUCCESS" + JSON.stringify(response));
+        }
+
+        function onError(response) {
+            response.Image = "";
+            document.getElementById("container").style.display = "";
+            alert("ERROR" + JSON.stringify(response));
+        }
+    }
+
+</script>
+
+</html>

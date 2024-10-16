@@ -67,8 +67,7 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
         const code = otpValues.join('');
         const bodyValidate = {
             id_tx_entidad: id,
-            codeOtp: code,
-            idWsc: idApp
+            codeOtp: code
         }
 
         try {
@@ -99,8 +98,7 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
             transaction: {
                 AdditionalInformation: {
                     UniqueCode: id,
-                    code: code,
-                    idWsc: idApp
+                    code: code
                 }
             
             }
@@ -133,7 +131,8 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
 
         const bodyValidate = {
             no_doc: numberDocument,
-            code: code
+            code: code,
+            idApp: idApp
         }
         try {
             const codeEmailValidateResponse = await instanceWallet.post('codeCheck', bodyValidate);

@@ -16,7 +16,7 @@ import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
 const {primaryRegular, primaryBold} = extra.text;
-const {colorPrimary, colorSecondary, idApp} = extra;
+const {colorPrimary, colorSecondary} = extra;
 
 interface ListAccounts {
   number: number;
@@ -38,10 +38,7 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
 
   const fetchListContacts = async () => {
     try {
-      const body = {
-        idWsc: idApp
-      }
-      const response = await instanceWallet.post('getAccountP2P', body);
+      const response = await instanceWallet.get('getAccountP2P');
       const dataFinal = response.data.data.filter((contact: any) => {
         let data: any;
         const infoContact = contact.account.filter((contactAccount: any) => {
@@ -120,8 +117,7 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
 
   const fetchListContactSelect = async (phone: string) => {
     const body = {
-      numero_celular: phone,
-      idWsc: idApp
+      numero_celular: phone
     };
 
     try {
@@ -193,8 +189,7 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
     const bodyAccount = {
         no_doc : document,
         modalidad : account.startsWith('7') ? '0' : '8',
-        estado: "T",
-        idWsc: idApp
+        estado: "T"
     }
 
     let accounts: any = [];

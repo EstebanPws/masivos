@@ -64,7 +64,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
         { label: 'NO', value: 'N' }
     ];
 
-    useEffect(() => {
+    useEffect(() => {    
         let  allFieldsFilled = type !== 1 ? actiCiiu && mesInfoFinan && declarante && ingreMes && totalIngre && totalEgreso && totalActivo && totalPasivo : mesInfoFinan && ingreMes && otroIngre && totalIngre && totalEgreso && totalActivo && totalPasivo;
 
         if (type !== 1 && actiCiiu === '' || actiCiiu === '0010') {
@@ -115,11 +115,13 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
     }, [ingreMes, otroIngre]);
 
     const handleSubmit = () => {
-        if(actiCiiu !== '0020' && actiCiiu !== '9700' && actiCiiu !== '8522') {
-            if (!validatePhone(telEmpreNeg)) {
-                setMessageError("Número de celular o télefono de la empresa no es válido. Debe tener 10 dígitos.");
-                setShowError(true);
-                return;
+        if(type !== 1){
+            if(actiCiiu !== '0020' && actiCiiu !== '9700' && actiCiiu !== '8522') {
+                if (!validatePhone(telEmpreNeg)) {
+                    setMessageError("Número de celular o télefono de la empresa no es válido. Debe tener 10 dígitos.");
+                    setShowError(true);
+                    return;
+                }
             }
         }
         
