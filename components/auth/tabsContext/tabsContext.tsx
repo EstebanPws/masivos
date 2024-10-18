@@ -33,11 +33,17 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
     const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
     const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+    const [lastInactiveTime, setLastInactiveLogin] = useState(0);
 
-    const INACTIVITY_LIMIT = 5* 60 * 1000;
+    const INACTIVITY_LIMIT = 5 * 60 * 1000;
 
     const handleLogout = () => {
-        setShowErrorModal(true);
+        if(!showErrorModal){
+            if (inactivityTimeoutRef.current) {
+                clearTimeout(inactivityTimeoutRef.current);
+            }
+            setShowErrorModal(true);
+        }
     };
 
     const finishSession = () => {
@@ -45,14 +51,15 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
         setShowErrorModal(false);
     }
 
-    const resetInactivityTimeout = () => {
+    const resetInactivityTimeout = () => {   
         if (inactivityTimeoutRef.current) {
             clearTimeout(inactivityTimeoutRef.current);
         }
+        
         inactivityTimeoutRef.current = setTimeout(() => {
             handleLogout();
         }, INACTIVITY_LIMIT);
-    };
+    }
 
     const handleSetActiveTab = (newTab: string) => {
         if (newTab !== activeTab) {
@@ -85,11 +92,20 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const subscription = AppState.addEventListener('change', (nextAppState) => {
             if (appState.match(/inactive|background/) && nextAppState === 'active') {
-                resetInactivityTimeout();
+                const currentTime = Date.now();
+                console.log('2', currentTime - lastInactiveTime);
+                if (lastInactiveTime && currentTime - lastInactiveTime >= INACTIVITY_LIMIT) {
+                    handleLogout();
+                } else {
+                    resetInactivityTimeout();
+                }
+            } else if (nextAppState.match(/inactive|background/)) {
+                setLastInactiveLogin(Date.now());
             }
+    
             setAppState(nextAppState);
         });
-
+    
         return () => {
             if (subscription) subscription.remove();
         };

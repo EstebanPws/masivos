@@ -13,9 +13,11 @@ import { stateMessages , documentType } from '@/utils/listUtils';
 import Loader from "@/components/loader/loader";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import Constants from "expo-constants";
+import axios from "axios";
+import ClockAnimation from "@/components/animations/clock/clockLoop";
 
 const extra = Constants.expoConfig?.extra || {};
-const urlAdo = extra.adoUrl;
+const {adoUrl, apiKeyAdo, userAdo} = extra;
 
 export default function Page() {
     const router = useRouter();
@@ -28,6 +30,7 @@ export default function Page() {
     const [showAlertMessageResponse, setShowAlertMessageResponse] = useState(false);
     const [messageResponse, setMessageResponse] = useState<string | null>();
     const [idStateResponse, setIdStateResponse] = useState<number | null>();
+    const [isWaiting, setIsWaiting] = useState(false);
     const [formData, setFormData] = useState({
         nombre1: '',
         nombre2: '',
@@ -45,9 +48,11 @@ export default function Page() {
             button.disabled = false;
         } 
 
-        if (spinner) {
-            spinner.style.display = 'none';
-        }
+        setInterval(() => {
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
+        } 15000);
     `;
 
     useEffect(() => {
@@ -102,26 +107,66 @@ export default function Page() {
         if (request.url.startsWith('https://url_ok')) {
             const urlParams = request.url.split('?')[1].replace("_Response=", "");
             if (urlParams) {
-                const jsonObject = JSON.parse(decodeURIComponent(urlParams));
-                const stateId = parseInt(jsonObject.Extras.IdState);
-                const document = documentType[parseInt(jsonObject.DocumentType) as keyof typeof documentType];
-                setIdStateResponse(stateId);
-
-                const updatedFormData = { 
-                    ...formData, 
-                    nombre1: jsonObject.FirstName, 
-                    nombre2: jsonObject.SecondName, 
-                    apellido1: jsonObject.FirstSurname, 
-                    apellido2: jsonObject.SecondSurname, 
-                    tipo_doc: document ,
-                    no_docum: jsonObject.IdNumber};
-             
-                setFormData(updatedFormData)
-
-                if (stateMessages[stateId as keyof typeof stateMessages]) {
-                    setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
-                    setShowAlertMessageResponse(true);
+                if(!isWaiting){
+                    setIsWaiting(true);
                 }
+               
+                const jsonObject = JSON.parse(decodeURIComponent(urlParams));    
+                const idTransaction = jsonObject.TransactionId;
+    
+                const intervalId = setInterval(() => {
+                    let stateId = 1;
+                    axios.get(`https://${adoUrl}/api/${userAdo}/Validation/${idTransaction}`, {
+                        headers: {
+                            'accept': 'application/json',
+                            'apiKey': apiKeyAdo,
+                            'returnDocuments': 'false',
+                            'returnVideoLiveness': 'false'
+                        },
+                        params: {
+                            returnImages: 'false'
+                        }
+                    })
+                    .then((response) => {
+                        const data = response.data;        
+                        stateId = parseInt(data.Extras.IdState);
+
+                        if (stateId === 2) {
+                            clearInterval(intervalId);
+                            const document = documentType[parseInt(data.DocumentType) as keyof typeof documentType];
+                            const updatedFormData = { 
+                                ...formData, 
+                                nombre1: data.FirstName, 
+                                nombre2: data.SecondName, 
+                                apellido1: data.FirstSurname, 
+                                apellido2: data.SecondSurname, 
+                                tipo_doc: document ,
+                                no_docum: data.IdNumber
+                            };
+                            setFormData(updatedFormData);
+                            setIdStateResponse(stateId);
+    
+                            if (stateMessages[stateId as keyof typeof stateMessages]) {
+                                setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
+                                setShowAlertMessageResponse(true);
+                            }
+                        } else {
+                            if (stateMessages[stateId as keyof typeof stateMessages]) {
+                                setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
+                                setShowAlertMessageResponse(true);
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        setMessageResponse('Hubo un error al intentar consultar el estado de la operación.');
+                        setShowAlertMessageResponse(true);
+                    })
+                    .finally(() => {
+                        if(stateId !== 1){
+                            setIsWaiting(false);
+                        }
+                    });
+                }, 15000);
             }
             return false;
         }
@@ -158,6 +203,11 @@ export default function Page() {
             {isLoading && (
                 <Loader/>
             )}
+
+            {isWaiting && (
+                <ClockAnimation visible={isWaiting}/>
+            )}
+
             <HeaderForm onBack={() => router.back()}/>
             
             <MotiView
@@ -179,7 +229,7 @@ export default function Page() {
                     mixedContentMode="always"
                     geolocationEnabled={true}
                     userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-                    source={{ uri: `https://${urlAdo}/validar-persona?callback=https%3A%2F%2FURL_OK&key=9E33C3A4C252187&projectName=PaymentsWay_QA&product=1` }}
+                    source={{ uri: `https://${adoUrl}/validar-persona?callback=https%3A%2F%2FURL_OK&key=${apiKeyAdo}&projectName=${userAdo}&product=1` }}
                     injectedJavaScript={customJavaScript}
                     onLoadProgress={(nativeEvent) => handleLoadProgress(nativeEvent)}
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}

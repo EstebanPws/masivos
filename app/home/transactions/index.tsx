@@ -89,8 +89,6 @@ export default function Page() {
                 const dataType = typeTransactionResponse.filter((type: any) => {
                     if(type.tipoMov === transactions.tipo_movimiento && type.docMov === transactions.docu_asoci_Tipo_movi){
                         return type.desc;
-                    } else if (type.tipoMov === transactions.tipo_movimiento && type.docMov !== transactions.docu_asoci_Tipo_movi) {
-                        return type.desc
                     }
                 });
 
@@ -194,8 +192,6 @@ export default function Page() {
                 const dataType = typeTransactionResponse.filter((type: any) => {
                     if(type.tipoMov === transactions.tipo_movimiento && type.docMov === transactions.docu_asoci_Tipo_movi){
                         return type.desc;
-                    } else if (type.tipoMov === transactions.tipo_movimiento && type.docMov !== transactions.docu_asoci_Tipo_movi) {
-                        return type.desc
                     }
                 });
 
