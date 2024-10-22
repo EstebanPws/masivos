@@ -62,8 +62,9 @@ export default function Page() {
                     const municipio = item.municipio;
                     const departamento = item.departamento;
                     let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
+                    const codigoDepartamento = item.c_digo_dane_del_departamento;
 
-                    if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
+                    if (codigoDepartamento === '5' || codigoDepartamento === '8') {
                         codigoDane = `0${codigoDane}`;
                     } else if (codigoDane === '2529') {
                         codigoDane = `${codigoDane}0`;
@@ -272,9 +273,9 @@ export default function Page() {
             case 1:
                 return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 2:
-                return type === '1' ? <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : type === '0' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <InfoPep type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : type === '0' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 3:
-                return type === '1' ? <InfoWorking type={Number(type)} listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <InfoPep listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <InfoWorking type={Number(type)} listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <InfoPep type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} />;
             case 4:
                 return <OtherInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaisesExt} onSubmit={handleFormSubmit} />;
             case 5:

@@ -22,9 +22,10 @@ interface List {
 interface InfoPepProps{
     listMunicipios: List[] | null;
     onSubmit: (data: any) => void;
+    type: number;
 }
 
-export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
+export default function InfoPep({listMunicipios , onSubmit, type}: InfoPepProps) {
     const [isVisible, setIsVisible] = useState(false);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [expuPubli, setExpuPubli] = useState('');
@@ -150,7 +151,7 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
         setter(item.value);
     };
 
-    const handleSelectCheckBox = (type: 'expuPubli' | 'recoPubli' | 'impuesSobVent') => (value: string) => {
+    const handleSelectCheckBox = (type: 'expuPubli' | 'recoPubli' | 'impuesSobVent' | 'famiPep') => (value: string) => {
         if (type === 'expuPubli') {
             setExpuPubli(value);
         } else if (type === 'impuesSobVent') {
@@ -162,6 +163,8 @@ export default function InfoPep({listMunicipios , onSubmit }: InfoPepProps) {
                 setViewImpRenta(true);
             }
             setImpuesSobVent(value);
+        } else if (type === 'famiPep') {
+            setFamiPep(value);
         } else {
             setRecoPubli(value);
         }

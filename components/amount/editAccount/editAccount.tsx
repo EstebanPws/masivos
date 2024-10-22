@@ -108,8 +108,25 @@ export default function editAccount({names, surnames,  alias, accountNumber, doc
     }
 
     useEffect(() => {
-        fetchBankList();
+        const fetchInfoPreview = async () => {
+            await fetchBankList();
+            initTypeAccount(banks.selectedValue);
+        }
+        fetchInfoPreview();
     }, []);
+
+    const initTypeAccount = async (item: any) => {
+        const banks = await getData('listBanks');
+        const selectedBank = banks.find((bank: any) => bank.code === item);
+        
+        if (selectedBank) {
+            const filteredTypeBank = selectedBank.accountTypes.map((type: any) => ({
+                name: type === 'CURRENT' ? 'Corriente' : type === 'ELECTRONIC' ? 'Eletrónico' : 'Ahorros',
+                value: type
+            }));
+            setListTypeBank(filteredTypeBank);
+        }
+    }
 
     const handleEditAccount = async () => {
         const account: ListAccounts = {
