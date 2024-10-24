@@ -130,7 +130,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                 <FadeInOut>
                     <View style={styles.containerForm}>
                         <TitleLine 
-                            label="Infomarción general"
+                            label="Información general"
                         />
                         <View style={styles.mb5}>
                             <SearchSelect

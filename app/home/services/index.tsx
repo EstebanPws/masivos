@@ -269,14 +269,14 @@ export default function Page() {
     const infoClient = await getData('infoClient');
     const account = await getNumberAccount();
     const body = {
-      prod_orig: account,
+      prod_orig:  account?.startsWith('0') ? account.slice(1) : account,
       doc_prod_orig: infoClient.numDoc,
       nom_orig: `${infoClient.names} ${infoClient.surnames}`,
       descrip_tx: packageService === '2' ? 'Pago de recargas' : packageService === '3' ? "Pago de paquetes moviles" : "Pago de pines",
       productId: selectedOption.id,
       amount: packageService === '2' ? validateNumber(valueRecharge) : selectedOption.amount,
-      idApp: idApp,
       moveTmpBalance: true,
+      type: packageService,
       data: {
           cellphone: recharge,
           document: infoClient.numDoc,
@@ -301,7 +301,7 @@ export default function Page() {
       desactiveLoader();
     })
     .catch((error) => {
-      const message = error.response.data.message;
+      const message = error.response.data.message ? error.response.data.message : `Hubo un error al intentar realizar el ${packageService === '2' ? 'pago de la recarga' : packageService === '3' ? "pago del paquete movil" : "pago de pines"}`;
       setMessageError(message);
       setShowError(true);
       setTypeMessage('error');
@@ -425,7 +425,7 @@ export default function Page() {
     const infoClient = await getData('infoClient');
     const account = await getNumberAccount();
     const body = {
-      prod_orig: account,
+      prod_orig: account?.startsWith('0') ? account.slice(1) : account,
       doc_prod_orig: infoClient.numDoc,
       nom_orig: `${infoClient.names} ${infoClient.surnames}`,
       descrip_tx: `Pago de factura referencia ${selectedOption.reference}`,

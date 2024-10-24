@@ -244,7 +244,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                 <FadeInOut key="step0">
                     <View style={styles.containerForm}>
                         <TitleLine 
-                            label={`Infomarción ${type === 1 ? 'del representante legal' : 'basica'}`}
+                            label={`Información ${type === 1 ? 'del representante legal' : 'basica'}`}
                         />
                         <View style={styles.mb5}>
                             <Inputs

@@ -212,7 +212,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
                             <>
                                 {(actiCiiu === '' || actiCiiu === '0010') && (
                                     <TitleLine 
-                                        label="Infomarción laboral"
+                                        label="Información laboral"
                                     />
                                 )}
                                 {(showCiiu) && (

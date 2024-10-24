@@ -222,21 +222,11 @@ export default function Page() {
 
     const handleNext = async (type: number) => {
        if(type === 0){
-        const balance = await getBalance();
-        
         if(!valRecharge){
             setTitleModal(null);
             setMessageError('Por favor ingresa un monto valido.');
             setShowError(true);
             setTypeModal('error');
-            return;
-        }
-
-        if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
-            setTypeModal('error');
-            setTitleModal(null);
-            setMessageError('Saldo insuficiente');
-            setShowError(true);
             return;
         }
         

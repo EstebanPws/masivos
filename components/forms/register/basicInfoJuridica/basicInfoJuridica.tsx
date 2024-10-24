@@ -171,7 +171,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                 <FadeInOut key="step0">
                     <View style={styles.containerForm}>
                         <TitleLine 
-                            label="Infomarción de la empresa o negocio"
+                            label="Información de la empresa o negocio"
                         />
                         <View style={styles.mb5}>
                             <Inputs
