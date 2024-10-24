@@ -15,9 +15,9 @@ export const styles = StyleSheet.create({
      },
 
      contentContainer:{
-        marginTop: 70,
         paddingHorizontal: 16,
         flex: 1,
+        justifyContent: 'center'
      },
     
     mt5: {
@@ -55,8 +55,9 @@ export const styles = StyleSheet.create({
         marginRight: -25
     },
     gesture:{
+        marginTop: 100,
         width: '100%', 
-        height: '100%' ,
-        justifyContent: 'center'
+        height: '78%' ,
+        justifyContent: 'space-between',
     }
  });
