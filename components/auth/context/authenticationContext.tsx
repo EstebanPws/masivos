@@ -182,8 +182,6 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
 
     const logout = async () => {
         await fetchSessionToken();
-        await SecureStore.deleteItemAsync('documentNumber');
-        await SecureStore.deleteItemAsync('password');
         await AsyncStorage.removeItem('session_token');
         await AsyncStorage.removeItem('number_account');
         await AsyncStorage.removeItem('balance');
