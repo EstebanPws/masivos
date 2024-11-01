@@ -79,7 +79,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         await instanceWallet.post('LoginCliente', body)
         .then(async (response) => {
             const data = response.data;
-            if (data.status === 200) {
+            if (!data.message.includes('no tiene')) {
                 const result = await LocalAuthentication.authenticateAsync({
                     promptMessage: 'Validando...',
                 });
@@ -103,13 +103,14 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     setShowErrorModal(true);
                 }
             } else {
-                setMessage('Usuario o contraseña incorrectos.');
+                setMessage('El usuario no se encuntra registrado en nuestro sistema.');
                 setShowErrorModal(true);
             }
         })
         .catch((err) => {
-            if (err && err.response) {
-                setMessage(err.response.data.message.includes('404') ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
+            console.log(err.response.data);
+            if (err && err.response.message) {
+                setMessage(err.response.data.status === 404 ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
             }  else {
                 setMessage("Hubo un error al intentar autenticarse.");
             }
@@ -127,12 +128,12 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             contrasena: password,
             idApp: idApp
         };
-
+        
         setIsLoading(true);
         await instanceWallet.post('LoginCliente', body)
         .then(async (response) => {
             const data = response.data;
-            if (data.status === 200) {
+            if (!data.message.includes('no tiene')) {
                 setIsAuthenticated(true);
                 setDocumentNumber(docWithOtp);
                 if(data.message.startsWith('ey')){
@@ -144,13 +145,13 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     setShowOtpValidation(true);
                 }
             } else {
-                setMessage('Usuario o contraseña incorrectos.');
+                 setMessage('El usuario no se encuntra registrado en nuestro sistema.');
                 setShowErrorModal(true);
             }
         })
         .catch((err) => {
-            if (err && err.message) {
-                setMessage(err.response.data.message.includes('404') ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
+            if (err && err.response.data) {
+                setMessage(err.response.data.status === 404 ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
             }  else {
                 setMessage("Hubo un error al intentar autenticarse.");
             }
@@ -159,7 +160,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         .finally(() => {
             setIsLoading(false);
         });
-    }; 
+    };
     
     const fetchSessionToken = async () => {
         const token = await getSessionToken();
