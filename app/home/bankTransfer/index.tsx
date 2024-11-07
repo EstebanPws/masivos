@@ -5,7 +5,7 @@ import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";
 import { useBackHandler } from '@react-native-community/hooks';
-import { ScrollView, View, Image, Platform, PanResponder } from "react-native";
+import { ScrollView, View, Image, Platform, PanResponder, TouchableOpacity } from "react-native";
 import { styles } from "./bankTransfer.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -24,6 +24,9 @@ import { getBalance, getData, getNumberAccount } from "@/utils/storageUtils";
 import { validateNumber } from "@/utils/validationForms";
 import instanceWallet from "@/services/instanceWallet";
 import OtpValidationRegisterModal from "@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal";
+import { AnimatePresence, MotiView } from "moti";
+import { Icon } from "react-native-paper";
+import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -38,6 +41,8 @@ interface Select {
 }
 
 const expo = Constants.expoConfig?.name || '';
+const extra = Constants.expoConfig?.extra || {};
+const {colorPrimary} = extra;
 
 export default function Page() {
     const { setActiveTab, activeLoader, desactiveLoader, activeTab } = useTab();
@@ -68,6 +73,7 @@ export default function Page() {
     const [nullView, setNullView] = useState(true); 
     const [showOtpValidation, setShowOtpValidation] = useState(false);
     const [idTx, setIdTx] = useState('');
+    const [viewBalanceComplete, setViewBalanceComplete] = useState(true);
 
     const inputAmount: Input = {
         onChangeText: setValRecharge,
@@ -386,12 +392,49 @@ export default function Page() {
             />
             {!showAddAccount && (
                 <View style={styles.mV1}>
-                    <Balance
-                        isWelcome={false}
-                    />
+                   <AnimatePresence>
+                        {viewBalanceComplete && (
+                            <MotiView
+                                from={{ opacity: 0, translateY: 0 }}
+                                animate={{ opacity: 1, translateY: 20 }}
+                                exit={{ opacity: 0, translateY: 0 }}
+                                transition={{ type: 'timing', duration: 300 }}
+                                style={{ width: '100%' }}
+                            >
+                                <TouchableOpacity style={{position: 'absolute', right: 30, top: 10, zIndex: 9}} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
+                                    <Icon 
+                                        source={'eye-off'}
+                                        size={24}
+                                        color={viewBalanceComplete ? "#fff" : colorPrimary}
+                                    />
+                                </TouchableOpacity>
+                                <Balance
+                                    isWelcome={false}
+                                />
+                            </MotiView>
+                        )}
+                    </AnimatePresence>
                 </View>
             )}
             <View style={[styles.container, showAddAccount ? (styles.h100) : null]}>
+                {!showAddAccount &&(
+                    <AnimatePresence>
+                        {!viewBalanceComplete && (
+                            <MotiView
+                                from={{ opacity: 0, translateY: 0 }}
+                                animate={{ opacity: 1, translateY: 20 }}
+                                exit={{ opacity: 0, translateY: 0 }}
+                                transition={{ type: 'timing', duration: 300 }}
+                                style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20}}
+                            >
+                                <ButtonsSecondary 
+                                    label="Ver mi saldo"
+                                    onPress={() => setViewBalanceComplete(!viewBalanceComplete)}
+                                />
+                            </MotiView>
+                        )}
+                    </AnimatePresence>
+                )}
                 <KeyboardAwareScrollView
                     enableOnAndroid={true}
                     extraHeight={Platform.select({ ios: 100, android: 120 })}

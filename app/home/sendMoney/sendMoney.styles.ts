@@ -4,6 +4,9 @@ export const styles = StyleSheet.create({
     mV1: {
         marginVertical: 20
     },
+    mB1: {
+        marginBottom: 30
+    },
     h100:{
         height: '78%',
         marginTop: 20

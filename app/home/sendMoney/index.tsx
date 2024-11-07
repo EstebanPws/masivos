@@ -4,7 +4,7 @@ import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";
-import { ScrollView, View, Image, Platform, PanResponder } from "react-native";
+import { ScrollView, View, Image, Platform, PanResponder, TouchableOpacity } from "react-native";
 import { styles } from "./sendMoney.styles";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -21,6 +21,9 @@ import Constants from "expo-constants";
 import { useBackHandler } from "@react-native-community/hooks";
 import OtpValidationRegisterModal from "@/components/modals/otpValidationRegisterModal/otpValidationRegisterModal";
 import * as Contacts from 'expo-contacts';
+import { AnimatePresence, MotiView } from "moti";
+import { Icon } from "react-native-paper";
+import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -33,6 +36,8 @@ interface ContactSelect {
 }
 
 const expo = Constants.expoConfig?.name || '';
+const extra = Constants.expoConfig?.extra || {};
+const {colorPrimary} = extra;
 
 export default function Page() {
     const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
@@ -53,6 +58,7 @@ export default function Page() {
     const [showOtpValidation, setShowOtpValidation] = useState(false);
     const [idTx, setIdTx] = useState('');
     const [disabledSaveContact, setDisabledSaveContact] = useState(false);
+    const [viewBalanceComplete, setViewBalanceComplete] = useState(true);
 
     const fetchSendTransaction = async () => {
         activeLoader();
@@ -294,10 +300,29 @@ export default function Page() {
                 title="Enviar fondos"
             />
             {!showContactList && (
-                <View style={styles.mV1}>
-                    <Balance
-                        isWelcome={false}
-                    />
+                <View style={styles.mB1}>
+                    <AnimatePresence>
+                        {viewBalanceComplete && (
+                            <MotiView
+                                from={{ opacity: 0, translateY: 0 }}
+                                animate={{ opacity: 1, translateY: 20 }}
+                                exit={{ opacity: 0, translateY: 0 }}
+                                transition={{ type: 'timing', duration: 300 }}
+                                style={{ width: '100%' }}
+                            >
+                                <TouchableOpacity style={{position: 'absolute', right: 30, top: 10, zIndex: 9}} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
+                                    <Icon 
+                                        source={'eye-off'}
+                                        size={24}
+                                        color={viewBalanceComplete ? "#fff" : colorPrimary}
+                                    />
+                                </TouchableOpacity>
+                                <Balance
+                                    isWelcome={false}
+                                />
+                            </MotiView>
+                        )}
+                    </AnimatePresence>
                 </View>
             )}
             {showContactList && (
@@ -308,6 +333,24 @@ export default function Page() {
                 </View>
             )}
             <View style={[styles.container]}>
+                {(step === 1 || step === 2) && (
+                    <AnimatePresence>
+                        {!viewBalanceComplete && (
+                            <MotiView
+                                from={{ opacity: 0, translateY: 0 }}
+                                animate={{ opacity: 1, translateY: 20 }}
+                                exit={{ opacity: 0, translateY: 0 }}
+                                transition={{ type: 'timing', duration: 300 }}
+                                style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20}}
+                            >
+                                <ButtonsSecondary 
+                                    label="Ver mi saldo"
+                                    onPress={() => setViewBalanceComplete(!viewBalanceComplete)}
+                                />
+                            </MotiView>
+                        )}
+                    </AnimatePresence>
+                )}
                 <KeyboardAwareScrollView
                     enableOnAndroid={true}
                     extraHeight={Platform.select({ ios: 100, android: 120 })}

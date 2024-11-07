@@ -10,6 +10,7 @@ import { listAddressOtherType, listStreetType, listSuffixType } from '@/utils/li
 import SearchSelect from '../select/searchSelect/select';
 import Inputs from '../inputs/inputs';
 import InfoModal from '@/components/modals/infoModal/infoModal';
+import ButtonsSecondary from '../buttons/buttonSecondary/button';
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryRegular, primaryBold } = extra.text;
@@ -167,7 +168,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                             label='Confirmar'
                             onPress={handleConfirm}
                         />
-                        <ButtonsPrimary
+                        <ButtonsSecondary
                             label='Cerrar'
                             onPress={toggleModal}
                         />

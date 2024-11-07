@@ -1,9 +1,10 @@
 import Loader from '@/components/loader/loader';
 import { Href, router, useFocusEffect } from 'expo-router';
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { AppState, AppStateStatus, BackHandler, Alert, TouchableWithoutFeedback } from 'react-native';
+import { AppState, AppStateStatus, BackHandler, Alert, TouchableWithoutFeedback, Platform } from 'react-native';
 import { useAuth } from '../context/authenticationContext';
 import InfoModal from '@/components/modals/infoModal/infoModal';
+import * as NavigationBar from 'expo-navigation-bar';
 
 interface TabContextType {
     activeTab: string;
@@ -126,6 +127,15 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
             BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         };
     });
+
+    useEffect(() => {
+       if(Platform.OS === 'android'){
+        NavigationBar.setVisibilityAsync("hidden");
+            setInterval(() => {
+                NavigationBar.setVisibilityAsync("hidden");
+            }, 30000);
+        }
+      }, []);
 
     return (
         <>

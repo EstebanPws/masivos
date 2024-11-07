@@ -6,6 +6,7 @@ import { MotiView, AnimatePresence } from 'moti';
 import { Text } from "react-native-paper";
 import Constants from "expo-constants";
 import { ScrollView, View } from "react-native";
+import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
@@ -57,7 +58,7 @@ export default function InfoModalConfirm({ title, onPress, onCancel, children, i
                                 label={label1 ? label1 : "Aceptar"}
                                 onPress={handlePress}
                             />
-                             <ButtonsPrimary
+                             <ButtonsSecondary
                                 label={label2 ? label2 :"Rechazar"}
                                 onPress={handleCancel}
                             />

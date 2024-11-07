@@ -4,7 +4,7 @@ import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { ScrollView, View, Image, Platform, Linking, Alert, PanResponder } from "react-native";
+import { ScrollView, View, Image, Platform, Linking, Alert, PanResponder, TouchableOpacity } from "react-native";
 import { styles } from "./recharge.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
@@ -17,10 +17,12 @@ import Constants from "expo-constants";
 import { getBalance, getData, getNumberAccount } from "@/utils/storageUtils";
 import { generateUniqueId } from "@/utils/fomatDate";
 import instanceWallet from "@/services/instanceWallet";
-import { MotiView } from "moti";
+import { AnimatePresence, MotiView } from "moti";
 import WebView from "react-native-webview";
 import { ShouldStartLoadRequest, WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
 import { useBackHandler } from "@react-native-community/hooks";
+import { Icon } from "react-native-paper";
+import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 
 interface Input {
     onChangeText?: Dispatch<SetStateAction<string>>;
@@ -33,6 +35,9 @@ interface Select {
 }
 
 const expo = Constants.expoConfig?.name || '';
+const extra = Constants.expoConfig?.extra || {};
+const {colorPrimary} = extra;
+
 
 export default function Page() {
     const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
@@ -57,6 +62,7 @@ export default function Page() {
     const [urlPse, setUrlPse] = useState('');
     const [finalTransaction, setFinalTransaction] = useState(false);
     const [nullView, setNullView] = useState(true); 
+    const [viewBalanceComplete, setViewBalanceComplete] = useState(true);
 
     const fetchInfoClient = async () => {
         const infoClient = await getData('infoClient');
@@ -296,11 +302,46 @@ export default function Page() {
             {urlPse  === '' && (
                 <>
                     <View style={styles.mV1}>
-                        <Balance
-                            isWelcome={false}
-                        />
+                        <AnimatePresence>
+                            {viewBalanceComplete && (
+                                <MotiView
+                                    from={{ opacity: 0, translateY: 0 }}
+                                    animate={{ opacity: 1, translateY: 20 }}
+                                    exit={{ opacity: 0, translateY: 0 }}
+                                    transition={{ type: 'timing', duration: 300 }}
+                                    style={{ width: '100%' }}
+                                >
+                                     <TouchableOpacity style={{position: 'absolute', right: 30, top: 10, zIndex: 9}} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
+                                        <Icon 
+                                            source={'eye-off'}
+                                            size={24}
+                                            color={viewBalanceComplete ? "#fff" : colorPrimary}
+                                        />
+                                    </TouchableOpacity>
+                                     <Balance
+                                        isWelcome={false}
+                                    />
+                                </MotiView>
+                            )}
+                        </AnimatePresence>
                     </View>
                     <View style={styles.container}>
+                        <AnimatePresence>
+                            {!viewBalanceComplete && (
+                                <MotiView
+                                    from={{ opacity: 0, translateY: 0 }}
+                                    animate={{ opacity: 1, translateY: 20 }}
+                                    exit={{ opacity: 0, translateY: 0 }}
+                                    transition={{ type: 'timing', duration: 300 }}
+                                    style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20}}
+                                >
+                                    <ButtonsSecondary 
+                                        label="Ver mi saldo"
+                                        onPress={() => setViewBalanceComplete(!viewBalanceComplete)}
+                                    />
+                                </MotiView>
+                            )}
+                        </AnimatePresence>
                         <KeyboardAwareScrollView
                             enableOnAndroid={true}
                             extraHeight={Platform.select({ ios: 100, android: 120 })}
