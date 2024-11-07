@@ -325,7 +325,7 @@ export default function Page() {
                             )}
                         </AnimatePresence>
                     </View>
-                    <View style={styles.container}>
+                    <View style={[{height: viewBalanceComplete ? "52%" : "75%"}, styles.container]}>
                         <AnimatePresence>
                             {!viewBalanceComplete && (
                                 <MotiView

@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     mV1: {
-        marginVertical: 20
+        marginBottom: 30
     },
     h100:{
         height: '78%',
@@ -12,7 +12,6 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 27,
-        height: '52%',
         marginHorizontal: 20
     },
     image:{

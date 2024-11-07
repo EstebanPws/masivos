@@ -332,7 +332,7 @@ export default function Page() {
                     />
                 </View>
             )}
-            <View style={[styles.container]}>
+            <View style={[styles.container, {height: viewBalanceComplete ? "52%" : "75%"}]}>
                 {(step === 1 || step === 2) && (
                     <AnimatePresence>
                         {!viewBalanceComplete && (
