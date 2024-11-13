@@ -416,7 +416,7 @@ export default function Page() {
                     </AnimatePresence>
                 </View>
             )}
-            <View style={[styles.container, showAddAccount ? (styles.h100) : null, {height: viewBalanceComplete ? "52%" : "75%"}]}>
+            <View style={[styles.container, showAddAccount ? (styles.h100) : null, {height: viewBalanceComplete && !showAddAccount ? "52%" : "75%"}]}>
                 {!showAddAccount &&(
                     <AnimatePresence>
                         {!viewBalanceComplete && (

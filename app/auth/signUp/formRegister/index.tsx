@@ -66,7 +66,7 @@ export default function Page() {
 
                     if (codigoDepartamento === '5' || codigoDepartamento === '8') {
                         codigoDane = `0${codigoDane}`;
-                    } else if (codigoDane === '2529') {
+                    } else if (codigoDane === '2529' || codigoDane === '2543') {
                         codigoDane = `${codigoDane}0`;
                     }
 
