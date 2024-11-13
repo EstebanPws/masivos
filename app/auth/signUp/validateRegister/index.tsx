@@ -7,6 +7,10 @@ import WebView from "react-native-webview";
 import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes";
 import Loader from "@/components/loader/loader";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
+import Constants from "expo-constants";
+
+const extra = Constants.expoConfig?.extra || {};
+const {registroUrl} = extra;
 
 export default function Page() {
     const router = useRouter();
@@ -89,7 +93,7 @@ export default function Page() {
                     mixedContentMode="always"
                     geolocationEnabled={true}
                     userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-                    source={{ uri: `https://registrobilletera.paymentsway.co/${type === '0' ? 'vinculacionpersonanatural' : 'vinculacionpersonajuridica'}?id=${idRegister}&wsc=${wsc}`}}
+                    source={{ uri: `${registroUrl}/${type === '0' ? 'vinculacionpersonanatural' : 'vinculacionpersonajuridica'}?id=${idRegister}&wsc=${wsc}`}}
                     onLoadProgress={(nativeEvent) => handleLoadProgress(nativeEvent)}
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
                     onError={(syntheticEvent) => handleError(syntheticEvent)}
