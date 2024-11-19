@@ -185,7 +185,7 @@ export default function Page() {
                         <InfoModalConfirm
                             title="Depósito de bajo monto"
                             onCancel={() => setShowAuthorizations(!showAuthorizations)}
-                            onPress={() => {handleNext(Number(typePerson)); handleConfirmTerms()}}
+                            onPress={() => {handleConfirmTerms(); handleNext(Number(typePerson))}}
                         >
                             <View style={styles.mb5}>
                                 <Text variant="titleSmall" style={{ ...primaryRegular}}>
@@ -196,7 +196,7 @@ export default function Page() {
                                 <Link href={'https://paynopain-changeit-test.s3.eu-west-1.amazonaws.com/documents/payments-way/PW_Reglamento_deposito_bajo_monto.pdf'} style={{...styles.link, ...primaryRegular}}>Reglamento depósito de bajo monto.</Link>
                             </View>
                             <View style={styles.mb5}>
-                                <Link href={'https://paynopain-changeit-test.s3.eu-west-1.amazonaws.com/documents/payments-way/PW_Instructivo_uso_tarjeta_debito.pdf'} style={{...styles.link, ...primaryRegular}}>Instructivo de uso tarjeta debito física o vitual</Link>
+                                <Link href={'https://paynopain-changeit-test.s3.eu-west-1.amazonaws.com/documents/payments-way/PW_Instructivo_uso_tarjeta_debito.pdf'} style={{...styles.link, ...primaryRegular}}>Instructivo de uso tarjeta debito física o virtual</Link>
                             </View>
                             <View style={styles.mb5}>
                                 <Link href={'https://paynopain-changeit-test.s3.eu-west-1.amazonaws.com/documents/payments-way/PW_Canales_atencion_defensor_consumidor_BCC.pdf'} style={{...styles.link, ...primaryRegular}}>Canales de atención y defensor del consumidor financiero</Link>  
