@@ -78,7 +78,7 @@ export default function Page() {
       const body = {
         tipo_doc : infoClient.tipoDoc,
         no_doc: infoClient.numDoc,
-        cuenta: account,
+        cuenta: account?.startsWith('0') ? account.slice(1) : account,
         tipo_oper_cta:"3"
       }
 
