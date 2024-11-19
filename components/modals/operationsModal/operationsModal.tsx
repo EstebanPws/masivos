@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from "react-native";
 import { BlurView } from "expo-blur";
-import { styles } from "./operationsModal.styles";
+import styles from "./operationsModal.styles";
 import Constants from "expo-constants";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { MotiView, AnimatePresence } from 'moti';

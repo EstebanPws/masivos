@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { View } from "moti";
 import { Image, ImageSourcePropType, ScrollView } from "react-native";
-import { styles } from "./home.styles";
+import styles from "./home.styles";
 import SideBar from "@/components/sideBar/sideBar";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import ButtonLogOut from "@/components/forms/buttons/buttonLogOut/buttonLogOut";
@@ -70,7 +70,7 @@ export default function Page() {
 
   useFocusEffect(
     useCallback(() => {
-      setActiveTab('/home/');
+      setActiveTab('/home');
       setShouldRefresh(true);
 
       return () => {

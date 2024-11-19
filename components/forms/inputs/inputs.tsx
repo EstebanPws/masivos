@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState }  from 'react';
 import { MotiView } from 'moti';
 import { View, Text} from 'react-native';
 import { MD2Colors, TextInput } from 'react-native-paper';
-import { styles } from './inputs.styles';
+import styles from './inputs.styles';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import Constants from "expo-constants";
 import { formatCurrency } from '@/utils/validationForms';

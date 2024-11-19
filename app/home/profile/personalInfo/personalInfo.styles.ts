@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container:{
         backgroundColor: 'white',
         borderRadius: 15,
@@ -16,3 +16,5 @@ export const styles = StyleSheet.create({
         marginBottom: 20
     }
 })
+
+export default styles;

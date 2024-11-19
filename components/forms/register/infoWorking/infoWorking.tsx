@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { styles } from "./infoWorking.styles";
+import styles from "./infoWorking.styles";
 import Inputs from "@/components/forms/inputs/inputs";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";

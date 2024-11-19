@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     headerContainer: {
         position: 'absolute',
         width:'90%',
@@ -61,3 +61,5 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
     }
  });
+
+export default styles;

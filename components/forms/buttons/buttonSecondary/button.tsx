@@ -1,7 +1,7 @@
 import { Button } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 import { Text } from "react-native-paper";
-import { styles } from "./button.styles";
+import styles from "./button.styles";
 import Constants from "expo-constants";
 
 const extra = Constants.expoConfig?.extra || {};

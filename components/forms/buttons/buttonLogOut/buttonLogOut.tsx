@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { styles } from './buttonLogOut.styles';
+import styles from './buttonLogOut.styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
 import { Icon } from 'react-native-paper';

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native"
 import { MD3Colors } from "react-native-paper";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container:{
         justifyContent: 'center',
         borderRadius: 27,
@@ -51,4 +51,6 @@ export const styles = StyleSheet.create({
         paddingBottom: 30, 
         paddingHorizontal: 10
     }
-});
+})
+
+export default styles;;

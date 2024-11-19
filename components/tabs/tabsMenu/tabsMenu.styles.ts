@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { MD2Colors } from 'react-native-paper';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -46,4 +46,6 @@ export const styles = StyleSheet.create({
     backgroundColor: 'blue',
     borderRadius: 2,
   },
-});
+})
+
+export default styles;

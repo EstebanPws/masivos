@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { View } from "react-native";
 import Inputs from "../../forms/inputs/inputs";
-import { styles } from "./pse.styles";
+import styles from "./pse.styles";
 import AddressDian from "@/components/forms/addressDian/addressDian";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import { getData, setData } from "@/utils/storageUtils";

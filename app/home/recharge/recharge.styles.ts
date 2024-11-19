@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     mV1: {
         marginBottom: 30
     },
@@ -30,4 +30,6 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center'
     }
-});
+})
+
+export default styles;;

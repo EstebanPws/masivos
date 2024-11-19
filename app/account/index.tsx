@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View } from "moti";
 import { Image, ScrollView, TouchableOpacity } from "react-native";
 import { MD3Colors, Text } from "react-native-paper"
-import { styles } from "./account.styles";
+import styles from "./account.styles";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import ButtonLogOut from "@/components/forms/buttons/buttonLogOut/buttonLogOut";
 import { LinearGradient } from "expo-linear-gradient";
@@ -139,7 +139,7 @@ export default function Page() {
 
     const handleSelectAccount = async (item: ListAccounts) => {
         await setNumberAccount(`0${item.number}`);
-        router.push('/home/');
+        router.push('/home');
     }
     
     return (

@@ -10,7 +10,7 @@ import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button"
 import { useRouter } from "expo-router";
 import { useAuth } from "@/components/auth/context/authenticationContext";
 import InfoModal from "@/components/modals/infoModal/infoModal";
-import { styles  } from "./styles";
+import styles from "./styles";
 import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 import InfoModalConfirm from "@/components/modals/infoModalConfirm/infoModalConfirm";
 

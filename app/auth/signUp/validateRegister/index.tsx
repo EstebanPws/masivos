@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { styles } from "./validateRegister.styles";
+import styles from "./validateRegister.styles";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
 import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes";

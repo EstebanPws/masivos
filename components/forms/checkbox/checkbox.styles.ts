@@ -1,7 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { MD2Colors } from 'react-native-paper';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -47,4 +47,6 @@ export const styles = StyleSheet.create({
     fontSize: Platform.OS === 'android' ? 8: 10,
     color: MD2Colors.white,
   }
-});
+})
+
+export default styles;;

@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { BlurView } from "expo-blur";
-import { styles } from "./infoModalConfirm.styles";
+import styles from "./infoModalConfirm.styles";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { MotiView, AnimatePresence } from 'moti';
 import { Text } from "react-native-paper";

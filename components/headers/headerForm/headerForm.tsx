@@ -1,7 +1,7 @@
 import React from "react";
 import { Image} from "react-native";
 import { Appbar } from "react-native-paper";
-import { styles } from "./headerForm.styles";
+import styles from "./headerForm.styles";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
 

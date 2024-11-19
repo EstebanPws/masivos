@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -73,4 +73,6 @@ export const styles = StyleSheet.create({
         position: 'absolute', 
         overflow: 'hidden'
     }
-});
+})
+
+export default styles;;

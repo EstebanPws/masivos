@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { styles } from "./basicInfoJuridica.styles";
+import styles from "./basicInfoJuridica.styles";
 import Inputs from "../../inputs/inputs";
 import SearchSelect from "../../select/searchSelect/select";
 import { listAssociationType } from "@/utils/listUtils";

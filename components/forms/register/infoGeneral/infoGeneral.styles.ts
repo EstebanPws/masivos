@@ -1,6 +1,6 @@
 import {StyleSheet} from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     containerForm: {
       marginVertical: 30,
       paddingHorizontal: 40,
@@ -19,4 +19,6 @@ export const styles = StyleSheet.create({
     mV2:{
       marginVertical: 20
     }
-});
+})
+
+export default styles;;

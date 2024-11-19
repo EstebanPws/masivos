@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { MD2Colors } from "react-native-paper";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         borderRadius: 20,
         backgroundColor: 'white',
@@ -46,4 +46,6 @@ export const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'right'
     }
-});
+})
+
+export default styles;;

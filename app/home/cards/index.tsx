@@ -5,7 +5,7 @@ import { useFocusEffect } from "expo-router";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { TouchableHighlight, View} from "react-native";
 import { MD2Colors, Text } from "react-native-paper";
-import { styles } from "./cards.styles";
+import styles from "./cards.styles";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Constants from "expo-constants";
 import PremiumCard from "@/components/animations/premiumCard/premiumCard";

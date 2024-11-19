@@ -3,7 +3,7 @@ import { Alert, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
 import { Camera } from "expo-camera";
-import { styles } from "./videoIdentifications.styles";
+import styles from "./videoIdentifications.styles";
 import { MotiView } from "moti";
 import WebView from "react-native-webview";
 import InfoModal from "@/components/modals/infoModal/infoModal";

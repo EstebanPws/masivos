@@ -5,7 +5,7 @@ const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 const { primaryRegular } = extra.text;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     inputCustom: {
         backgroundColor: '#F5F5F5',
         fontSize: 14,
@@ -30,4 +30,6 @@ export const styles = StyleSheet.create({
         borderWidth: 0, 
         borderRadius: 50
     }
-});
+})
+
+export default styles;;

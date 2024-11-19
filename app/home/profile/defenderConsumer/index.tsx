@@ -1,5 +1,5 @@
 import React from "react";
-import { styles } from "./defenderConsumer.styles";
+import styles from "./defenderConsumer.styles";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { Link, useFocusEffect } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";

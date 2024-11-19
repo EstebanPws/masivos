@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -21,4 +21,6 @@ export const styles = StyleSheet.create({
     borderColor: colorPrimary,
     marginBottom: 20
   }
-});
+})
+
+export default styles;;

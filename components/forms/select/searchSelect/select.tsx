@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, Text, TouchableOpacity } from 'react-native';
-import { styles } from "./select.styles";
+import styles from "./select.styles";
 import Modal from 'react-native-modal';
 import Constants from 'expo-constants';
 import ButtonsPrimary from '../../buttons/buttonPrimary/button';

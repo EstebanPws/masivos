@@ -5,7 +5,7 @@ import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";
 import { ScrollView, View, Image, Platform, PanResponder } from "react-native";
-import { styles } from "./cashout.styles";
+import styles from "./cashout.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

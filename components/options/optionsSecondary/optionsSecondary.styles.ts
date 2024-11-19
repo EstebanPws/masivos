@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { MD3Colors } from "react-native-paper";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -27,4 +27,6 @@ export const styles = StyleSheet.create({
     text: {
         textAlign: 'center'
     }
-});
+})
+
+export default styles;;

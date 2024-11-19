@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { MD2Colors } from "react-native-paper";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     touchable: {
         padding: 15,
         borderRadius: 15,
@@ -46,4 +46,6 @@ export const styles = StyleSheet.create({
         textAlign: 'center',
         textTransform: 'capitalize'
     }
-});
+})
+
+export default styles;;

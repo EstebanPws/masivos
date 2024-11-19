@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { styles } from './checkbox.styles';
+import styles from './checkbox.styles';
 import Constants from 'expo-constants';
 
 const extra = Constants.expoConfig?.extra || {};

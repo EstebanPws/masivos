@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon, Text } from "react-native-paper";
-import { styles } from "./optionsProfile.styles";
+import styles from "./optionsProfile.styles";
 import { TouchableOpacity } from "react-native";
 import Constants from "expo-constants";
 

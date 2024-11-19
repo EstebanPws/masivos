@@ -4,7 +4,7 @@ import {StyleSheet} from "react-native";
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     containerForm: {
       marginVertical: 30,
       paddingHorizontal: 40,
@@ -41,4 +41,6 @@ export const styles = StyleSheet.create({
       maxHeight: 100,
       margin: 'auto'
     }
-});
+})
+
+export default styles;;

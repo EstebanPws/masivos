@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 import React, { useEffect, useState } from "react";
 import { View, Image} from "react-native";
 import { MD2Colors, Text } from "react-native-paper";
-import { styles } from "./confirmBankTransferSuccess.styles";
+import styles from "./confirmBankTransferSuccess.styles";
 import { formatCurrency } from "@/utils/validationForms";
 import { getData, getNumberAccount } from "@/utils/storageUtils";
 

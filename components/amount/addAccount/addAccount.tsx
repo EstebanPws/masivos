@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper"; 
 import Inputs from "../../forms/inputs/inputs";
-import { styles } from "./addAccount.styles";
+import styles from "./addAccount.styles";
 import Constants from "expo-constants";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import { LinearGradient } from "expo-linear-gradient";

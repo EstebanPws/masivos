@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 import React from "react";
 import { View } from "react-native";
 import { Text } from "react-native-paper";
-import { styles } from "./confirmBankTransfer.styles";
+import styles from "./confirmBankTransfer.styles";
 import { formatCurrency } from "@/utils/validationForms";
 
 const extra = Constants.expoConfig?.extra || {};

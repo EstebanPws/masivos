@@ -5,7 +5,7 @@ import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";
 import { ScrollView, View, Image, Platform, PanResponder, TouchableOpacity } from "react-native";
-import { styles } from "./sendMoney.styles";
+import styles from "./sendMoney.styles";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import InfoModal from "@/components/modals/infoModal/infoModal";

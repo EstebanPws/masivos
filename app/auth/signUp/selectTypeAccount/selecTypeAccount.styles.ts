@@ -5,7 +5,7 @@ import { MD2Colors } from "react-native-paper";
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     mt5: {
         width: '90%',
         height: '70%',
@@ -115,3 +115,5 @@ export const styles = StyleSheet.create({
         marginHorizontal: 'auto'
     }
  });
+
+export default styles;

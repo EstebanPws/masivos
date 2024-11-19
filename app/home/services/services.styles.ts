@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container:{
         paddingHorizontal: 20,
         paddingVertical: 20
@@ -108,3 +108,5 @@ export const styles = StyleSheet.create({
         marginLeft: 0
     }
 })
+
+export default styles;

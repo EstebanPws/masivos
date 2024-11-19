@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { MotiView } from 'moti';
 import { Easing } from 'react-native-reanimated';
-import { styles } from './clockLoop.styles';
+import styles from './clockLoop.styles';
 import { Text } from 'react-native-paper';
 import Modal from 'react-native-modal';
 import Constants from 'expo-constants';

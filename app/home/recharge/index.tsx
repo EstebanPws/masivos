@@ -5,7 +5,7 @@ import Balance from "@/components/balance/balance";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ScrollView, View, Image, Platform, Linking, Alert, PanResponder, TouchableOpacity } from "react-native";
-import { styles } from "./recharge.styles";
+import styles from "./recharge.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

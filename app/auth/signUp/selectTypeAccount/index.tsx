@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { TouchableOpacity, View, Image } from "react-native";
 import { Icon, MD2Colors, Text } from "react-native-paper";
-import { styles } from "./selecTypeAccount.styles";
+import styles from "./selecTypeAccount.styles";
 import { Link, useRouter } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import Constants from "expo-constants";

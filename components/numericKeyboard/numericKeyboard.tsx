@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, Platform } from 'react-native';
-import { styles } from './numericKeyboard.styles'
+import styles from './numericKeyboard.styles'
 import { Icon } from 'react-native-paper';
 import Constants from 'expo-constants';
 import { TouchableHighlight } from 'react-native-gesture-handler';

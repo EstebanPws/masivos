@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { MD3Colors } from "react-native-paper";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container:{
         width: '100%',
         height: '100%',
@@ -41,3 +41,5 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10
     }
 })
+
+export default styles;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, TouchableOpacity, Platform } from "react-native";
 import { Icon, Text } from "react-native-paper";
-import { styles } from "./services.styles";
+import styles from "./services.styles";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";

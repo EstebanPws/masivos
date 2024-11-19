@@ -4,7 +4,7 @@ import { Platform, ScrollView, View } from "react-native";
 import { MD2Colors, ProgressBar, Text } from "react-native-paper";
 import BasicInfo from '@/components/forms/register/basicInfo/basicInfo';
 import { router, useLocalSearchParams } from "expo-router";
-import { styles } from "./formRegister.styles";
+import styles from "./formRegister.styles";
 import Constants from "expo-constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import InfoGeneral from "@/components/forms/register/infoGeneral/infoGeneral";

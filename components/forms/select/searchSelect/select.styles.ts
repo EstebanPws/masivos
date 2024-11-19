@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     inputContainer: {
         borderWidth: 1.5,
         borderColor: '#949494',
@@ -49,4 +49,6 @@ export const styles = StyleSheet.create({
         borderRadius: 50
       }
  });
+
+export default styles;
   

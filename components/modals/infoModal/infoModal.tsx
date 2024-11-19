@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { BlurView } from "expo-blur";
 import { Icon, MD2Colors } from "react-native-paper";
-import { styles } from "./infoModal.styles";
+import styles from "./infoModal.styles";
 import Constants from "expo-constants";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { MotiView, AnimatePresence } from 'moti';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { styles } from "./addressDian.styles";
+import styles from "./addressDian.styles";
 import Modal from 'react-native-modal';
 import Constants from 'expo-constants';
 import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';

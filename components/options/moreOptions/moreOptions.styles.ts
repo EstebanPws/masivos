@@ -7,7 +7,7 @@ const { colorPrimary } = extra;
 
 const { width, height } = Dimensions.get("window");
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container:{
       position: 'absolute',
       top: -700,
@@ -66,5 +66,7 @@ export const styles = StyleSheet.create({
     text: {
         color: 'white'
     }
-});
+})
+
+export default styles;;
   

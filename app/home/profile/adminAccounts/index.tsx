@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { Icon, MD2Colors, Text } from "react-native-paper";
-import { styles } from "./adminAccounts.styles";
+import styles from "./adminAccounts.styles";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { useFocusEffect } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";

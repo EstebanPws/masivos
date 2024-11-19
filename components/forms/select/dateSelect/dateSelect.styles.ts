@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   inputContainer: {
     borderWidth: 1.5,
     borderColor: '#949494',
@@ -62,5 +62,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-});
+})
+
+export default styles;
   

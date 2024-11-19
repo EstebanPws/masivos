@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styles } from "./pinSecurity.styles";
+import styles from "./pinSecurity.styles";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { useFocusEffect } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";

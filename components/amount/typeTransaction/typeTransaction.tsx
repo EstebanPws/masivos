@@ -2,7 +2,7 @@ import React from "react";
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity, View } from "react-native";
-import { styles } from "./typeTransaction.styles";
+import styles from "./typeTransaction.styles";
 import { Icon } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { formatCurrency } from "@/utils/validationForms";

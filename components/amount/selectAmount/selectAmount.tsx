@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper"; 
 import Inputs from "../../forms/inputs/inputs";
-import { styles } from "./selectAmount.styles";
+import styles from "./selectAmount.styles";
 import Constants from "expo-constants";
 import { formatCurrency } from "@/utils/validationForms";
 

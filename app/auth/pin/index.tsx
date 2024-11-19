@@ -8,7 +8,7 @@ import OtpInputs from "@/components/otp/otpInputs";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useAuth } from "@/components/auth/context/authenticationContext";
-import { styles } from "./pin.styles";
+import styles from "./pin.styles";
 import HeaderGeneral from "@/components/headers/headerGeneral/headerGeneral";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 

@@ -4,7 +4,7 @@ import { Platform, StyleSheet } from "react-native";
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary, colorSecondaryDark } = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         justifyContent: 'center',
@@ -68,4 +68,6 @@ export const styles = StyleSheet.create({
     containerFeceId: {
         marginTop: 20
     }
-});
+})
+
+export default styles;;

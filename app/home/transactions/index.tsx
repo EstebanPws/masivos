@@ -4,7 +4,7 @@ import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { useFocusEffect } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-import { styles } from "./transactions.styles";
+import styles from "./transactions.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import TypeTransaction from "@/components/amount/typeTransaction/typeTransaction";
 import { Icon, Text } from "react-native-paper";

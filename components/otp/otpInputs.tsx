@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, TextInputProps } from 'react-native';
-import { styles } from './otpInputs.styles';
+import styles from './otpInputs.styles';
 import Constants from 'expo-constants';
 
 const extra = Constants.expoConfig?.extra || {};

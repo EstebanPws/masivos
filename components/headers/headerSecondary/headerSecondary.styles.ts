@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     header: {
         position: 'absolute',
         top: 0,
@@ -40,3 +40,5 @@ export const styles = StyleSheet.create({
         transform: [{ rotate: '-90deg' }]
     },
 })
+
+export default styles

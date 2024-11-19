@@ -76,8 +76,8 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
             setTabHistory(prev => prev.slice(0, -1));
             setActiveTab(lastTab);
             
-            const back = lastTab === "" ? "/home" : lastTab;
-            router.replace(back as Href<string | object>);
+            const back: any = lastTab === "" ? "/home" : lastTab;
+            router.replace(back);
         }
         resetInactivityTimeout();
     };

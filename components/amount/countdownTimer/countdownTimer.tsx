@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, AppState, AppStateStatus } from 'react-native';
 import { Text } from 'react-native-paper';
-import { styles } from './countdownTimer.styles';
+import styles from './countdownTimer.styles';
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { validateNumber } from '@/utils/validationForms';

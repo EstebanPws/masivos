@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { BlurView } from "expo-blur";
-import { styles } from "./moreOptions.styles";
+import styles from "./moreOptions.styles";
 import Constants from "expo-constants";
 import { MotiView, AnimatePresence } from 'moti';
 import { Icon, Text } from "react-native-paper";
@@ -29,7 +29,7 @@ export default function MoreOptions({ onPress }: MoreOptionsProps) {
     const handleRoute = (type: number) => {
         if (type === 0) {
             router.push({
-                pathname: '/home/',
+                pathname: '/home',
                 params: { type: 0 }
             })
         } else if (type === 1) {

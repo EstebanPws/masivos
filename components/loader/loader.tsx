@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
-import { styles } from './loader.styles';
+import styles from './loader.styles';
 import Constants from 'expo-constants';
 
 const extra = Constants.expoConfig?.extra || {};

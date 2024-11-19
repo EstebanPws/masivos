@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { styles } from "./infoGeneral.styles";
+import styles from "./infoGeneral.styles";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import { listCivilStatusType, listEducationType, listGenderType, listOcupationType } from "@/utils/listUtils";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";

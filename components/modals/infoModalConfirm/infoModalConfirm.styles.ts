@@ -6,7 +6,7 @@ const { colorPrimary } = extra;
 
 const { width, height } = Dimensions.get("window");
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     blurView: {
       position: 'absolute',
       top: 0,
@@ -62,5 +62,7 @@ export const styles = StyleSheet.create({
       marginBottom: 10,
       textAlign: 'center'
     }
-});
+})
+
+export default styles;;
   

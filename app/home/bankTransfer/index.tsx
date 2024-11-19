@@ -6,7 +6,7 @@ import HeaderForm from "@/components/headers/headerForm/headerForm";
 import { router, useFocusEffect } from "expo-router";
 import { useBackHandler } from '@react-native-community/hooks';
 import { ScrollView, View, Image, Platform, PanResponder, TouchableOpacity } from "react-native";
-import { styles } from "./bankTransfer.styles";
+import styles from "./bankTransfer.styles";
 import SelectAmount from "@/components/amount/selectAmount/selectAmount";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

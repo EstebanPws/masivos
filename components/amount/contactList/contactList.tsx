@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
 import * as Contacts from 'expo-contacts';
-import { styles } from './contactList.styles';
+import styles from './contactList.styles';
 import { Contact } from 'expo-contacts';
 import Inputs from '@/components/forms/inputs/inputs';
 import { LinearGradient } from 'expo-linear-gradient';

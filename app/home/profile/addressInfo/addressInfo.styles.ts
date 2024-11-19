@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     info: {
         marginTop: '35%',
         maxHeight: '80%'
@@ -20,4 +20,6 @@ export const styles = StyleSheet.create({
     mb5: {
         marginBottom: 20,
     },
-});
+})
+
+export default styles;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { List, Text } from "react-native-paper";
-import { styles } from "./authorization.styles";
+import styles from "./authorization.styles";
 import Inputs from "@/components/forms/inputs/inputs";
 import SearchSelect from "@/components/forms/select/searchSelect/select";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";

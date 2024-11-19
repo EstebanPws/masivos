@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary} = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     info: {
         flex: 1,
         justifyContent: 'center',
@@ -56,4 +56,6 @@ export const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'right',
     },
-});
+})
+
+export default styles;

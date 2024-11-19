@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Appearance, View, Text, TouchableOpacity, Platform, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { styles } from "./dateSelect.styles";
+import styles from "./dateSelect.styles";
 import Constants from 'expo-constants';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Icon, MD2Colors } from 'react-native-paper';

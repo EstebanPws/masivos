@@ -39,7 +39,7 @@ const AuthenticationContext = createContext<AuthContextType>({
     modalidad: null,
     activeLoader: () => {},
     desactiveLoader: () => {}
-});
+})
 
 export const useAuth = () => useContext(AuthenticationContext);
 
@@ -93,7 +93,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                         await setData('lastLogin', data.data.lastLogin);
                         setSessionToken(data.message);
                         setModalidad(data.data.modalidad);
-                        data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
+                        data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home');
                     } else {
                         setShowOtpValidation(true);
                     }
@@ -140,7 +140,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                     await setData('lastLogin', data.data.lastLogin);
                     setSessionToken(data.message);
                     setModalidad(data.data.modalidad);
-                    data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home/');
+                    data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home');
                 } else {
                     setShowOtpValidation(true);
                 }
@@ -214,7 +214,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
     const handleOnFinish = (modalidad?:string) => {
         setModalidad(modalidad!);
         setShowOtpValidation(false);
-        modalidad === '0' ? router.replace('/account') : router.replace('/home/');
+        modalidad === '0' ? router.replace('/account') : router.replace('/home');
     }
 
     return (

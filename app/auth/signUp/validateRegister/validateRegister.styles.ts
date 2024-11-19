@@ -1,6 +1,6 @@
 import { Platform, StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     containerHeader: {
         marginHorizontal: Platform.OS === 'android' ? 30 : 40
     },
@@ -8,4 +8,8 @@ export const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 0,
     },
-});
+})
+
+export default styles;
+
+export default styles;

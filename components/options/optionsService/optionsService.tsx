@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Image, GestureResponderEvent } from "react-native";
 import { Text } from "react-native-paper";
-import { styles } from "./optionsService.styles";
+import styles from "./optionsService.styles";
 import Constants from "expo-constants";
 import { formatCurrency } from "@/utils/validationForms";
 

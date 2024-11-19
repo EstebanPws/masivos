@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { styles } from "./personalInfo.styles";
+import styles from "./personalInfo.styles";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import { useFocusEffect } from "expo-router";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";

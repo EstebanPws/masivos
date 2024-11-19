@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { MotiView } from 'moti';
-import { styles } from "./tabsMenu.styles";
+import styles from "./tabsMenu.styles";
 import { router, useSegments } from 'expo-router';
 import { Icon, MD3Colors } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,9 +12,9 @@ const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary, colorSecondary} = extra;
 
 const tabs = [
-    { name: 'Home', screen: '/home/', icon: 'home' },
+    { name: 'Home', screen: '/home', icon: 'home' },
     { name: 'Services', screen: '/home/services/', icon: 'file' },
-    { name: 'More', screen: '/home/', icon: 'plus' },
+    { name: 'More', screen: '/home', icon: 'plus' },
     { name: 'Card', screen: '/home/cards/', icon: 'credit-card' },
     { name: 'Profile', screen: '/home/profile/', icon: 'account' }
 ];

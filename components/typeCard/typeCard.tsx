@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styles } from "./typeCard.styles";
+import styles from "./typeCard.styles";
 import { View, ScrollView, Image } from "react-native";
 import { Text } from "react-native-paper";
 import { MotiView, MotiText } from "moti";

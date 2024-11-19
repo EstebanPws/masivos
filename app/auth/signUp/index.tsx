@@ -8,7 +8,7 @@ import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import OtpInputs from "@/components/otp/otpInputs";
 import Constants from "expo-constants";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { styles } from "./signUp.styles";
+import styles from "./signUp.styles";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import HeaderSecondary from "@/components/headers/headerSecondary/headerSecondary";
 import { setData } from '@/utils/storageUtils';

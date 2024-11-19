@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Image, Platform} from "react-native";
 import { Icon } from "react-native-paper";
-import { styles } from "./headerSecondary.styles";
+import styles from "./headerSecondary.styles";
 
 interface HeaderGeneral {
     type: number;

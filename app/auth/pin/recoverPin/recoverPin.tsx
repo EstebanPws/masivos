@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styles } from "./recoverPin.styles";
+import styles from "./recoverPin.styles";
 import { router } from "expo-router";
 import { Text } from "react-native-paper";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";

@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NumericKeyboard from "@/components/numericKeyboard/numericKeyboard";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
 import { TextInput } from "react-native";
-import { styles } from "./otpValidationRegisterModal.styles";
+import styles from "./otpValidationRegisterModal.styles";
 import Constants from "expo-constants";
 import ButtonsSecondary from "@/components/forms/buttons/buttonSecondary/button";
 import { Text } from "react-native-paper";

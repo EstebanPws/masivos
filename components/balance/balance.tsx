@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "react-native-paper";
 import { formatCurrency } from "@/utils/validationForms";
-import { styles } from "./balance.styles";
+import styles from "./balance.styles";
 import { useAuth } from "../auth/context/authenticationContext";
 import { useTab } from "../auth/tabsContext/tabsContext";
 import instanceWallet from "@/services/instanceWallet";

@@ -6,7 +6,7 @@ import * as Sharing from 'expo-sharing';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Icon, Text } from 'react-native-paper';
 import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';
-import { styles } from "./infoTransaction.styles";
+import styles from "./infoTransaction.styles";
 import Constants from "expo-constants";
 import { formatCurrency } from "@/utils/validationForms";
 import { PDFDocument } from 'pdf-lib';

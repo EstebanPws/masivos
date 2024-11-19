@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { styles } from "./basicInfo.styles";
+import styles from "./basicInfo.styles";
 import Inputs from "../../inputs/inputs";
 import SearchSelect from "../../select/searchSelect/select";
 import { listDocumentType } from "@/utils/listUtils";

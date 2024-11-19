@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary} = extra;
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     btn: {
         borderRadius: 50,
         borderColor: colorPrimary,
@@ -13,4 +13,6 @@ export const styles = StyleSheet.create({
     btnText: {
         color: colorPrimary
     }
-});
+})
+
+export default styles;;

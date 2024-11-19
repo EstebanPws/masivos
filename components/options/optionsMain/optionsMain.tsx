@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Icon, Text } from "react-native-paper";
-import { styles } from "./optionsMain.styles";
+import styles from "./optionsMain.styles";
 import Constants from "expo-constants";
 import { router } from "expo-router";
 

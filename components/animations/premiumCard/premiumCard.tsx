@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image } from "react-native";
 import { MotiView } from "moti";
-import { styles } from "./premiumCard.styles";
+import styles from "./premiumCard.styles";
 
 export default function PremiumCard() {
   return (

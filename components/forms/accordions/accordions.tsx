@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
-import { styles } from './accordions.styles';
+import styles from './accordions.styles';
 import { MotiText, MotiView } from 'moti';
 import { Icon } from 'react-native-paper';
 

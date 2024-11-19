@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Button, MD2Colors } from "react-native-paper";
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 import { Text, Icon } from "react-native-paper";
-import { styles } from "./button.styles";
+import styles from "./button.styles";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryRegular} = extra.text;

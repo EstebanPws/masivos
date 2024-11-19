@@ -46,3 +46,5 @@ export const styles  = StyleSheet.create({
       color: MD2Colors.white
     },
 })
+
+export default styles

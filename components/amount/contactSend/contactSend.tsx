@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { Icon, Text } from "react-native-paper";
-import { styles } from "./contactSend.styles";
+import styles from "./contactSend.styles";
 import Inputs from "@/components/forms/inputs/inputs";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import instanceWallet from "@/services/instanceWallet";
