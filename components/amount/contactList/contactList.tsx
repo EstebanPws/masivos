@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Text } from 'react-native-paper';
 import * as Contacts from 'expo-contacts';
 import styles from './contactList.styles';
@@ -12,6 +12,7 @@ import { Icon } from 'react-native-paper';
 import { useTab } from '@/components/auth/tabsContext/tabsContext';
 import Modal from 'react-native-modal';
 import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
@@ -288,51 +289,55 @@ export default function ContactList({ onResponseContact }: ContactListProps) {
           </>
         )}
       </View>
-      <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
-        <View style={styles.modalContainer}>
-            <ScrollView>
-                <View style={styles.scrollPadding}>
-                    <Text variant="titleSmall" style={[primaryBold, styles.text, styles.subtitle]}>Por favor selecciona la cuenta a la que quieres enviar el dinero.</Text>
-                    {listAccounts.length !== 0 && (
-                        <>
-                            {listAccounts.map((account: any, index: React.Key | null | undefined) => (
-                                <View  key={index}  >
-                                    {account.account.map((accounts: any, index: React.Key | null | undefined) => (
-                                        <View key={index} style={styles.account}>
-                                            <TouchableOpacity onPress={() => handleResult(accounts)}>
-                                                <LinearGradient
-                                                    colors={[colorPrimary, colorSecondary]}
-                                                    start={{ x: 0, y: 0 }}
-                                                    end={{ x: 1, y: 0 }}
-                                                    style={styles.balance}
-                                                >
-                                                    <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
-                                                        <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
-                                                    </Text>
+      <SafeAreaProvider>
+        <SafeAreaView>
+          <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
+            <View style={styles.modalContainer}>
+                <ScrollView>
+                    <View style={styles.scrollPadding}>
+                        <Text variant="titleSmall" style={[primaryBold, styles.text, styles.subtitle]}>Por favor selecciona la cuenta a la que quieres enviar el dinero.</Text>
+                        {listAccounts.length !== 0 && (
+                            <>
+                                {listAccounts.map((account: any, index: React.Key | null | undefined) => (
+                                    <View  key={index}  >
+                                        {account.account.map((accounts: any, index: React.Key | null | undefined) => (
+                                            <View key={index} style={styles.account}>
+                                                <TouchableOpacity onPress={() => handleResult(accounts)}>
                                                     <LinearGradient
                                                         colors={[colorPrimary, colorSecondary]}
-                                                        start={{ x: 1, y: 0 }}
-                                                        end={{ x: 0, y: 0 }}
+                                                        start={{ x: 0, y: 0 }}
+                                                        end={{ x: 1, y: 0 }}
                                                         style={styles.balance}
                                                     >
-                                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('7') ? `0${accounts.no_cuenta}` : account.no_cuenta}</Text>
+                                                        <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
+                                                            <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
+                                                        </Text>
+                                                        <LinearGradient
+                                                            colors={[colorPrimary, colorSecondary]}
+                                                            start={{ x: 1, y: 0 }}
+                                                            end={{ x: 0, y: 0 }}
+                                                            style={styles.balance}
+                                                        >
+                                                            <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('7') ? `0${accounts.no_cuenta}` : account.no_cuenta}</Text>
+                                                        </LinearGradient>
                                                     </LinearGradient>
-                                                </LinearGradient>
-                                            </TouchableOpacity>
-                                        </View>
-                                    ))}
-                                </View>
-                            ))}
-                        </>
-                    )}
-                </View>
-            </ScrollView>
-            <ButtonsPrimary
-                label='Cerrar'
-                onPress={() => setIsVisible(false)}
-            />
-        </View>
-      </Modal>
+                                                </TouchableOpacity>
+                                            </View>
+                                        ))}
+                                    </View>
+                                ))}
+                            </>
+                        )}
+                    </View>
+                </ScrollView>
+                <ButtonsPrimary
+                    label='Cerrar'
+                    onPress={() => setIsVisible(false)}
+                />
+            </View>
+          </Modal>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </>
   );
 }

@@ -4,11 +4,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Icon, Text } from "react-native-paper";
 import styles from "./contactSend.styles";
 import Inputs from "@/components/forms/inputs/inputs";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import instanceWallet from "@/services/instanceWallet";
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 import Modal from "react-native-modal";
 import ButtonsPrimary from "@/components/forms/buttons/buttonPrimary/button";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const extra = Constants.expoConfig?.extra || {};
 const expo = Constants.expoConfig?.name || '';
@@ -197,51 +198,55 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                     ó busque el contacto a continuación:
                 </Text>
             </LinearGradient>
-            <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
-                <View style={styles.modalContainer}>
-                    <ScrollView>
-                        <View style={styles.scrollPadding}>
-                            <Text variant="titleSmall" style={[primaryBold, styles.text, styles.subtitle]}>Por favor selecciona la cuenta a la que quieres enviar el dinero.</Text>
-                            {listAccounts.length !== 0 && (
-                                <>
-                                    {listAccounts.map((account: any, index: React.Key | null | undefined) => (
-                                        <View  key={index}  >
-                                            {account.account.map((accounts: any, index: React.Key | null | undefined) => (
-                                                <View key={index} style={styles.account}>
-                                                    <TouchableOpacity onPress={() => handleResult(accounts)}>
-                                                        <LinearGradient
-                                                            colors={[colorPrimary, colorSecondary]}
-                                                            start={{ x: 0, y: 0 }}
-                                                            end={{ x: 1, y: 0 }}
-                                                            style={styles.balance}
-                                                        >
-                                                            <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
-                                                                <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
-                                                            </Text>
-                                                            <LinearGradient
-                                                                colors={[colorPrimary, colorSecondary]}
-                                                                start={{ x: 1, y: 0 }}
-                                                                end={{ x: 0, y: 0 }}
-                                                                style={styles.balance}
-                                                            >
-                                                                <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('7') ? `0${accounts.no_cuenta}` : account.no_cuenta}</Text>
-                                                            </LinearGradient>
-                                                        </LinearGradient>
-                                                    </TouchableOpacity>
+            <SafeAreaProvider>
+                <SafeAreaView>
+                    <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}>
+                        <View style={styles.modalContainer}>
+                            <ScrollView>
+                                <View style={styles.scrollPadding}>
+                                    <Text variant="titleSmall" style={[primaryBold, styles.text, styles.subtitle]}>Por favor selecciona la cuenta a la que quieres enviar el dinero.</Text>
+                                    {listAccounts.length !== 0 && (
+                                        <>
+                                            {listAccounts.map((account: any, index: React.Key | null | undefined) => (
+                                                <View  key={index}  >
+                                                    {account.account.map((accounts: any, index: React.Key | null | undefined) => (
+                                                        <View key={index} style={styles.account}>
+                                                            <TouchableOpacity onPress={() => handleResult(accounts)}>
+                                                                <LinearGradient
+                                                                    colors={[colorPrimary, colorSecondary]}
+                                                                    start={{ x: 0, y: 0 }}
+                                                                    end={{ x: 1, y: 0 }}
+                                                                    style={styles.balance}
+                                                                >
+                                                                    <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Número de 
+                                                                        <Text variant="titleSmall" style={[primaryBold, styles.text]}> cuenta</Text>
+                                                                    </Text>
+                                                                    <LinearGradient
+                                                                        colors={[colorPrimary, colorSecondary]}
+                                                                        start={{ x: 1, y: 0 }}
+                                                                        end={{ x: 0, y: 0 }}
+                                                                        style={styles.balance}
+                                                                    >
+                                                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('7') ? `0${accounts.no_cuenta}` : account.no_cuenta}</Text>
+                                                                    </LinearGradient>
+                                                                </LinearGradient>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    ))}
                                                 </View>
                                             ))}
-                                        </View>
-                                    ))}
-                                </>
-                            )}
+                                        </>
+                                    )}
+                                </View>
+                            </ScrollView>
+                            <ButtonsPrimary
+                                label='Cerrar'
+                                onPress={() => setIsVisible(false)}
+                            />
                         </View>
-                    </ScrollView>
-                    <ButtonsPrimary
-                        label='Cerrar'
-                        onPress={() => setIsVisible(false)}
-                    />
-                </View>
-            </Modal>
+                    </Modal>
+                </SafeAreaView>
+            </SafeAreaProvider>
         </>
     );
 }
