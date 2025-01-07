@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Payments Way",
-    "slug": "paymentsway-way",
+    "name": "Sambax",
+    "slug": "sambax",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,14 +10,14 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ff003f"
     },
     "ios": {
       "supportsTablet": true,
       "splash": {
-        "image": "./assets/images/splash-ios.png",
+        "image": "./assets/images/splash.png",
         "resizeMode": "cover",
-        "backgroundColor": "#FF0042"
+        "backgroundColor": "#ff003f"
       }
     },
     "android": {
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.paymentsWay.payments_way_consumer",
+      "package": "com.paymentsWay.sambax",
       "permissions": [
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT",
@@ -72,15 +72,43 @@
           "contactsPermission": "Allow $(PRODUCT_NAME) to access your contacts."
         }
       ],
-      ["expo-build-properties", {
-        "android": {
-          "usesCleartextTraffic": true
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
-      }]
+      ]
     ],
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "baqueromorenoj"
+    "owner": "baqueromorenoj",
+    "extra": {
+      "contacto": {
+        "nit": "901156998-3",
+        "correo": "sac@smabax.com.co",
+        "ciudad": "Bogotá D.C",
+        "departamento": "Bogotá D.C"
+      },
+      "text": {
+        "primaryBold": {
+          "fontFamily": "Montserrat_700Bold"
+        },
+        "primaryRegular": {
+          "fontFamily": "Montserrat_400Regular"
+        }
+      },
+      "colorPrimary": "#ff003f",
+      "colorSecondary": "#d80c3e",
+      "colorSecondaryDark": "#333333",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b9f4b201-c8f6-45de-b8b4-7e3ca9fd097e"
+      }
+    }
   }
 }

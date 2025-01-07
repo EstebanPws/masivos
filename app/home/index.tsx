@@ -84,14 +84,14 @@ export default function Page() {
     router.setParams({ type: '1' });
   };
 
-  const button1Recharge: BntOptions = {
-    name: 'Solicitar Recarga',
-    image: require('@/assets/images/general/bolsa-de-dinero.png'),
-    onPress: () => router.push({
-      pathname: '/home/recharge',
-      params: { type: 0 }
-    })
-  };
+  // const button1Recharge: BntOptions = {
+  //   name: 'Solicitar Recarga',
+  //   image: require('@/assets/images/general/bolsa-de-dinero.png'),
+  //   onPress: () => router.push({
+  //     pathname: '/home/recharge',
+  //     params: { type: 0 }
+  //   })
+  // };
 
   const button2Recharge: BntOptions = {
     name: 'PSE',
@@ -140,7 +140,7 @@ export default function Page() {
       </View>
       {(showOperationsRecharge || type === '0') && (
         <OperationsModal
-          button1={button1Recharge}
+          // button1={button1Recharge}
           button2={button2Recharge}
           onPress={handleCloseModal}
         />

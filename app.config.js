@@ -5,7 +5,7 @@ export default ({ config }) => ({
     extra: {
         contacto: {
             nit: "901156998-3",
-            correo: "sac@paymentsway.com.co",
+            correo: "sac@smabax.com.co",
             ciudad: "Bogotá D.C",
             departamento: "Bogotá D.C"
         },
@@ -17,14 +17,14 @@ export default ({ config }) => ({
                 "fontFamily": "Montserrat_400Regular"
             }
         },
-        colorPrimary: "#FF0042",
-        colorSecondary: "#800021",
+        colorPrimary: "#ff003f",
+        colorSecondary: "#d80c3e",
         colorSecondaryDark: "#333333",
         router: {
             "origin": false
         },
         eas: {
-            "projectId": "48d4c8bd-b909-439e-9296-ba6151806373"
+            "projectId": "b9f4b201-c8f6-45de-b8b4-7e3ca9fd097e"
         },
         adoUrl: process.env.EXPO_PUBLIC_URL_ADO,
         registroUrl: process.env.EXPO_PUBIC_URL_REGISTRO,

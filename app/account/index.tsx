@@ -15,7 +15,7 @@ import InfoModal from "@/components/modals/infoModal/infoModal";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary} = extra;
+const {colorPrimary, colorSecondary, idApp} = extra;
 
 interface ListAccounts {
     number: number;
@@ -43,8 +43,7 @@ export default function Page() {
             const body = { id: String(accountConsult) }; 
             await instanceWallet.post('formView', body)
             .then(async (response) => {
-                const data = response.data;
-
+                const data = response.data;                
                 const infoClient = {
                     infoClient: true,
                     id: data.id,
@@ -59,14 +58,15 @@ export default function Page() {
                     email: data.account[0].correo,
                     ciudadRes: data.ciudadRes,
                     barrio: data.account[0].barrio,
-                    direRes: data.dirRes.trim()
+                    direRes: data.dirRes.trim(),
+                    genero: data.account[0].genero
                 };
 
                 setName(`${data.nombres1} ${data.apellido1}`);
                 await setData('infoClient', infoClient);
             })
             .catch(async (err) => {
-                if (err && err.message) {
+                if (err && err.response.data) {
                     setMessage(err.response.data.message);
                 }  else {
                     setMessage("Hubo un error al realizar la petición.");
@@ -81,14 +81,15 @@ export default function Page() {
         }
 
         desactiveLoader();
-    };  
+    }; 
 
     const fetchListAccounts = async () => {
         activeLoader();
         const bodyAccount = {
             no_doc : documentNumber,
             modalidad : modalidad,
-            estado: "T"
+            estado: "T",
+            idApp: idApp
         }
 
         await instanceWallet.post('getAccounts', bodyAccount)
@@ -105,8 +106,14 @@ export default function Page() {
     
                     return numberAccounts;
                 });
+
+                accounts = accounts.filter((infoAccount: { estado: string; }) => {
+                    if (infoAccount.estado === 'A') {
+                        return infoAccount;
+                    }
+                });
  
-                await fetchInfoAccount(response.data.data[0].CUENTA);
+                await fetchInfoAccount(accounts[0].number);
             } else {
                 const accountsMap = [data.data];
                 accounts = accountsMap.map((account: any) => {
@@ -116,20 +123,23 @@ export default function Page() {
                     }
     
                     return numberAccounts;
-                });
+                });  
                 await fetchInfoAccount(response.data.data.CUENTA)
             }
 
             setListAccounts(accounts);
         })
         .catch((err) => {
-            if (err && err.message) {
-                setMessage(err.response.data.message);
-            }  else {
+            if (err && err.response && err.response.data) {
+                setMessage(err.response.data.includes("502") ? "En este momento no podemos consultar tus cuentas. \n\n Por favor intentalo de nuevo en unos minutos." : err.response.data.message);
+            } else {
                 setMessage("Hubo un error al realizar la petición.");
             }
             setShowErrorModal(true);
             setTypeResponse('error');
+        })
+        .finally(() => {
+            desactiveLoader();
         });
     }
 
@@ -137,7 +147,44 @@ export default function Page() {
         fetchListAccounts();
     }, []);
 
+    if (!isAuthenticated) {
+        return null;
+    }
+
+    const newFetchInfoAccount = async (account: string) => {
+        try {
+            const accountConsult = account;
+            const body = { id: String(accountConsult) }; 
+            const response = await instanceWallet.post('formView', body);
+            const data = response.data;
+            const infoClient = {
+                infoClient: true,
+                id: data.id,
+                numDoc: data.account[0].no_docum,
+                tipoDoc: data.account[0].tipo_doc,
+                firstName: data.nombres1,
+                firstSurname: data.apellido1,
+                names: `${data.nombres1} ${data.nombres2}`,
+                surnames: `${data.apellido1} ${data.apellido2}`,
+                birthDate: data.account[0].fecha_nac,
+                phoneNumber: data.account[0].numero_celular,
+                email: data.account[0].correo,
+                ciudadRes: data.ciudadRes,
+                barrio: data.account[0].barrio,
+                direRes: data.dirRes.trim(),
+                genero: data.account[0].genero
+            };
+
+            await setData('infoClient', infoClient);
+          } catch (error) {
+            console.log('errorData', error);
+            const infoClient = { infoClient: false };
+            await setData('infoClient', infoClient);
+          }
+    };  
+
     const handleSelectAccount = async (item: ListAccounts) => {
+        await newFetchInfoAccount(String(item.number));
         await setNumberAccount(`0${item.number}`);
         router.push('/home');
     }
