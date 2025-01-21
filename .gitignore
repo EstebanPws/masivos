@@ -18,6 +18,7 @@ web-build/
 
 .env
 .env.local
+.env.production.local
 
 expo-env.d.ts
 # @end expo-cli
