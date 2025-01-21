@@ -16,6 +16,7 @@ interface InfoModalProps {
     message: string | null;
     onPress: () => void;
     isVisible: boolean;
+    label?: string;
 }
 
 const iconMap = {
@@ -24,7 +25,7 @@ const iconMap = {
     info: 'information',
 };
 
-export default function InfoModal({ title, type, message, onPress, isVisible }: InfoModalProps) {
+export default function InfoModal({ title, type, message, onPress, isVisible, label }: InfoModalProps) {
     const [visible, setVisible] = useState(true);
 
     const handlePress = () => {
@@ -51,7 +52,7 @@ export default function InfoModal({ title, type, message, onPress, isVisible }: 
                             <Text style={{ ...styles.message, ...primaryRegular }}>{message}</Text>
                         </ScrollView>
                         <ButtonsPrimary
-                            label="OK"
+                            label={label ? label : "OK"}
                             onPress={handlePress}
                         />
                     </MotiView>

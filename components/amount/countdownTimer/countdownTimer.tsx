@@ -131,7 +131,7 @@ export default function CountdownTimer({ onError, onFinish, amount }: CountdownT
       </View>
       <View style={styles.mv1}>
         <Text variant="labelLarge" style={[primaryRegular, styles.text]}>
-          Su código para retiro vence en: {formatTime(timeLeft)}
+          Tu código para retiro vence en: {formatTime(timeLeft)}
         </Text>
       </View>
     </View>

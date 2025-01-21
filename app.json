@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Sambax",
-    "slug": "sambax",
+    "name": "Masivos",
+    "slug": "masivos",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,14 +10,14 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ff003f"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
       "splash": {
         "image": "./assets/images/splash.png",
         "resizeMode": "cover",
-        "backgroundColor": "#ff003f"
+        "backgroundColor": "#ffffff"
       }
     },
     "android": {
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.paymentsWay.sambax",
+      "package": "com.paymentsway.masivos",
       "permissions": [
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT",
@@ -84,11 +84,11 @@
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "baqueromorenoj",
+    "owner": "estebanpws",
     "extra": {
       "contacto": {
-        "nit": "901156998-3",
-        "correo": "sac@smabax.com.co",
+        "nit": "901128535-8",
+        "correo": "sac@masivos.com.co",
         "ciudad": "Bogotá D.C",
         "departamento": "Bogotá D.C"
       },
@@ -100,14 +100,11 @@
           "fontFamily": "Montserrat_400Regular"
         }
       },
-      "colorPrimary": "#ff003f",
-      "colorSecondary": "#d80c3e",
+      "colorPrimary": "#2FAC66",
+      "colorSecondary": "#008D36",
       "colorSecondaryDark": "#333333",
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "b9f4b201-c8f6-45de-b8b4-7e3ca9fd097e"
       }
     }
   }

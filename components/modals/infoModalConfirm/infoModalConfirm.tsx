@@ -15,7 +15,7 @@ interface InfoModalConfirmProps {
     title?: string;
     children: ReactNode;
     onPress: () => void;
-    onCancel: () => void;
+    onCancel?: () => void;
     id?: React.Key;
     view?: boolean;
     isBankTransfer?: boolean;
@@ -33,9 +33,11 @@ export default function InfoModalConfirm({ title, onPress, onCancel, children, i
 
     const handleCancel = () => {
         setVisible(view ? view : false);
-        setTimeout(onCancel, 400);
+        if(onCancel){
+            setTimeout(onCancel, 400);
+        }
     };
-
+    
     return (
         <AnimatePresence key={id}>
             {visible && (
@@ -54,13 +56,13 @@ export default function InfoModalConfirm({ title, onPress, onCancel, children, i
                             {children}
                         </ScrollView>
                         <View style={styles.row}>
+                            <ButtonsSecondary
+                                label={label2 ? label2 :"Rechazar"}
+                                onPress={handleCancel}
+                            />
                             <ButtonsPrimary
                                 label={label1 ? label1 : "Aceptar"}
                                 onPress={handlePress}
-                            />
-                             <ButtonsSecondary
-                                label={label2 ? label2 :"Rechazar"}
-                                onPress={handleCancel}
                             />
                         </View>
                     </MotiView>

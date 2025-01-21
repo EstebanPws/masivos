@@ -181,7 +181,7 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
                         transition={{ type: 'timing', duration: 300 }}
                         style={styles.modalContainer}
                     >   
-                        <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Hemos enviado un código a su correo electrónico por favor ingreselo a continuación</Text>
+                        <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Hemos enviado un código a tu correo electrónico por favor ingreselo a continuación</Text>
                         <View style={[styles.row, styles.ml5]}>
                             {otpValues.map((value, index) => (
                                 <OtpInputs
@@ -197,13 +197,13 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
                         <GestureHandlerRootView style={styles.center}>
                             <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress} onView={handleViewPin}/>
                             <View style={styles.rowButtons}>
-                                <ButtonsPrimary
-                                    label={"Validar"}
-                                    onPress={handleNext}
-                                />
                                 <ButtonsSecondary
                                     label="Volver"
                                     onPress={handleBack}
+                                />
+                                <ButtonsPrimary
+                                    label={"Validar"}
+                                    onPress={handleNext}
                                 />
                             </View>
                         </GestureHandlerRootView>

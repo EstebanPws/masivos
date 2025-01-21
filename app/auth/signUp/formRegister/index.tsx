@@ -16,17 +16,17 @@ import InfoPep from "@/components/forms/register/infoPep/infoPep";
 import OtherInfo from "@/components/forms/register/otherInfo/otherInfo";
 import Authorization from "@/components/forms/register/authorizations/authorization";
 import { getData, setData } from "@/utils/storageUtils";
+import Loader from "@/components/loader/loader";
 import BasicInfoJuridica from "@/components/forms/register/basicInfoJuridica/basicInfoJuridica";
 import AuthorizationJuridica from "@/components/forms/register/authorizationsJuridica/authorizationJuridica";
-import { transformData, transformDataDbm, transformDataJuridica } from "@/utils/validationForms";
+import { transformData, transformDataDbm, transformDataJuridica, transformDataPrev } from "@/utils/validationForms";
 import { encryptIdWithSecret } from "@/utils/fomatDate";
 import OtpValidationModal from "@/components/modals/otpValidationModal/otpValidationModal";
-import { useAuth } from "@/components/auth/context/authenticationContext";
 import { errorMessageRegister } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
-const { colorPrimary, idApp, secretEncypt} = extra;
+const { colorPrimary,idApp, secretEncypt} = extra;
 
 interface List {
     name: string;
@@ -34,7 +34,6 @@ interface List {
 }
 
 export default function Page() {
-    const {activeLoader, desactiveLoader} = useAuth();
     const [step, setStep] = useState(0);
     const [listMunicipios, setListMunicipios] = useState<List[] | null>(null);
     const [listCiiu, setListCiiu] = useState<List[] | null>(null);
@@ -42,19 +41,26 @@ export default function Page() {
     const [listPaisesExt, setListPaisesExt] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('info');
     const [validationModal, setValidationModal] = useState(false);
     const [finishRegister, setFinishRegister] = useState(0);
+    const [errorExistAccounts, setErrorExistsAccounts] = useState(0)
     const { type } = useLocalSearchParams();
  
     const timeOut = 600;
     const totalSteps = type === '8' ? 3 : 6;
-    const progress = (Math.ceil((step / totalSteps) * 100) / 100) + (type === '8' ? (step === 0 ? 0 : step === 1 ? 0.15 : 0.3) : (step === 0 ? 0 : 0.09) );
+    const progress = Math.round((
+        (Math.ceil((step / totalSteps) * 100) / 100) +
+        (type === '8' 
+          ? (step === 0 ? 0 : step === 1 ? 0.15 : 0.3) 
+          : (step === 0 ? 0 : 0.09))
+    ) * 100) / 100;
+      
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                activeLoader();
                 const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
                 const municipiosData = municipiosResponse.data;
 
@@ -66,7 +72,7 @@ export default function Page() {
 
                     if (codigoDepartamento === '5' || codigoDepartamento === '8') {
                         codigoDane = `0${codigoDane}`;
-                    } else if (codigoDane === '2529' || codigoDane === '2543') {
+                    } else if (codigoDane === '2529' || codigoDane === '2543' || codigoDane === '8501') {
                         codigoDane = `${codigoDane}0`;
                     }
 
@@ -75,6 +81,7 @@ export default function Page() {
                         value: codigoDane
                     };
                 });
+                
 
                 setListMunicipios(transformedMunicipios);
 
@@ -121,35 +128,37 @@ export default function Page() {
                 setMessageError("Ha ocurrido un error al intentar cargar los datos.");
                 setShowError(true);
             } finally {
-                desactiveLoader();
+                setIsLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
-    const handleFormSubmit = (data: any) => {
+    const handleFormSubmit = async (stepOpt?: number) => {
         if (step === 0) {
             setTimeout(() => {
                 setStep(1);
             }, timeOut);
 
             if(type !== '1'){
-                setValidationModal(true);
+                const savedData = await getData('existVinculacion');
+                const change =  await getData("changeData");
+                
+                if (!savedData || change) {
+                    setValidationModal(true);
+                } else {
+                    setValidationModal(false);
+                }
             }
         } else if (type !== '8' && step === 5) {
             handleSend();
         } else if (type === '8' && step === 2){
             handleSend();
-        }else {
-            const next = step + 1;
+        } else {
+            const next = stepOpt === 1 ? 1 : step + 1;
             setTimeout(() => {
                 setStep(next);
             }, timeOut);
-
-            if(type === '1' && step === 1){
-                setValidationModal(true);
-            }
         }
     };
 
@@ -164,71 +173,105 @@ export default function Page() {
         step === 0 ? router.back() : setTimeout(() => { setStep(back) }, timeOut);
     };
 
-    const handleSend = () => {
+    const handleSend = () => {  
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
-
-            if (savedData) {
-                const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);  
-                activeLoader();
+            if (savedData) {               
+                const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);
+                setIsLoading(true);
+                
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
-                    .then(async response => {
-                        const data = response.data.data;
-                        if (data) {
-                            if(data.idRegistro) {
-                                setTypeResponse('success');
-                                setFinishRegister(1);
-                                if(type !== '8'){
-                                    const idRegistro = await encryptIdWithSecret(data.idRegistro, secretEncypt);    
-                                    const idWscEncrypt = await encryptIdWithSecret(idApp, secretEncypt);  
-                                    router.push({
-                                        pathname: '/auth/signUp/validateRegister',
-                                        params: { 
-                                            type: type,
-                                            idRegister: idRegistro,
-                                            wsc: idWscEncrypt
-                                        }
-                                    });
-                                }
+                .then(async response => { 
+                    const data = response.data.data;
+                    if (data) {
+                        if(data.idRegistro) {
+                            setTypeResponse('success');
+                            
+                            if(type !== '8'){
+                                const idRegistro = await encryptIdWithSecret(data.idRegistro, secretEncypt);  
+                                const idWsc = await encryptIdWithSecret(idApp, secretEncypt);
+                                router.push({
+                                    pathname: '/auth/signUp/validateRegister',
+                                    params: { 
+                                        type: type,
+                                        idRegister: idRegistro,
+                                        wsc: idWsc
+                                    }
+                                });
                             } else {
-                                if (type === '8') {
-                                    setFinishRegister(1);
-                                    setTypeResponse('success');
-                                    setMessageError('Cliente creado con éxito.\n\nSe ha creado un Depósito de Bajo Monto en el Banco Cooperativo Coopcentral.');
-                                    setShowError(true);
-                                } else {
-                                    setTypeResponse('error');
-                                    setMessageError(data.respuesta);
-                                    setShowError(true);
-                                }
+                                setTypeResponse('success');
+                                setMessageError('Usuario creado con éxito.');
+                                setShowError(true);
                             }
                         } else {
                             setTypeResponse('error');
-                            setMessageError(response.data.message);
+                            setMessageError(data.respuesta);
                             setShowError(true);
                         }
-                        desactiveLoader();
-                    })
-                    .catch(err => {
-                        if(err.response){
-                            if(err.response.data.message){
-                                const error = err.response.data.message;
-                                const errorCode = extractErrorCode(error);
-                                if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
-                                    setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
+                    } else {
+                        setTypeResponse('error');
+                        setMessageError(response.data.message);
+                        setShowError(true);
+                    }
+                    setIsLoading(false);
+                })
+                .catch(err => {
+                    if(err.response){
+                        if(err.response.data.message){
+                            const error = err.response.data.message;
+                            const errorCode = extractErrorCode(error);
+                            if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
+                                setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
+                            } else {
+                                if(err.response.data.message){
+                                    const error = err.response.data.message;
+                                    const message = error.split('-');
+                                    setMessageError(`${message[1]} - ${message[2]}`);
                                 } else {
                                     setMessageError("Hubo un error al intentar enviar el formulario");
                                 }
                             }
-                        } else {
-                            setMessageError("Hubo un error al intentar enviar el formulario");
                         }
-                        setTypeResponse('error');
-                        setShowError(true);
-
-                        desactiveLoader();
+                    } else {
+                        setMessageError("Hubo un error al intentar enviar el formulario");
                     }
-                );
+                    setTypeResponse('error');
+                    setShowError(true);
+                    setIsLoading(false);
+                });
+            }
+        };
+
+        fetchFormData();
+    }
+
+    const handleSendPreRegister = () => { 
+        const fetchFormData = async () => {
+            const savedData = await getData('registrationForm');
+            if (savedData) {
+                let body;
+                try {
+                    body = transformDataPrev(savedData);
+                } catch (error) {
+                    console.log(error);
+                }
+                
+                setIsLoading(true);
+                instanceWallet.post(type === '1' ? 'registroJuridico' : 'registroNatural', body)
+                .then(async response => {      
+                    const data = response.data.data;
+                    if (data) {
+                        if(data.idRegistro) {
+                            console.log("se guardo");
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log(err.response);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
             }
         };
 
@@ -238,32 +281,38 @@ export default function Page() {
     const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
         setMessageError(message);
         setTypeResponse(type);
+        if(type === "error"){
+            setErrorExistsAccounts(0);
+        }
+        setStep(0);
         setShowError(true);
     };
 
 
     const handleOnViewOtp = () => {
         setValidationModal(false);
-        setStep(type === '1' ? 1 : 0);
+        setStep(0);
     }
 
-    const handleFinishOtp = () => {
+    const handleFinishOtp = async () => {
         setValidationModal(false);
-        setStep(type === '1' ? 2 : 1);
+        setErrorExistsAccounts(0);
+        handleSendPreRegister();
+        const savedData = await getData('registrationForm');
+        await setData("emailOld", savedData.correo);
+        await setData("phoneOld", savedData.numero_celular);
+        handleFormSubmit(1);
     }
 
-    const handleFinishRegister = (type: number) => {
-        if(type !== 0){
-            setShowError(false);
-            router.replace('/');
-            const fetchClearData = async () => {
-                await setData('registrationForm', ''); 
-            }
-
-            fetchClearData();
-        } else {
-            setShowError(false);
+    const handleErrorModal = (type: number) => {
+        if(type === 1){
+            router.replace("/");
         }
+        setShowError(false);
+    }
+    
+    if (isLoading) {
+        return <Loader />;
     }
 
     const renderStep = (step: number) => {
@@ -333,7 +382,13 @@ export default function Page() {
                     isVisible={showError}
                     type={typeResponse}
                     message={messageError}
-                    onPress={() => handleFinishRegister(finishRegister)}
+                    onPress={() => {
+                        if(errorExistAccounts === 1){
+                            router.replace('/');
+                        }
+                        setShowError(false);
+                        setErrorExistsAccounts(0);
+                    }}
                 />
             )}
         </>

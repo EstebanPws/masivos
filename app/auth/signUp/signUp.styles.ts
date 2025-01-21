@@ -59,6 +59,14 @@ const styles = StyleSheet.create({
         width: '100%', 
         height: '78%' ,
         justifyContent: 'space-between',
+    },
+    modalOtps: {
+        position: 'absolute',
+        zIndex: 9999,
+        bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0
     }
  });
 

@@ -428,7 +428,7 @@ export default function AuthorizationJuridica({type, listPaises, onSubmit }: Aut
                                     {crs === 'S' &&(
                                         <>
                                             <View style={styles.mb5}>
-                                                <Text variant="titleSmall" style={{ ...primaryRegular, ...styles.text }}>Si su respuesta es SI, indique el país de residencia y en seguida el NIT o su equivalente</Text>
+                                                <Text variant="titleSmall" style={{ ...primaryRegular, ...styles.text }}>Si tu respuesta es SI, indica el país de residencia y en seguida el NIT o su equivalente</Text>
                                                 <SearchSelect
                                                     data={listPaises}
                                                     placeholder="Seleccione una opción"

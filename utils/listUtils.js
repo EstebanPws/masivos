@@ -37,8 +37,8 @@ export const errorMessageRegister = {
     "18": "El segundo apellido contiene caracteres no permitidos.",
     "19": "La opción de exención de GMF ingresada no es válida.",
     "20": "El tipo de género ingresado no es válido.",
-    "21": "El cliente no existe en el sistema o no ha actualizado su información.",
-    "22": "El cliente lleva más de 330 días sin actualizar su información. Por favor, actualízala primero.",
+    "21": "El cliente no existe en el sistema o no ha actualizado tu información.",
+    "22": "El cliente lleva más de 330 días sin actualizar tu información. Por favor, actualízala primero.",
     "23": "El tipo de persona ingresado no coincide con el tipo de documento del cliente.",
     "24": "El cliente se encuentra en listas PEPS.",
     "25": "La información del cliente está incompleta o desactualizada. Por favor, actualízala primero.",
@@ -219,8 +219,7 @@ export const documentType = {
 
 export const listDocumentType = [
     {name: 'Cédula Ciudadanía', value: 'C'},
-    {name: 'Pasaporte', value: 'P'},
-    {name: 'PPT',value: 'V'}
+    //{name: 'PPT',value: 'V'}
 ];
 
 export const listGenderType = [
@@ -310,30 +309,27 @@ export const listAddressOtherType = [
 ];
 
 export const listTaxesType = [
-    { name: 'Régimen ordinario', value: '1' },
+    { name: 'Régimen de bajo monto', value: '1' },
     { name: 'Régimen tributario especial', value: '2' },
     { name: 'Régimen simple de tributación', value: '3' },
     { name: 'No contribuyente', value: '4' }
 ];
 
+
 export const listBienesType = [
-    { name: 'Ninguno', value: '0'},
     { name: 'Casa', value: '1' },
     { name: 'Apartamento', value: '2' },
     { name: 'Finca', value: '3' },
-    { name: 'Local', value: '4' },
-    { name: 'Lote', value: '5' },
-    { name: 'Oficina', value: '6' },
-    { name: 'Edificio', value: '7' },
-    { name: 'Otro', value: '8' }
+    { name: 'Otro', value: '4' },
+    { name: 'No reporta', value: '5' },
 ];
 
 export const listBienesJurType = [
-    { name: 'Ninguno', value: '0'},
     { name: 'Casa', value: '1' },
     { name: 'Apartamento', value: '2' },
     { name: 'Finca', value: '3' },
-    { name: 'Otro', value: '4' }
+    { name: 'Otro', value: '4' },
+    { name: 'No reporta', value: '5' },
 ];
 
 export const listAutoTypes = [

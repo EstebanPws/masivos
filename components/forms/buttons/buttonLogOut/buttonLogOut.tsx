@@ -1,24 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import styles from './buttonLogOut.styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import Constants from 'expo-constants';
-import { Icon } from 'react-native-paper';
-import { useAuth } from '@/components/auth/context/authenticationContext';
+import { Icon } from "react-native-paper";
 
 const extra = Constants.expoConfig?.extra || {};
 const {colorPrimary, colorSecondary} = extra;
 
-export default function ButtonLogOut() {
-  const { logout } = useAuth();
+interface ButtonLogOutProps {
+  showConfirm: (value: boolean) => void;
+}
 
-  const handleLogout = async () => {
-    await logout();
-  }
-
+export default function ButtonLogOut({ showConfirm }: ButtonLogOutProps) {
   return (
     <View style={styles.container}>
-        <TouchableOpacity onPress={handleLogout}>
+        <TouchableOpacity onPress={() => showConfirm(true)}>
             <LinearGradient
                 colors={[colorPrimary, colorSecondary]}
                 style={styles.toggleButton}
@@ -30,6 +27,6 @@ export default function ButtonLogOut() {
               />
             </LinearGradient>
         </TouchableOpacity>
-    </View>
+    </View>    
   );
 }

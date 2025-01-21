@@ -18,13 +18,14 @@ const styles = StyleSheet.create({
     headerRelative:{
         backgroundColor: '#fff',
         width: 250,
+        height: 150,
         borderBottomEndRadius: 20,
         borderBottomStartRadius: 20,
-        paddingTop: 30,
         alignItems: 'center',
     },
     logo: {
-        width: 200
+        marginTop: -40,
+        width: 130
     },
 })
 

@@ -108,7 +108,6 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             }
         })
         .catch((err) => {
-            console.log(err.response.data);
             if (err && err.response.message) {
                 setMessage(err.response.data.status === 404 ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
             }  else {

@@ -23,9 +23,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     logo: {
-        width: 150,
-        marginTop: -40,
-        marginLeft: 110
+        width: 110,
+        height: 110,
+        marginTop: -20,
+        marginLeft: 130
     },
     sideBar:{
         position: 'absolute',
@@ -52,7 +53,11 @@ const styles = StyleSheet.create({
         position: "relative", 
         marginTop: -70, 
         height: "40%"
-    }
+    },
+    centerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 })
 
 export default styles;

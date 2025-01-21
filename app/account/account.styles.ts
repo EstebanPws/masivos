@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     logo: {
-        width: 150,
-        marginTop: -40
+        width: 100,
+        marginTop: -100
     },
     balance: {
         borderRadius: 27,
@@ -39,7 +39,11 @@ const styles = StyleSheet.create({
     scrollPadding: {
         paddingBottom: 30, 
         paddingHorizontal: 10
-    }
+    },
+    centerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 })
 
 export default styles;

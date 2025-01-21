@@ -5,6 +5,16 @@ const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
 
 const styles = StyleSheet.create({
+    blurView: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 3
+      },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -17,7 +27,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: colorPrimary,
         borderWidth: 2,
-        paddingBottom: 30
+        paddingBottom: 30,
+        marginHorizontal: 10
     },
     clockContainer: {
         marginVertical: 40,
@@ -73,6 +84,6 @@ const styles = StyleSheet.create({
         position: 'absolute', 
         overflow: 'hidden'
     }
-})
+});
 
-export default styles;;
+export default styles;

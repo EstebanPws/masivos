@@ -30,6 +30,7 @@ export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [messageModal, setMessageModal] = useState('');
   const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalConfirmLogout, setShowModalConfirmLogout] = useState(false);
   const [typeModal, setTypeModal] = useState<'error' | 'success'>('error');
   const [lastLogin, setLastLogin] = useState('');
 
@@ -88,7 +89,7 @@ export default function Page() {
        
         if(data.status === 200){
           setTypeModal('success');
-          setMessageModal('Su cuenta ha sido cancelada con éxito.');
+          setMessageModal('Tu cuenta ha sido cancelada con éxito.');
           setShowModal(true);
         }
         desactiveLoader();
@@ -128,11 +129,7 @@ export default function Page() {
   
   const handleBack = () => {
       goBack();
-  };  
-
-  const handleLogout = async () => {
-    await logout();
-  }
+  };
 
   return (
     <ViewFadeIn isWidthFull>
@@ -215,7 +212,7 @@ export default function Page() {
           <View style={styles.mb5}>
             <ButtonsPrimary 
               label="Salir de la billetera"
-              onPress={handleLogout}
+              onPress={() => setShowModalConfirmLogout(true)}
             />
           </View>
         </ScrollView>
@@ -235,6 +232,18 @@ export default function Page() {
             <View style={styles.centerContainer}>
               <Icon source={'information'} size={50} color={`${MD2Colors.blue700}`} />
               <Text variant="labelLarge" style={primaryRegular}>¿Esta seguro de eliminar la cuenta?</Text>
+            </View>
+        </InfoModalConfirm>
+      )}
+      {showModalConfirmLogout&& (
+        <InfoModalConfirm 
+            onPress={() => logout()}
+            onCancel={() => setShowModalConfirmLogout(false)}
+            label1='Si'
+            label2='No'>
+            <View style={styles.centerContainer}>
+                <Icon source={'information'} size={50} color={'#f8971d'} />
+                <Text variant="labelLarge" style={primaryRegular}>¿Quieres cerrar sesión?</Text>
             </View>
         </InfoModalConfirm>
       )}

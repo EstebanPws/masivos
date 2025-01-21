@@ -8,22 +8,23 @@ const styles = StyleSheet.create({
         transform: [{ translateX: -125 }],
         backgroundColor: '#fff',
         width: 250,
+        height: 150,
         zIndex: 2,
         borderBottomEndRadius: 20,
         borderBottomStartRadius: 20,
-        paddingTop: 30,
         alignItems: 'center',
     },
     headerRelative:{
         backgroundColor: '#fff',
         width: 250,
+        height: 150,
         borderBottomEndRadius: 20,
         borderBottomStartRadius: 20,
-        paddingTop: 30,
         alignItems: 'center',
     },
     logo: {
-        width: 200
+        marginTop: -40,
+        width: 130
     },
     center: {
         justifyContent: 'center',
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
         zIndex: 2
     },
     backIos: {
-        transform: [{ rotate: '-90deg' }]
+        transform: [{ rotate: '-90deg' }],
     },
 })
 

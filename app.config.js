@@ -4,10 +4,10 @@ export default ({ config }) => ({
     ...config,
     extra: {
         contacto: {
-            nit: "901156998-3",
-            correo: "sac@smabax.com.co",
+            nit: "901128535-8",
+            correo: "sac@masivos.com.co",            
             ciudad: "Bogotá D.C",
-            departamento: "Bogotá D.C"
+            departamento: "Bogotá D.C",
         },
         text: {
             "primaryBold": {
@@ -17,14 +17,14 @@ export default ({ config }) => ({
                 "fontFamily": "Montserrat_400Regular"
             }
         },
-        colorPrimary: "#ff003f",
-        colorSecondary: "#d80c3e",
+        colorPrimary: "#2FAC66",
+        colorSecondary: "#008D36",
         colorSecondaryDark: "#333333",
         router: {
             "origin": false
         },
         eas: {
-            "projectId": "b9f4b201-c8f6-45de-b8b4-7e3ca9fd097e"
+            "projectId": "9c89780a-07a9-43a0-8f4b-f242a7ca18ff"
         },
         adoUrl: process.env.EXPO_PUBLIC_URL_ADO,
         registroUrl: process.env.EXPO_PUBIC_URL_REGISTRO,
@@ -32,6 +32,7 @@ export default ({ config }) => ({
         idWsc: process.env.EXPO_ID_APP_WSC,
         idApp: process.env.EXPO_PUBLIC_ID_APP,
         apiKeyAdo: process.env.EXPO_APIKEY_ADO,
-        userAdo: process.env.EXPO_USER_ADO
+        userAdo: process.env.EXPO_USER_ADO,
+        version: process.env.EXPO_VERSION
     },
 });

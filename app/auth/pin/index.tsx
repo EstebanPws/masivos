@@ -57,7 +57,7 @@ export default function Page() {
         const otpIsEmpty = otpValues.some((val) => val === '');
 
         if (otpIsEmpty) {
-            setMessage('Por favor ingrese su pin.');
+            setMessage('Por favor ingresa tu pin.');
             setShowError(true);
             return;
         }
@@ -71,7 +71,7 @@ export default function Page() {
         const otpIsEmpty = otpValues.some((val) => val === '');
 
         if (otpIsEmpty) {
-            setMessage('Por favor ingrese su pin.');
+            setMessage('Por favor ingresa tu pin.');
             setShowError(true);
             return;
         }

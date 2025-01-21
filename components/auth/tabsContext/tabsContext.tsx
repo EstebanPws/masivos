@@ -152,7 +152,7 @@ export const TabProvider = ({ children }: { children: React.ReactNode }) => {
                 <InfoModal
                     isVisible={showErrorModal}
                     type={'info'}
-                    message={'Su sesión ha caducado, por favor inicie sesión nuevamente.'}
+                    message={'Tu sesión ha caducado, por favor inicia sesión nuevamente.'}
                     onPress={() => finishSession()}
                 />
             )}

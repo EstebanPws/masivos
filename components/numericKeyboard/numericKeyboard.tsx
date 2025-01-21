@@ -7,7 +7,7 @@ import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
-const { primaryBold } = extra.text;
+const { primaryBold, primaryRegular } = extra.text;
 
 interface NumericKeyboardProps {
     onKeyPress: (value: string) => void;
@@ -18,6 +18,9 @@ interface NumericKeyboardProps {
 
 export default function NumericKeyboard  ({ onKeyPress, onDeletePress, onPress, onView} : NumericKeyboardProps) {
     const [view, setView] = useState(false);
+    const imageSource = Platform.OS === 'android' 
+    ? require('@/assets/images/general/huella.png') 
+    : require('@/assets/images/general/id-facial.png');
 
     const handleKeyPress = (value: string) => {
         onKeyPress(value);
@@ -89,14 +92,12 @@ export default function NumericKeyboard  ({ onKeyPress, onDeletePress, onPress, 
             {onPress && (
                 <TouchableOpacity onPress={onPress} style={styles.containerFeceId}>
                     <View style={styles.row}>
-                        <View style={styles.faceIcon}>
-                            <Icon
-                                source="account"
-                                color={colorPrimary}
-                                size={20}
-                            />
-                        </View>
-                        <Text style={{ ...primaryBold, color: colorPrimary }}>Face ID</Text>
+                        <Icon
+                            source={imageSource} 
+                            color={colorPrimary}      
+                            size={32}                 
+                        />
+                        <Text style={{ ...primaryRegular, color: colorPrimary, marginLeft: 10}}>{Platform.OS === 'android' ? "Ingresa con huella" : "Face ID"}</Text>
                     </View>
                 </TouchableOpacity>
             )}

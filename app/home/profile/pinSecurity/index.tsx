@@ -68,16 +68,16 @@ export default function Page() {
       if (data.message){
         setTypeResponse(1);
         setTypeModal('success');
-        setMessageModal('Se actualizo su PIN con éxito\n\nPor favor inicie sesión nuevamente.');
+        setMessageModal('Se actualizo tu PIN con éxito.\n\nPor favor inicia sesión nuevamente.');
         setShowModal(true);
       }
     })
     .catch((err) => {
       if (err.response) {
         const error = err.response.data.message;
-        error ? setMessageModal(error) : setMessageModal('Hubo un error al intentar actualizar su PIN en este momento\n\nPor favor intentelo de nuevo en unos minutos.')
+        error ? setMessageModal(error) : setMessageModal('Hubo un error al intentar actualizar tu PIN en este momento.\n\nPor favor intentalo de nuevo en unos minutos.')
       } else {
-        setMessageModal('Hubo un error al intentar actualizar su PIN en este momento\n\nPor favor intentelo de nuevo en unos minutos.')
+        setMessageModal('Hubo un error al intentar actualizar tu PIN en este momento.\n\nPor favor intentalo de nuevo en unos minutos.')
       }
 
       setTypeResponse(0);

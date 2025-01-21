@@ -15,9 +15,10 @@ import HeaderForm from "@/components/headers/headerForm/headerForm";
 import Constants from "expo-constants";
 import axios from "axios";
 import ClockAnimation from "@/components/animations/clock/clockLoop";
+import instanceWallet from "@/services/instanceWallet";
 
 const extra = Constants.expoConfig?.extra || {};
-const {adoUrl, apiKeyAdo, userAdo} = extra;
+const {adoUrl, apiKeyAdo, userAdo, idApp} = extra;
 
 export default function Page() {
     const router = useRouter();
@@ -80,19 +81,59 @@ export default function Page() {
         checkPermissions();
     }, []);
 
+    const fetchCreateLog = async (tipoDoc: string, noDoc: string, resp: boolean) => {
+        const now = new Date();
+
+        const timeFormatter = new Intl.DateTimeFormat('es-CO', {
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true,
+            timeZone: 'America/Bogota'
+        });
+
+        const time = timeFormatter.format(now);
+
+        const dateFormatter = new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            timeZone: 'America/Bogota'
+        });
+        const date = dateFormatter.format(now);
+
+        const body  = {
+            request: "",
+            response: resp ? "Se encotraron datos de la bd FDLM" : "No se encontraron datos",
+            descripcion_proceso: "Consulta a BD FDLM",
+            resultado: resp ? "Confirmado" : "Rechazado",
+            valor_anterior: 0,
+            valor_nuevo: 0,
+            hora: time,
+            fecha: date,
+            tipoDoc: tipoDoc,
+            noDocumento: noDoc
+        };
+        
+        await instanceWallet.post('newLog', body)
+    }
+
     const handleCloseAlert = (type: number) => {
         if(type === 0 || type === 1){
             type === 0 ? setShowAlert(false) : setShowAlertErrorWebView(false) ;
             router.back();
         } else {
-            setShowAlertMessageResponse(false);
-            if(idStateResponse === 2 || idStateResponse === 1){
+            if(idStateResponse === 2){
                 const fetchFormData = async () => {
                     const savedData = await getData('registrationForm');
                     if (savedData) {
                       const updatedFormData = { ...savedData, ...formData };
                       await setData('registrationForm', updatedFormData);   
-                      router.push('/auth/signUp/selectTypeAccount');
+                      const typePerson = await getData('typePerson');
+                      router.push({
+                        pathname: '/auth/signUp/selectTypeAccount',
+                        params: { type: 8 }
+                    });
                     }
                 };
             
@@ -100,6 +141,7 @@ export default function Page() {
             } else {
                 router.back();
             }
+            setShowAlertMessageResponse(false);
         }
     };
 
@@ -127,9 +169,16 @@ export default function Page() {
                             returnImages: 'false'
                         }
                     })
-                    .then((response) => {
-                        const data = response.data;        
+                    .then(async (response) => {
+                        const data = response.data;  
                         stateId = parseInt(data.Extras.IdState);
+
+                        const body = {
+                            id_validacion: idTransaction,
+                            response: data,
+                            no_doc: data.IdNumber,
+                            idApp: idApp
+                        }
 
                         if (stateId === 2) {
                             clearInterval(intervalId);
@@ -145,12 +194,16 @@ export default function Page() {
                             };
                             setFormData(updatedFormData);
                             setIdStateResponse(stateId);
-    
+
+                            await instanceWallet.post('adotechNew', body);
+
                             if (stateMessages[stateId as keyof typeof stateMessages]) {
                                 setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
                                 setShowAlertMessageResponse(true);
                             }
-                        } else {
+                        } else if (stateId !== 1){
+                            clearInterval(intervalId);
+                            await instanceWallet.post('adotechNew', body);
                             if (stateMessages[stateId as keyof typeof stateMessages]) {
                                 setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
                                 setShowAlertMessageResponse(true);
@@ -228,7 +281,9 @@ export default function Page() {
                     originWhitelist={['*']}
                     mixedContentMode="always"
                     geolocationEnabled={true}
-                    userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+                    mediaPlaybackRequiresUserAction={false}
+                    userAgent={Platform.OS === 'android' ? "Mozilla/5.0 (Linux; Android 10; Mobile; rv:79.0) Gecko/79.0 Firefox/79.0" : "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15A372 Safari/604.1"
+                    }
                     source={{ uri: `https://${adoUrl}/validar-persona?callback=https%3A%2F%2FURL_OK&key=${apiKeyAdo}&projectName=${userAdo}&product=1` }}
                     injectedJavaScript={customJavaScript}
                     onLoadProgress={(nativeEvent) => handleLoadProgress(nativeEvent)}
@@ -256,9 +311,9 @@ export default function Page() {
             {showAlertMessageResponse && (
                 <InfoModal
                     isVisible={showAlertMessageResponse}
-                    type={idStateResponse === 2 || idStateResponse === 1 ? "success" : "error"}
+                    type={idStateResponse === 2 ? "success" : "error"}
                     message={messageResponse!}
-                    onPress={() => handleCloseAlert(2)}
+                    onPress={() => handleCloseAlert(idStateResponse === 2 ? 2 : 0)}
                 />
             )}
         </>

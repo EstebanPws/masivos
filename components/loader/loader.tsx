@@ -12,7 +12,7 @@ const Loader = () => {
     return (
       <View style={styles.container}>
         <LinearGradient
-          colors={[colorPrimary, colorSecondary]}
+          colors={["#ffffff", "#ffffff"]}
           style={styles.gradient}
         >
             <MotiView

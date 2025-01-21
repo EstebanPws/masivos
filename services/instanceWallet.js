@@ -29,7 +29,7 @@ instanceWallet.interceptors.response.use(
     },
     (error) => {
       if (error.message === 'Network Error') {
-        error.message = 'Error de red detectado. Verifique su conexión.';
+        error.message = 'Error de red detectado. Verifica tu conexión.';
       } else if (error.code === 'ECONNABORTED') {
         error.message = 'La solicitud ha tardado demasiado y ha sido cancelada.';
       }

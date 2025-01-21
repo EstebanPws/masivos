@@ -49,7 +49,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                 const data = response.data;
                 const accountValid = data.filter((account: any) => {
                     let accValid
-                    if(account.account[0].no_cuenta.startsWith('73000') || account.account[0].no_cuenta.startsWith('87300')){
+                    if(account.account[0].no_cuenta.startsWith('5400') || account.account[0].no_cuenta.startsWith('8760')){
                         accValid = account.account[0].no_cuenta;
                     }
                     return accValid
@@ -58,7 +58,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                 const document = accountValid[0].docCli;
                 const account = accountValid[0].account[0].no_cuenta;
                 
-                if(account.startsWith('73000') || account.startsWith('87300')){
+                if(account.startsWith('5400') || account.startsWith('8760')){
                     const stateAccounts = await fetchListAccounts(document, account);
                     const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");
                     const uniqueAccounts = new Set<number>();
@@ -81,7 +81,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                         return listAccountNumbers.length > 0;
                         
                     });
-                                      
+
                     let contactSelectInfo = {
                         docCli: data[0].docCli,
                         nombres1: data[0].nombres1,
@@ -113,7 +113,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
         activeLoader();
         const bodyAccount = {
             no_doc : document,
-            modalidad : account.startsWith('7') ? '0' : '8',
+            modalidad : account.startsWith('5') ? '0' : '8',
             estado: "T"
         }
 
@@ -227,7 +227,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                                                                         end={{ x: 0, y: 0 }}
                                                                         style={styles.balance}
                                                                     >
-                                                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('7') ? `0${accounts.no_cuenta}` : account.no_cuenta}</Text>
+                                                                        <Text variant="titleMedium" style={[primaryBold, styles.text]}>{accounts.no_cuenta.startsWith('5') ? `0${accounts.no_cuenta}` : accounts.no_cuenta}</Text>
                                                                     </LinearGradient>
                                                                 </LinearGradient>
                                                             </TouchableOpacity>

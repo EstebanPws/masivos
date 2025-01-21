@@ -7,13 +7,21 @@ const { colorPrimary } = extra;
 
 const styles = StyleSheet.create({
     mt5: {
-        width: '90%',
-        height: '70%',
-        justifyContent: 'center',
-        alignItems: 'center'
+        width: "100%",
+        height: "80%",
     },
-    containerText: {
+    headerContainer: {
+        width:'90%',
+        top: 0,
+        left: 20,
+        right: 0,
+        zIndex: 1000,
+     },
+    containerText: { 
+        paddingTop: 20,
+        height: '100%',
         paddingHorizontal: 20,
+        justifyContent: 'space-between',
     },
     text: {
         textAlign: 'center'
@@ -65,7 +73,9 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        marginTop: -150,
+        marginBottom: 40
     },
     rowCheckbox: {
         flexDirection: 'row',
@@ -107,17 +117,6 @@ const styles = StyleSheet.create({
     mb5:{
         marginBottom: 20
     },
-    ml5: {
-        marginLeft: -18
-    },
-    bgIos: {
-        height: 25,
-        width: 25,
-        left: 27,
-        borderWidth: 2,
-        borderColor: MD2Colors.grey500,
-        position: 'absolute',
-    },
     link: {
         color: colorPrimary,
         textAlign: 'center',
@@ -129,6 +128,20 @@ const styles = StyleSheet.create({
         maxWidth: 200,
         maxHeight: 100,
         marginHorizontal: 'auto'
+    },
+    ml5: {
+        marginLeft: -18
+    },
+    mr5: {
+        marginLeft: 18
+    },
+    bgIos: {
+        height: 25,
+        width: 25,
+        left: 27,
+        borderWidth: 2,
+        borderColor: MD2Colors.grey500,
+        position: 'absolute',
     }
  });
 

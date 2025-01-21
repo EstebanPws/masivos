@@ -63,7 +63,15 @@ const styles = StyleSheet.create({
     },
     mt5: {
       marginTop: 30
-    }
+    },
+    mt3: {
+      marginTop: 10
+    },
+    faceId: {
+      marginTop: -10, 
+      paddingLeft: 0, 
+      marginLeft: 0
+    },
   });
 
   export default styles;

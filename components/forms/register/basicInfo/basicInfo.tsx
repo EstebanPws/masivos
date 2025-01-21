@@ -91,6 +91,15 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
     const fetchFormData = async () => {
         const savedData = await getData('registrationForm');
         if (savedData) {
+            const emailOld = await getData("emailOld");
+            const phoneOld = await getData("phoneOld");
+            if (!emailOld) {
+                await setData("emailOld", savedData.correo);
+            }
+            if (!phoneOld) {
+                await setData("phoneOld", savedData.numero_celular);
+            }
+            
             if (savedData.nombre1 !== undefined && savedData.nombre1 !== undefined && savedData.apellido1  !== undefined && savedData.apellido2 !== undefined && type !== 1) {
                 setNames(type === 1 ? savedData.r_l_nombres : `${savedData.nombre1} ${savedData.nombre2}`);
                 setSurnames(type === 1 ?`${savedData.r_l_pri_ape} ${savedData.r_l_seg_ape}` : `${savedData.apellido1} ${savedData.apellido2}`);
@@ -130,6 +139,16 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
     useEffect(() => {  
         fetchFormData();
     }, []);
+
+    useEffect(() => {
+        const fetchUpdateData = async () => {
+            const emailOld = await getData("emailOld");
+            const phoneOld = await getData("phoneOld");
+            const hasChanged = email !== emailOld || phone !== phoneOld ? true : false;
+            await setData("changeData", hasChanged);
+        }
+    fetchUpdateData();
+    }, [email, phone]);
 
     const handleSelect = (setter: { (value: React.SetStateAction<string>): void }) => (item: any) => {
         setter(item.value);

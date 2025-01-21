@@ -69,7 +69,8 @@ export default function Page() {
     const body = { 
         codiReset: Number(pin),
         newPassword: confirmPin,
-        no_doc: documentNumber
+        no_doc: documentNumber,
+        idApp: idApp
     }
 
     await instanceWallet.post('confirmCode', body)
@@ -78,7 +79,7 @@ export default function Page() {
         if (data.message){
             setTypeResponse(1);
             setTypeModal('success');
-            setMessageModal('Se recupero su PIN con éxito.');
+            setMessageModal('Se recuperó tu PIN con éxito.');
             setShowModal(true);
         }
         
@@ -86,9 +87,9 @@ export default function Page() {
     .catch((err) => {
         if (err.response) {
             const error = err.response.data.message;
-            error ? setMessageModal(error.includes('coiciden') ? 'El código de verificación enviado al correo eletrónico es incorrecto.' : error): setMessageModal('Hubo un error al intentar recuperar su PIN en este momento\n\nPor favor intentelo de nuevo en unos minutos.')
+            error ? setMessageModal(error.includes('coiciden') ? 'El código de verificación enviado al correo eletrónico es incorrecto.' : error): setMessageModal('Hubo un error al intentar recuperar tu PIN en este momento\n\nPor favor intentalo de nuevo en unos minutos.')
         } else {
-            setMessageModal('Hubo un error al intentar recuperar su PIN en este momento\n\nPor favor intentelo de nuevo en unos minutos.')
+            setMessageModal('Hubo un error al intentar recuperar tu PIN en este momento\n\nPor favor intentalo de nuevo en unos minutos.')
         }
 
         setTypeResponse(0);
@@ -127,9 +128,9 @@ export default function Page() {
     .catch((err) => {
       if (err.response) {
         const error = err.response.data.message;
-        error ? setMessageModal(error) : setMessageModal('Hubo un error al intentar enviar el código de verificación a su correo\n\nPor favor intentelo de nuevo en unos minutos.')
+        error ? setMessageModal(error) : setMessageModal('Hubo un error al intentar enviar el código de verificación a tu correo.\n\nPor favor intentalo de nuevo en unos minutos.')
       } else {
-        setMessageModal('Hubo un error al intentar enviar el código de verificación a su correo\n\nPor favor intentelo de nuevo en unos minutos.')
+        setMessageModal('Hubo un error al intentar enviar el código de verificación a tu correo.\n\nPor favor intentalo de nuevo en unos minutos.')
       }
 
       setShowModalConfirm(false);
@@ -189,7 +190,7 @@ export default function Page() {
                 </View>
                 <View style={styles.mb5}>
                   <Inputs
-                    label="Ingrese el código enviado a su correo"
+                    label="Ingresa el código enviado a tu correo"
                     placeholder="Escribe el código"
                     isSecureText={false}
                     isRequired={true}
@@ -227,7 +228,7 @@ export default function Page() {
             view={showModalConfirm}
             onPress={fetchSendCode} 
             onCancel={() => router.replace('/auth/pin')}> 
-              <Text style={primaryRegular}>Para recuperar su PIN, por favor ingrese su número de identificación{'\n\n'}Le enviaremos a su correo electrónico un código de confirmación.{'\n\n'}</Text>
+              <Text style={primaryRegular}>Para recuperar tu PIN, por favor ingresa tu número de identificación{'\n\n'}Te enviaremos a tu correo electrónico un código de confirmación.{'\n\n'}</Text>
               <View style={styles.mb5}>
                 <Inputs
                     label="Número de identificación"

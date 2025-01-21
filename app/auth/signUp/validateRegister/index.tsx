@@ -44,7 +44,6 @@ export default function Page() {
 
     const handleError = (syntheticEvent: WebViewErrorEvent) => {
         const { nativeEvent } = syntheticEvent;
-        console.log(nativeEvent);
     };
 
     const handleSslError = (event: { preventDefault: any; }) => {

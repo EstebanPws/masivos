@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { View } from "moti";
-import { Image, ImageSourcePropType, ScrollView } from "react-native";
+import { Animated, Image, ImageSourcePropType, ScrollView } from "react-native";
 import styles from "./home.styles";
 import SideBar from "@/components/sideBar/sideBar";
 import ViewFadeIn from "@/components/animations/viewFadeIn/viewFadeIn";
@@ -14,6 +14,13 @@ import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import OperationsModal from "@/components/modals/operationsModal/operationsModal";
 import { getData, setData } from "@/utils/storageUtils";
 import instanceWallet from "@/services/instanceWallet";
+import InfoModalConfirm from "@/components/modals/infoModalConfirm/infoModalConfirm";
+import { Icon, Text } from "react-native-paper";
+import { useAuth } from "@/components/auth/context/authenticationContext";
+import Constants from "expo-constants";
+
+const extra = Constants.expoConfig?.extra || {};
+const {primaryRegular} = extra.text;
 
 interface BntOptions {
   name: string;
@@ -22,10 +29,13 @@ interface BntOptions {
 }
 
 export default function Page() {
+  const {logout} = useAuth();
   const { setActiveTab, activeLoader } = useTab();
   const [showOperationsRecharge, setShowOperationsRecharge] = useState(false);
   const [shouldRefresh, setShouldRefresh] = useState(false);
   const { type } = useLocalSearchParams();
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const fetchInfoAccount = async (account: string): Promise<string | null> => {
     const existInfoClient = await getData('infoClient');
@@ -56,7 +66,7 @@ export default function Page() {
         
         await setData('infoClient', infoClient);
   
-        return data.cliente.nombres1;
+        return data.cliente ? data.cliente.nombres1 : data.nombres1;
       } catch (error) {
         const infoClient = { infoClient: false };
         await setData('infoClient', infoClient);
@@ -102,6 +112,22 @@ export default function Page() {
     })
   };
 
+  const imageTranslateY = scrollY.interpolate({
+    inputRange: [0, 200], // Ajusta el rango según la altura del scroll
+    outputRange: [0, -100], // La imagen se mueve hacia arriba
+    extrapolate: "clamp",
+  });
+
+  const imageOpacity = scrollY.interpolate({
+    inputRange: [0, 200],
+    outputRange: [1, 0], // La opacidad desaparece al hacer scroll
+    extrapolate: "clamp",
+  });
+
+  const handleShowConfirm = (value:boolean) => {
+    setShowModalConfirm(value)
+  }
+
   if (!shouldRefresh) {
     return null;
   }
@@ -111,39 +137,73 @@ export default function Page() {
       <View style={styles.container}>
         <View style={styles.main}>
           <View style={[styles.row]}>
-            <Image source={require('@/assets/images/general/logo.webp')} resizeMode="contain" style={styles.logo} />
-            <ButtonLogOut />
-          </View>
-          {shouldRefresh && <Balance onMount={fetchInfoAccount}/>}
-          <View style={styles.options}>
-            <OptionsMain
-              onRecharge={() => setShowOperationsRecharge(true)}
+            <Image
+              source={require("@/assets/images/general/logo.webp")}
+              resizeMode="contain"
+              style={styles.logo}
             />
+            <ButtonLogOut  showConfirm={handleShowConfirm}/>
+          </View>
+          {shouldRefresh && <Balance onMount={fetchInfoAccount} />}
+          <View style={styles.options}>
+            <OptionsMain onRecharge={() => setShowOperationsRecharge(true)} />
           </View>
         </View>
         <View style={styles.containerScroll}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.imageContainer}>
-              <Image source={require('@/assets/images/general/visa.png')} resizeMode="contain" style={styles.image} />
+          <Animated.ScrollView
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: true }
+            )}
+            contentContainerStyle={{ paddingBottom: 115 }}
+          >
+            {/*<Animated.View
+              style={[
+                styles.imageContainer,
+                {
+                  transform: [{ translateY: imageTranslateY }],
+                  opacity: imageOpacity,
+                },
+              ]}
+            >
+              <Image
+                source={require("@/assets/images/general/visa.png")}
+                resizeMode="contain"
+                style={styles.image}
+              />
               <ButtonsPrimary
                 label="Solicitar tarjeta"
                 style={styles.mt5}
-                onPress={() => router.replace('/home/cards')}
+                onPress={() => router.replace("/home/cards")}
               />
-            </View>
+            </Animated.View>*/}
             <OptionsSecondary />
-          </ScrollView>
+          </Animated.ScrollView>
         </View>
         <View style={styles.sideBar}>
           <SideBar />
         </View>
       </View>
-      {(showOperationsRecharge || type === '0') && (
+      {(showOperationsRecharge || type === "0") && (
         <OperationsModal
           // button1={button1Recharge}
           button2={button2Recharge}
           onPress={handleCloseModal}
         />
+      )}
+      {showModalConfirm && (
+        <InfoModalConfirm 
+            onPress={() => logout()}
+            onCancel={() => setShowModalConfirm(false)}
+            label1='Si'
+            label2='No'>
+            <View style={styles.centerContainer}>
+                <Icon source={'information'} size={50} color={'#f8971d'} />
+                <Text variant="labelLarge" style={primaryRegular}>¿Quieres cerrar sesión?</Text>
+            </View>
+        </InfoModalConfirm>
       )}
     </ViewFadeIn>
   );
