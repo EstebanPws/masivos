@@ -46,7 +46,9 @@ export default function Page() {
 
   const handleRegister = () => {
     router.push('/auth/signUp')
-    router.push('/auth/signUp/validateExistAccount');
+    //router.push('/auth/signUp/validateExistAccount');
+    router.push('/auth/signUp/selectTypeAccount');
+
   }
 
   const handleConfirmTerms = () => {

@@ -20,6 +20,8 @@ import instanceWallet from "@/services/instanceWallet";
 const extra = Constants.expoConfig?.extra || {};
 const {adoUrl, apiKeyAdo, userAdo, idApp} = extra;
 
+console.log(apiKeyAdo)
+
 export default function Page() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -104,8 +106,8 @@ export default function Page() {
 
         const body  = {
             request: "",
-            response: resp ? "Se encotraron datos de la bd FDLM" : "No se encontraron datos",
-            descripcion_proceso: "Consulta a BD FDLM",
+            response: resp ? "Se encotraron datos de la bd MSV" : "No se encontraron datos",
+            descripcion_proceso: "Consulta a BD MSV",
             resultado: resp ? "Confirmado" : "Rechazado",
             valor_anterior: 0,
             valor_nuevo: 0,
@@ -131,7 +133,7 @@ export default function Page() {
                       await setData('registrationForm', updatedFormData);   
                       const typePerson = await getData('typePerson');
                       router.push({
-                        pathname: '/auth/signUp/selectTypeAccount',
+                        pathname: '/auth/signUp/formRegister',
                         params: { type: 8 }
                     });
                     }
@@ -179,6 +181,7 @@ export default function Page() {
                             no_doc: data.IdNumber,
                             idApp: idApp
                         }
+                        console.log(idTransaction)
 
                         if (stateId === 2) {
                             clearInterval(intervalId);
@@ -290,7 +293,7 @@ export default function Page() {
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
                     onError={(syntheticEvent) => handleError(syntheticEvent)}
                     onSslError={(event: { preventDefault: () => void; }) => handleSslError(event)}
-                />
+                />                
             </MotiView>
             {(locationPermission !== 'granted' || cameraPermission !== 'granted') && showAlert && (
                 <InfoModal

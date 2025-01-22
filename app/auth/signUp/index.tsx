@@ -315,6 +315,7 @@ console.log(state)
         <InfoModalConfirm
           title="Información importante"
           onPress={() => {
+            //router.push('/auth/signUp/selectTypeAccount');
             //router.push({pathname: '/auth/signUp/formRegister', params: { type: 8 }});
             router.push('/auth/signUp/videoIdentification');
             setShowConfirmInfo(false)
@@ -361,6 +362,8 @@ console.log(state)
               } else if (responseSuccess === false) {
                 setCount(0);
                 setValidationModal(false);
+                //router.push('/auth/signUp/selectTypeAccount');
+                //router.push({pathname: '/auth/signUp/formRegister', params: { type: 8 }});
                 router.push('/auth/signUp/videoIdentification');
               }
             }

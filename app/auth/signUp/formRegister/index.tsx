@@ -173,13 +173,12 @@ export default function Page() {
         step === 0 ? router.back() : setTimeout(() => { setStep(back) }, timeOut);
     };
 
-    const handleSend = () => {  
+ const handleSend = () => {  
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
-            if (savedData) {               
+            if (savedData) { 
                 const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);
                 setIsLoading(true);
-                
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                 .then(async response => { 
                     const data = response.data.data;
@@ -215,18 +214,18 @@ export default function Page() {
                     }
                     setIsLoading(false);
                 })
-                .catch(err => {
+                .catch(err => {  
                     if(err.response){
-                        if(err.response.data.message){
+                        if(err.response.data.message) {
                             const error = err.response.data.message;
                             const errorCode = extractErrorCode(error);
                             if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
                                 setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
                             } else {
-                                if(err.response.data.message){
+                                if(err.response.data.message) {
                                     const error = err.response.data.message;
-                                    const message = error.split('-');
-                                    setMessageError(`${message[1]} - ${message[2]}`);
+                                    const message = error.includes('-') ? error.split('-') : error;
+                                    setMessageError(`${Array.isArray(message) && message.length > 2 ? message[1] + " - " + message[2] : "Hubo un error al intentar crear su depósito en este momento, por favor inténtelo de nuevo en unos minutos."}`);
                                 } else {
                                     setMessageError("Hubo un error al intentar enviar el formulario");
                                 }
@@ -240,6 +239,7 @@ export default function Page() {
                     setIsLoading(false);
                 });
             }
+                                
         };
 
         fetchFormData();

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { TouchableOpacity, View, Image, Platform } from "react-native";
 import { Checkbox, Icon, MD2Colors, Text } from "react-native-paper";
 import styles from "./selecTypeAccount.styles";
@@ -38,6 +38,10 @@ export default function Page() {
         router.back();
     };
 
+    useEffect(() => {
+        !checked ? setDisbaledBtn(true): setDisbaledBtn(false)
+    }, [checked])
+
     const handlePressIn1 = () => setIsPressed1(true);
     const handlePressOut1 = () => setIsPressed1(false);
 
@@ -49,13 +53,13 @@ export default function Page() {
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
             if (savedData) {
-                setShowAuthorizations(false);
                 const newFormData = { ...savedData, ...updatedFormData };
                 await setData('registrationForm', newFormData);
                 router.push({
                     pathname: '/auth/signUp/formRegister',
                     params: { type: 8 }
                 });
+                setShowAuthorizations(false);
             }
         };
 
@@ -82,7 +86,7 @@ export default function Page() {
                             <Checkbox.Item
                                 style={[styles.ml5]}
                                 rippleColor={'transparent'}
-                                color={colorPrimary}
+                                color={colorPrimary} 
                                 label=""
                                 status={checked ? 'checked' : 'unchecked'}
                                 onPress={() => setChecked(!checked)}
@@ -92,14 +96,14 @@ export default function Page() {
                                     <Checkbox.Item
                                         style={[styles.ml5]}
                                         rippleColor={'transparent'}
-                                        color={colorPrimary}
+                                        color={colorPrimary} 
                                         label=""
                                         status={checked ? 'checked' : 'unchecked'}
                                         onPress={() => setChecked(!checked)}
-                                    />
+                                    />  
                                 </View>
                             )}
-                            <Link href={'https://www.coopcentral.com.co/Filef_linka.asp?IDe=1184'} style={{ ...styles.link, ...styles.ml5, ...primaryRegular }}>REGLAMENTO DEPÓSITO DE BAJO MONTO</Link>
+                            <Link href={'https://www.coopcentral.com.co/Filef_linka.asp?IDe=1184'} style={{...styles.link, ...styles.ml5 ,...primaryRegular}}>REGLAMENTO DEPÓSITO DE BAJO MONTO</Link>
                         </View>
                         <View style={styles.mb5}>
                             <Link href={'https://www.coopcentral.com.co/Filef_linka.asp?IDe=1183'} style={{ ...styles.link, ...primaryRegular }}>Instructivo de uso tarjeta debito física o virtual</Link>
@@ -116,16 +120,17 @@ export default function Page() {
                         <View style={[styles.row, styles.mb5]}>
                             <ButtonsSecondary
                                 label="Rechazar"
-                                onPress={() => { router.replace('/') }}
+                                onPress={() => {router.replace('/')}}
                             />
                             <ButtonsPrimary
                                 label="Aceptar"
-                                onPress={() => { setShowAuthorizations(true); setTypePerson('8') }}
+                                onPress={() => {router.replace('/auth/signUp/validateExistAccount')}}
                                 disabled={disbaledBtn}
                             />
                         </View>
 
-                        <GestureHandlerRootView style={styles.buttonContainer}>
+                        
+                        {/*<GestureHandlerRootView style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={styles.btn}
                                 underlayColor={colorPrimary}
@@ -137,7 +142,7 @@ export default function Page() {
                                     Cuenta de bajo monto
                                 </Text>
                             </TouchableHighlight>
-                            {/*<TouchableHighlight
+                            <TouchableHighlight
                                 style={styles.btn}
                                 underlayColor={colorPrimary}
                                 onPressIn={handlePressIn2}
@@ -147,8 +152,8 @@ export default function Page() {
                                 <Text variant="titleMedium" style={{ ...styles.text, ...styles.textBtn, ...primaryRegular, color: isPressed2 ? `${MD2Colors.white}` : 'black' }}>
                                     Cuenta ordinaria
                                 </Text>
-                            </TouchableHighlight>*/}
-                        </GestureHandlerRootView>
+                            </TouchableHighlight>
+                        </GestureHandlerRootView>*/}
                     </View>
                 </View>
             </ViewFadeIn>
@@ -234,7 +239,7 @@ export default function Page() {
                         </InfoModalConfirm>
                     </Fragment>
                 )}
-                {(showAuthorizations && typePerson === '8') && (
+                {/*{(showAuthorizations && typePerson === '8') && (
                     <Fragment key={'autDbm'}>
                         <InfoModalConfirm
                             title="Depósito de bajo monto"
@@ -263,7 +268,7 @@ export default function Page() {
                             </View>
                         </InfoModalConfirm>
                     </Fragment>
-                )}
+                )}*/}
             </AnimatePresence>
         </>
 
