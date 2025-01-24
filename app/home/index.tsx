@@ -18,6 +18,7 @@ import InfoModalConfirm from "@/components/modals/infoModalConfirm/infoModalConf
 import { Icon, Text } from "react-native-paper";
 import { useAuth } from "@/components/auth/context/authenticationContext";
 import Constants from "expo-constants";
+import axios from "axios";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryRegular} = extra.text;
@@ -44,9 +45,12 @@ export default function Page() {
       try {
         const accountConsult = account.startsWith('0') ? account.slice(1) : account;
         const body = { id: accountConsult }; 
+        console.log("response2: ", body)
         const response = await instanceWallet.post('formView', body);
         const data = response.data;
-  
+        console.log("response1: ", response)
+
+        
         const infoClient = {
           infoClient: true,
           id: data.id,
@@ -68,7 +72,10 @@ export default function Page() {
   
         return data.cliente ? data.cliente.nombres1 : data.nombres1;
       } catch (error) {
-        const infoClient = { infoClient: false };
+        if (axios.isAxiosError(error)) {
+          console.log("response3: ", error.response)
+
+          }        const infoClient = { infoClient: false };
         await setData('infoClient', infoClient);
   
         return null; 

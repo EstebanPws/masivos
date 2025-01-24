@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import { Dimensions, StyleSheet } from "react-native";
+import { MD2Colors } from "react-native-paper";
 
 const extra = Constants.expoConfig?.extra || {};
 const { colorPrimary } = extra;
@@ -72,6 +73,11 @@ const styles = StyleSheet.create({
     },
     textCenter: {
         textAlign: 'center'
+    },
+    linkDisabled: {
+        color: MD2Colors.grey700,
+        marginTop: 20,
+        fontSize: 13
     }
 })
 

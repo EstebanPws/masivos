@@ -365,6 +365,7 @@ console.log(state)
                 //router.push('/auth/signUp/selectTypeAccount');
                 //router.push({pathname: '/auth/signUp/formRegister', params: { type: 8 }});
                 router.push('/auth/signUp/videoIdentification');
+                //router.replace('/')
               }
             }
             }

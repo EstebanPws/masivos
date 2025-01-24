@@ -41,6 +41,7 @@ export default function Page() {
     const [listPaisesExt, setListPaisesExt] = useState<List[] | null>(null);
     const [messageError, setMessageError] = useState('');
     const [showError, setShowError] = useState(false);
+    const [redirectToHome, setRedirectToHome] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('info');
     const [validationModal, setValidationModal] = useState(false);
@@ -179,6 +180,7 @@ export default function Page() {
             if (savedData) { 
                 const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);
                 setIsLoading(true);
+                const endpoint = type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico';
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
                 .then(async response => { 
                     const data = response.data.data;
@@ -198,20 +200,30 @@ export default function Page() {
                                     }
                                 });
                             } else {
+                                console.log("respuesta else 1")
                                 setTypeResponse('success');
-                                setMessageError('Usuario creado con éxito.');
+                                setMessageError('Cliente creado con éxito.\n\nSe ha creado un depósito de bajo monto en el Banco Cooperativo Coopcentral.');
                                 setShowError(true);
-                            }
+                                if (endpoint === 'createNat') {
+                                    setRedirectToHome(true);  
+                                }                            }
                         } else {
+                            console.log("respuesta else 2")
                             setTypeResponse('error');
                             setMessageError(data.respuesta);
                             setShowError(true);
+                            if (endpoint === 'createNat') {
+                                setRedirectToHome(true);  
+                            } 
                         }
-                    } else {
-                        setTypeResponse('error');
-                        setMessageError(response.data.message);
+                    }  else if (response.data.status === 200) {
+                        console.log("respuesta éxito sin idRegistro");
+                        setTypeResponse('success');
+                        setMessageError('Cliente creado con éxito.\n\nSe ha creado un depósito de bajo monto en el Banco Cooperativo Coopcentral.');
                         setShowError(true);
-                    }
+                        if (endpoint === 'createNat') {
+                            setRedirectToHome(true);  
+                        }                     }
                     setIsLoading(false);
                 })
                 .catch(err => {  
@@ -226,6 +238,7 @@ export default function Page() {
                                     const error = err.response.data.message;
                                     const message = error.includes('-') ? error.split('-') : error;
                                     setMessageError(`${Array.isArray(message) && message.length > 2 ? message[1] + " - " + message[2] : "Hubo un error al intentar crear su depósito en este momento, por favor inténtelo de nuevo en unos minutos."}`);
+                                    console.log("RESPONSE MENSSAGE: ", message[1], " - ", message[2])
                                 } else {
                                     setMessageError("Hubo un error al intentar enviar el formulario");
                                 }
@@ -385,7 +398,10 @@ export default function Page() {
                     onPress={() => {
                         if(errorExistAccounts === 1){
                             router.replace('/');
+                        } else if (redirectToHome) {
+                            router.replace('/');  
                         }
+                        setRedirectToHome(false);
                         setShowError(false);
                         setErrorExistsAccounts(0);
                     }}

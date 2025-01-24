@@ -13,6 +13,8 @@ import { Text } from "react-native-paper";
 import instanceWallet from "@/services/instanceWallet";
 import { getData } from "@/utils/storageUtils";
 import { useAuth } from "@/components/auth/context/authenticationContext";
+import CountdownTimerOtp from "@/components/amount/countdownTimer/countdownTimerOtp";
+import { AxiosError } from "axios";
 
 const extra = Constants.expoConfig?.extra || {};
 const { idApp } = extra;
@@ -33,6 +35,8 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
     const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '', '', '']);
     const [isSecure, setIsSecure] = useState(false);
     const [data, setData] = useState<any>();
+    const [disabledBtn, setDisbaledBtn] = useState(true);
+    const [timerKey, setTimerKey] = useState(0);
 
     useEffect(() => {
         inputRefs.current[0]?.focus();
@@ -65,42 +69,43 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
     const fetchRequestCode = async (type: number) => {
         activeLoader();
         const savedData = await getData('registrationForm');
-        setData(savedData);
         let message;
         let responseType: "info" | "success" | "error" = "info";
 
         if (savedData) {
-
             const body = { 
-                tipo_doc: typePerson === 1 ? savedData.r_l_tipo_doc : savedData.tipo_doc,
-                no_doc: typePerson === 1 ? savedData.r_l_ced : savedData.no_docum,
+                tipo_doc: savedData.tipo_doc,
+                no_doc: savedData.no_docum,
                 correo: "",
                 numero_celular: "",
                 idApp: idApp
             }
             
             if (type === 0) { 
-                if (typePerson === 1 ? savedData.r_l_email === '' : savedData.correo === '') {
+                if (savedData.correo === '') {
                     message = 'El correo electrónico no es valido.';
                     responseType = "error";
                 } else {
-                    body.correo = typePerson === 1 ? savedData.r_l_email : savedData.correo;
+                    body.correo = savedData.correo;
                 }
             } else {
-                const tel = typePerson === 1 ? savedData.r_l_tel : savedData.numero_celular;
+                const tel = savedData.numero_celular;
                 
                 if (tel === '') {
                     message = 'El número de celular no es valido.';
                     responseType = "error";
                 } else {
-                    body.numero_celular = typePerson === 1 ? savedData.r_l_tel : savedData.numero_celular;
+                    body.numero_celular = savedData.numero_celular;
                 }
-            }
-
+            }            
             try {
+                setData(savedData);                
                 await instanceWallet.post('preRegistro', body);
                 setOtpValues(['', '', '', '', '', '']);
             } catch (error) {
+                if (error instanceof AxiosError && error.response) {
+                    console.log(error.response);
+                } 
                 message = `Hubo un error al intentar enviar el código de verificación por ${type === 0 ? "correo electrónico" : 'sms'} , por favor intentelo de nuevo en unos minutos.`;
                 responseType = "error";
             }
@@ -110,7 +115,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
         return { message, responseType };
     }
 
-    const fetchValidateCode = async () => {
+    const fetchValidateCode = async (type: number) => {
         activeLoader();
         let message;
         let responseType: "info" | "success" | "error" = "info";
@@ -119,7 +124,8 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
         const bodyValidate = {
             tipo_doc: typePerson === 1 ? data.r_l_tipo_doc : data.tipo_doc,
             no_doc: typePerson === 1 ? data.r_l_ced : data.no_docum,
-            codeVer: code
+            codeVer: code,
+            type: type
         }
 
         try {
@@ -143,7 +149,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
         }
 
         if (step === 1) {
-            response = await fetchValidateCode();  
+            response = await fetchValidateCode(0);  
             if (response!.responseType !== 'error') {
                 response = await fetchRequestCode(1);
             }
@@ -151,7 +157,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
         }
 
         if (step === 2) {
-            response = await fetchValidateCode();  
+            response = await fetchValidateCode(1);  
             if (response!.responseType !== 'error') {
                 onFinish();
             }          
@@ -163,6 +169,8 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
         }
 
         setStep(next);
+        setTimerKey(timerKey + 1);
+        setDisbaledBtn(true)
     }
 
     const handleBack = () => {  
@@ -173,6 +181,12 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
             setStep(back);
         }
     }
+
+    const handleResendCode = (type: number) => {
+        fetchRequestCode(type);
+        setTimerKey(timerKey + 1);
+        setDisbaledBtn(true)
+    };
     
     return (
         <AnimatePresence>
@@ -186,11 +200,12 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                         style={styles.modalContainer}
                     >   
                         {step === 0 &&(
+                            // Para continuar con el proceso de vinculación, primero enviaremos un código a tu correo electrónico y, a continuación, otro a tu número de celular.{'\n\n'}Si no encuentras el mensaje en tu bandeja de entrada, revisa la carpeta de SPAM o correos no deseados.
                             <Text variant='bodyLarge' style={primaryRegular}>Para continuar con el proceso de vinculación, primero enviaremos un código a tu correo electrónico y, a continuación, otro a tu número de celular.{'\n\n'}Si no encuentras el mensaje en tu bandeja de entrada, revisa la carpeta de SPAM o correos no deseados.</Text>
                         )}
                         {step === 1 && (
                            <>
-                                <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Validar código enviado a tu correo electrónico.</Text>
+                                <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Ingresa el código enviado a tu correo electrónico.</Text>
                                 <View style={[styles.row, styles.ml5]}>
                                     {otpValues.map((value, index) => (
                                         <OtpInputs
@@ -207,7 +222,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                         )}
                         {step === 2 && (
                            <>
-                                <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Validar código enviado a tu número de celular.</Text>
+                                <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Ingresa el código enviado a tu número de celular.</Text>
                                 <View style={[styles.row, styles.ml5]}>
                                     {otpValues.map((value, index) => (
                                         <OtpInputs
@@ -223,12 +238,14 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                            </>
                         )}
                         <GestureHandlerRootView style={styles.center}>
+                             {/* {(step === 1) &&( */}
                             {(step === 1 || step === 2) &&(
                                 <>
                                     <NumericKeyboard onKeyPress={handleKeyPress} onDeletePress={handleDeletePress} onView={handleViewPin}/>
+                                    <CountdownTimerOtp key={timerKey} onFinish={() => setDisbaledBtn(false)} />
                                     <View style={styles.row}> 
-                                        <TouchableOpacity onPress={() => fetchRequestCode(step === 1 ? 0 : 1)}>
-                                            <Text style={{...styles.link, ...primaryBold}}>No llego el código ¿Reenviar código?</Text>
+                                        <TouchableOpacity onPress={() => handleResendCode(step === 1 ? 0 : 1)} disabled={disabledBtn}>
+                                            <Text style={[disabledBtn ? styles.linkDisabled : styles.link, primaryBold]}>Reenviar código.</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </>
@@ -239,7 +256,7 @@ export default function OtpValidationModal({ typePerson, onClose, onView, onFini
                                     onPress={handleBack}
                                 />
                                 <ButtonsPrimary
-                                    label={step !== 0 ? "Validar" : "Siguiente"}
+                                    label={step !== 0 ? "Aceptar" : "Siguiente"}
                                     onPress={handleNext}
                                 />
                             </View>

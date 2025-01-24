@@ -198,7 +198,7 @@ export default function Page() {
                 selectAccount={async (account, type) => {
                     if(type === 2){
                       setIdAccount(account.id);
-                      setConfirmMessage('Esta seguro de eliminar este contacto de transferencias');
+                      setConfirmMessage('Estás seguro de eliminar este contacto de transferencias');
                       setShowConfirmModal(true);
                     } else if (type === 1) {
                       setAccountInfo(account);
@@ -226,7 +226,7 @@ export default function Page() {
                   typeBank={inputTypeBank}
                   selectAccount={async (account) => {
                     setAccountInfo(account);
-                    setConfirmMessage('Esta seguro de editar este contacto de transferencias');
+                    setConfirmMessage('Estás seguro de editar este contacto de transferencias');
                     setShowConfirmModal(true);
                   }}
 

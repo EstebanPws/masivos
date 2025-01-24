@@ -109,7 +109,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         })
         .catch((err) => {
             if (err && err.response.message) {
-                setMessage(err.response.data.status === 404 ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
+                setMessage(err.response.data.message);
             }  else {
                 setMessage("Hubo un error al intentar autenticarse.");
             }
@@ -150,7 +150,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         })
         .catch((err) => {
             if (err && err.response.data) {
-                setMessage(err.response.data.status === 404 ? 'Usuario o contraseña incorrectos.' : err.response.data.message);
+                setMessage(err.response.data.message);
             }  else {
                 setMessage("Hubo un error al intentar autenticarse.");
             }

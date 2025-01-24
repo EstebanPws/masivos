@@ -11,45 +11,61 @@ import { getBalance, getData, getNumberAccount, setBalance, setNumberAccount } f
 import { usePathname } from "expo-router";
 
 const extra = Constants.expoConfig?.extra || {};
-const {primaryBold, primaryRegular} = extra.text;
-const {colorPrimary, colorSecondary} = extra;
+const { primaryBold, primaryRegular } = extra.text;
+const { colorPrimary, colorSecondary } = extra;
 
 interface BalanceProps {
     isWelcome?: boolean;
     onMount?: (account: string) => Promise<string | null>;
 }
 
-export default function Balance({isWelcome = true, onMount}: BalanceProps) {
+export default function Balance({ isWelcome = true, onMount }: BalanceProps) {
     const { documentNumber, modalidad } = useAuth();
-    const { activeLoader , desactiveLoader } = useTab();
+    const { activeLoader, desactiveLoader } = useTab();
     const [viewSaldo, setViewSaldo] = useState('0');
     const [name, setName] = useState<string | null>('');
     const pathname = usePathname();
 
     const fetchComplianceData = async () => {
-        if(pathname === '/home') {
+        if (pathname === '/home') {
             activeLoader();
             try {
                 const existNumber = await getNumberAccount();
                 let myNumberAccount: string = "";
-                
-                if(!existNumber || existNumber === ""){
+
+                if (!existNumber || existNumber === "") {
                     const bodyAccount = {
-                        no_doc : documentNumber,
-                        modalidad : modalidad,
+                        no_doc: documentNumber,
+                        modalidad: modalidad,
                         estado: "T"
                     }
 
                     const account = await instanceWallet.post('getAccounts', bodyAccount);
+                    console.log("account balance: ", account);
+                    
                     let cuenta: string = "";
-                    if (account.data.data[1]) {
-                        cuenta = `${account.data.data[1].CUENTA}`;
-                    } else if(account.data.data[0]) {
-                        cuenta = `${account.data.data[0].CUENTA}`;
-                    }else {
-                        cuenta = `${account.data.data.CUENTA}`;
+
+                    if (account.data && account.data.data) {
+                        const accountData = account.data.data;
+
+                        if (Array.isArray(accountData)) {
+                            const accountActive = accountData.filter((acc: { ESTADO: string; }) => acc.ESTADO === "A");
+
+                            if (accountActive.length !== 0) {
+                                cuenta = `${accountActive[0].CUENTA}`;
+                            } else {
+                                console.warn("No hay cuentas activas en la lista.");
+                                cuenta = `${accountData[0].CUENTA}`;
+                            }
+                        } else if (typeof accountData === "object") {
+                            cuenta = `${accountData.CUENTA}`;
+                        } else {
+                            console.error("La API devolvió un formato inesperado:", accountData);
+                        }
+                    } else {
+                        console.error("La API no devolvió respuesta válida.");
                     }
-                   
+
                     const cuentaFinal = cuenta.startsWith('7') ? `0${cuenta}` : `${cuenta}`;
                     setNumberAccount(cuentaFinal);
                     myNumberAccount = cuentaFinal;
@@ -58,16 +74,16 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
                 if (onMount) {
                     const existFirstName = await getData('infoClient');
 
-                    if(existFirstName) {
+                    if (existFirstName) {
                         setName(existFirstName.firstName);
                     } else {
                         onMount(existNumber ? existNumber : myNumberAccount)
-                        .then(firstName => {
-                            setName(firstName);
-                        })
-                        .catch(error => {
-                            setName('Nuevo usuario');
-                        });
+                            .then(firstName => {
+                                setName(firstName);
+                            })
+                            .catch(error => {
+                                setName('Nuevo usuario');
+                            });
                     }
                 }
 
@@ -79,9 +95,9 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
                     }
 
                     const response = await instanceWallet.post('getBalance', bodySaldo);
-                    
+
                     const data = response.data.message;
-                    if(data.includes('Saldo:')){
+                    if (data.includes('Saldo:')) {
                         const saldo = data.split(',');
                         const saldoFinal = saldo[1].replace('Saldo: ', '');
                         await setBalance(saldoFinal);
@@ -95,7 +111,7 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
             } catch (error) {
                 desactiveLoader();
                 console.log('Error fetching compliance data:', error);
-            }   
+            }
         } else {
             const existBalance = await getBalance();
             if (existBalance) {
@@ -108,7 +124,7 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
         fetchComplianceData();
     }, []);
 
-    return(
+    return (
         <LinearGradient
             colors={[colorPrimary, colorSecondary]}
             start={{ x: 0, y: 0 }}
@@ -116,7 +132,8 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
             style={styles.container}
         >
             {isWelcome && (
-                <Text variant="titleSmall" style={[primaryRegular, styles.text]}>¡Bienvenido 
+                <Text variant="titleSmall" style={[primaryRegular, styles.text]}>
+                    ¡Bienvenido
                     <Text variant="titleSmall" style={[primaryBold, styles.text]}> {name}!</Text>
                 </Text>
             )}
@@ -130,6 +147,5 @@ export default function Balance({isWelcome = true, onMount}: BalanceProps) {
             </LinearGradient>
             <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Tu saldo</Text>
         </LinearGradient>
-
     );
 }
