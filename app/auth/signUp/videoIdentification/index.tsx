@@ -9,7 +9,7 @@ import WebView from "react-native-webview";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import { ShouldStartLoadRequest, WebViewErrorEvent, WebViewProgressEvent } from "react-native-webview/lib/WebViewTypes";
 import { setData, getData } from "@/utils/storageUtils";
-import { stateMessages , documentType } from '@/utils/listUtils';
+import { stateMessages, documentType } from '@/utils/listUtils';
 import Loader from "@/components/loader/loader";
 import HeaderForm from "@/components/headers/headerForm/headerForm";
 import Constants from "expo-constants";
@@ -18,7 +18,10 @@ import ClockAnimation from "@/components/animations/clock/clockLoop";
 import instanceWallet from "@/services/instanceWallet";
 
 const extra = Constants.expoConfig?.extra || {};
-const {adoUrl, apiKeyAdo, userAdo, idApp} = extra;
+const { adoUrl, apiKeyAdo, userAdo, idApp } = extra;
+
+//console.log("url ado:", `https://${adoUrl}/validar-persona?callback=https%3A%2F%2FURL_OK&key=${apiKeyAdo}&projectName=${userAdo}&product=1`)
+//console.log("url ADO: ", adoUrl)
 
 console.log(apiKeyAdo)
 
@@ -104,7 +107,7 @@ export default function Page() {
         });
         const date = dateFormatter.format(now);
 
-        const body  = {
+        const body = {
             request: "",
             response: resp ? "Se encotraron datos de la bd MSV" : "No se encontraron datos",
             descripcion_proceso: "Consulta a BD MSV",
@@ -116,29 +119,29 @@ export default function Page() {
             tipoDoc: tipoDoc,
             noDocumento: noDoc
         };
-        
+
         await instanceWallet.post('newLog', body)
     }
 
     const handleCloseAlert = (type: number) => {
-        if(type === 0 || type === 1){
-            type === 0 ? setShowAlert(false) : setShowAlertErrorWebView(false) ;
+        if (type === 0 || type === 1) {
+            type === 0 ? setShowAlert(false) : setShowAlertErrorWebView(false);
             router.back();
         } else {
-            if(idStateResponse === 2){
+            if (idStateResponse === 2) {
                 const fetchFormData = async () => {
                     const savedData = await getData('registrationForm');
                     if (savedData) {
-                      const updatedFormData = { ...savedData, ...formData };
-                      await setData('registrationForm', updatedFormData);   
-                      const typePerson = await getData('typePerson');
-                      router.push({
-                        pathname: '/auth/signUp/formRegister',
-                        params: { type: 8 }
-                    });
+                        const updatedFormData = { ...savedData, ...formData };
+                        await setData('registrationForm', updatedFormData);
+                        const typePerson = await getData('typePerson');
+                        router.push({
+                            pathname: '/auth/signUp/formRegister',
+                            params: { type: 8 }
+                        });
                     }
                 };
-            
+
                 fetchFormData();
             } else {
                 router.back();
@@ -147,17 +150,17 @@ export default function Page() {
         }
     };
 
-    const handleShouldStartLoadWithRequest = (request: ShouldStartLoadRequest) => { 
+    const handleShouldStartLoadWithRequest = (request: ShouldStartLoadRequest) => {
         if (request.url.startsWith('https://url_ok')) {
             const urlParams = request.url.split('?')[1].replace("_Response=", "");
             if (urlParams) {
-                if(!isWaiting){
+                if (!isWaiting) {
                     setIsWaiting(true);
                 }
-               
-                const jsonObject = JSON.parse(decodeURIComponent(urlParams));    
+
+                const jsonObject = JSON.parse(decodeURIComponent(urlParams));
                 const idTransaction = jsonObject.TransactionId;
-    
+
                 const intervalId = setInterval(() => {
                     let stateId = 1;
                     axios.get(`https://${adoUrl}/api/${userAdo}/Validation/${idTransaction}`, {
@@ -171,57 +174,57 @@ export default function Page() {
                             returnImages: 'false'
                         }
                     })
-                    .then(async (response) => {
-                        const data = response.data;  
-                        stateId = parseInt(data.Extras.IdState);
+                        .then(async (response) => {
+                            const data = response.data;
+                            stateId = parseInt(data.Extras.IdState);
 
-                        const body = {
-                            id_validacion: idTransaction,
-                            response: data,
-                            no_doc: data.IdNumber,
-                            idApp: idApp
-                        }
-                        console.log(idTransaction)
-
-                        if (stateId === 2) {
-                            clearInterval(intervalId);
-                            const document = documentType[parseInt(data.DocumentType) as keyof typeof documentType];
-                            const updatedFormData = { 
-                                ...formData, 
-                                nombre1: data.FirstName, 
-                                nombre2: data.SecondName, 
-                                apellido1: data.FirstSurname, 
-                                apellido2: data.SecondSurname, 
-                                tipo_doc: document ,
-                                no_docum: data.IdNumber
-                            };
-                            setFormData(updatedFormData);
-                            setIdStateResponse(stateId);
-
-                            await instanceWallet.post('adotechNew', body);
-
-                            if (stateMessages[stateId as keyof typeof stateMessages]) {
-                                setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
-                                setShowAlertMessageResponse(true);
+                            const body = {
+                                id_validacion: idTransaction,
+                                response: data,
+                                no_doc: data.IdNumber,
+                                idApp: idApp
                             }
-                        } else if (stateId !== 1){
-                            clearInterval(intervalId);
-                            await instanceWallet.post('adotechNew', body);
-                            if (stateMessages[stateId as keyof typeof stateMessages]) {
-                                setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
-                                setShowAlertMessageResponse(true);
+                            console.log(idTransaction)
+
+                            if (stateId === 2) {
+                                clearInterval(intervalId);
+                                const document = documentType[parseInt(data.DocumentType) as keyof typeof documentType];
+                                const updatedFormData = {
+                                    ...formData,
+                                    nombre1: data.FirstName,
+                                    nombre2: data.SecondName,
+                                    apellido1: data.FirstSurname,
+                                    apellido2: data.SecondSurname,
+                                    tipo_doc: document,
+                                    no_docum: data.IdNumber
+                                };
+                                setFormData(updatedFormData);
+                                setIdStateResponse(stateId);
+
+                                await instanceWallet.post('adotechNew', body);
+
+                                if (stateMessages[stateId as keyof typeof stateMessages]) {
+                                    setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
+                                    setShowAlertMessageResponse(true);
+                                }
+                            } else if (stateId !== 1) {
+                                clearInterval(intervalId);
+                                await instanceWallet.post('adotechNew', body);
+                                if (stateMessages[stateId as keyof typeof stateMessages]) {
+                                    setMessageResponse(stateMessages[stateId as keyof typeof stateMessages]);
+                                    setShowAlertMessageResponse(true);
+                                }
                             }
-                        }
-                    })
-                    .catch((error) => {
-                        setMessageResponse('Hubo un error al intentar consultar el estado de la operación.');
-                        setShowAlertMessageResponse(true);
-                    })
-                    .finally(() => {
-                        if(stateId !== 1){
-                            setIsWaiting(false);
-                        }
-                    });
+                        })
+                        .catch((error) => {
+                            setMessageResponse('Hubo un error al intentar consultar el estado de la operación.');
+                            setShowAlertMessageResponse(true);
+                        })
+                        .finally(() => {
+                            if (stateId !== 1) {
+                                setIsWaiting(false);
+                            }
+                        });
                 }, 15000);
             }
             return false;
@@ -246,7 +249,7 @@ export default function Page() {
         );
     };
 
-    const handleLoadProgress = (nativeEvent: WebViewProgressEvent) => { 
+    const handleLoadProgress = (nativeEvent: WebViewProgressEvent) => {
         if (nativeEvent.nativeEvent.progress === 1) {
             setIsLoading(false);
         } else {
@@ -257,15 +260,15 @@ export default function Page() {
     return (
         <>
             {isLoading && (
-                <Loader/>
+                <Loader />
             )}
 
             {isWaiting && (
-                <ClockAnimation visible={isWaiting}/>
+                <ClockAnimation visible={isWaiting} />
             )}
 
-            <HeaderForm onBack={() => router.back()}/>
-            
+            <HeaderForm onBack={() => router.back()} />
+
             <MotiView
                 from={{ opacity: 0, translateY: -50 }}
                 animate={{ opacity: 1, translateY: 0 }}
@@ -293,7 +296,7 @@ export default function Page() {
                     onShouldStartLoadWithRequest={(request) => handleShouldStartLoadWithRequest(request)}
                     onError={(syntheticEvent) => handleError(syntheticEvent)}
                     onSslError={(event: { preventDefault: () => void; }) => handleSslError(event)}
-                />                
+                />
             </MotiView>
             {(locationPermission !== 'granted' || cameraPermission !== 'granted') && showAlert && (
                 <InfoModal
