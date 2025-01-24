@@ -115,7 +115,7 @@ export default function OtpExistProcessModal({ typePerson, onClose, onView, onFi
         return { message, responseType };
     }
 
-    const fetchValidateCode = async () => {
+    const fetchValidateCode = async (type: number) => {
         activeLoader();
         let message;
         let responseType: "info" | "success" | "error" = "info";
@@ -124,7 +124,8 @@ export default function OtpExistProcessModal({ typePerson, onClose, onView, onFi
         const bodyValidate = {
             tipo_doc: tipoDoc,
             no_doc: numeroDoc,
-            codeVer: code
+            codeVer: code,
+            type: type
         }
 
         try {
@@ -144,7 +145,7 @@ export default function OtpExistProcessModal({ typePerson, onClose, onView, onFi
         let response;
         const next = step + 1;
         if (next === 1) {
-            response = await fetchValidateCode();  
+            response = await fetchValidateCode(0);  
             if (response!.responseType !== 'error') {
                 response = await fetchRequestCode(1);
             }
@@ -152,7 +153,7 @@ export default function OtpExistProcessModal({ typePerson, onClose, onView, onFi
         }
 
         if (next === 2) {
-            response = await fetchValidateCode();  
+            response = await fetchValidateCode(1);  
             if (response!.responseType !== 'error') {
                 onFinish();
             }          
