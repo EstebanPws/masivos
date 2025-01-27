@@ -33,7 +33,6 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
     const [surnames, setSurnames] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [placeBirthDate, setPlaceBirthDate] = useState('');
-    const [typeDocument, setTypeDocument] = useState('');
     const [inputDocument, setInputDocument] = useState('');
     const [birthDateDoc, setBirthDateDoc] = useState('');
     const [placeBirthDateDoc, setPlaceBirthDateDoc] = useState('');
@@ -51,6 +50,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
     const [namesRefPer, setNamesRefPer] = useState('');
     const [phoneRefPer, setPhoneRefPer] = useState('');
     const today = new Date();
+    const [typeDocument, setTypeDocument] = useState('C');
     const [formData] = useState({
         entidad: '9011569983',
         oficina: '73',
@@ -311,7 +311,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                                 isRequired
                                 label="Tipo de documento"
                                 data={listDocumentType}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setTypeDocument)}
                                 selectedValue={typeDocument}
                             />

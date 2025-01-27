@@ -36,6 +36,23 @@ const styles = StyleSheet.create({
       paddingHorizontal: 5,
       zIndex: 2,
     },
+    centeredContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      paddingHorizontal: 20,
+    },
+    backgroundImage: {
+      flex: 1, 
+      width: "100%", 
+      height: "100%", 
+      position: "absolute", 
+      top: 0, 
+      left: 0, 
+      right: 0, 
+      bottom: 0,
+    },
     containerForm: {
       position: 'absolute',
       bottom: -30,

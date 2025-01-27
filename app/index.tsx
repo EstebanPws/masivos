@@ -41,7 +41,7 @@ export default function Page() {
   };
 
   const handleLogin = () => {
-    router.push({ pathname: '/auth/pin', params: { document: inputDocument } });
+    router.push('/auth/signIn');
   }
 
   const handleRegister = () => {
@@ -71,11 +71,11 @@ export default function Page() {
           <View style={styles.containerForm}>
             <View style={styles.containerText}>
               <Text style={{ ...primaryBold }} variant="headlineMedium">¡Bienvenido!</Text>
-              <Text style={{ ...primaryRegular }} variant="titleLarge">Por favor identificate para entrar en tu cuenta.</Text>
+              <Text style={{ ...primaryRegular }} variant="titleLarge">Accede a tú cuenta o registrate.</Text>
             </View>
             <View style={{paddingHorizontal: 10, paddingVertical: 20}}>
               <View >
-                <Inputs
+                {/*<Inputs
                   label="Número del documento"
                   placeholder="Escribe tu número de documento"
                   isSecureText={false}
@@ -83,11 +83,16 @@ export default function Page() {
                   keyboardType="numeric"
                   onChangeText={setInputDocument}
                   value={inputDocument}
-                />
+                />*/}
                 <ButtonsPrimary
                   label="Acceder a la billetera"
                   style={styles.mt5}
                   onPress={handleLogin}
+                />
+                <ButtonsPrimary
+                  label="Registrarse"
+                  style={styles.mt5}
+                  onPress={() => setShowTerms(true)}
                 />
               </View>
               <View style={{...styles.row, ...styles.mt5}}>
@@ -105,10 +110,10 @@ export default function Page() {
                 ) : (
                   <View />
                 )}
-                <ButtonsSecondary
+                {/*<ButtonsSecondary
                   label="Registrarse"
                   onPress={() => setShowTerms(true)}
-                />
+                />*/}
               </View>
               <View style={styles.mt3}>
                 <Text style={{fontSize: 12}}>V.{version}</Text> 
