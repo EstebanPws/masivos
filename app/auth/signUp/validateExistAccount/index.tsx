@@ -65,6 +65,20 @@ export default function Page() {
     };
 
     const fetchListAccounts = async () => {
+        if (inputDocument === "") {
+            setMessage('Por favor ingresa tu número de documento para continuar.');
+            setTypeResponse('error');
+            setShowModal(true);
+            return;
+        }
+
+        if (inputDocument.includes(".") || inputDocument.includes(",") || inputDocument.includes(" ")) {
+            setMessage('Por favor ingresa tu número de documento; sin puntos, guiones o espacios, para continuar.');
+            setTypeResponse('error');
+            setShowModal(true);
+            return;
+        }
+
         activeLoader();
 
         await AsyncStorage.setItem("numberDocument", inputDocument)
@@ -78,15 +92,14 @@ export default function Page() {
         await instanceWallet.post('getAccountsByClient', bodyAccount)
             .then(async (response) => {
                 const datos = response.data;
-                console.log("DATOS: ", datos)
-                if(datos.data){
+                if (datos.data) {
                     const data = datos.data;
-                    if(data.ESTADO === 'A' || data.ESTADO === 'B' || data.ESTADO === 'I'){
+                    if (data.ESTADO === 'A' || data.ESTADO === 'B' || data.ESTADO === 'I') {
                         setMessage('El número de documento ya se encuentra registrado. \n\n Por favor inicia sesión con tus credenciales.');
                         setTypeResponse('error');
                         setShowModal(true);
                         setResponseConsultAccounts(0);
-                    }else if(Array.isArray(data)){
+                    } else if (Array.isArray(data)) {
                         const accounts = data.filter((acc: { ESTADO: string; }) => {
                             return acc.ESTADO === 'A' || acc.ESTADO === 'B' || acc.ESTADO === 'I';
                         });
@@ -105,14 +118,13 @@ export default function Page() {
                 }
             })
             .catch((err) => {
-                console.log(err)
                 if (err && err.response && err.response.data) {
                     if (err.response.data.status !== 404) {
                         setShowModal(true);
                         setMessage('Hubo un error al intentar realizar tu registro en este momento.\n\nPor favor intentalo más tarde.');
                         setTypeResponse('error');
                         setResponseConsultAccounts(0);
-                    }  else {
+                    } else {
                         handleNext();
                     }
                 } else {

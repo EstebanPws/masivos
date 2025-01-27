@@ -26,7 +26,7 @@ import { errorMessageRegister } from "@/utils/listUtils";
 
 const extra = Constants.expoConfig?.extra || {};
 const { primaryBold } = extra.text;
-const { colorPrimary,idApp, secretEncypt} = extra;
+const { colorPrimary, idApp, secretEncypt } = extra;
 
 interface List {
     name: string;
@@ -48,16 +48,16 @@ export default function Page() {
     const [finishRegister, setFinishRegister] = useState(0);
     const [errorExistAccounts, setErrorExistsAccounts] = useState(0)
     const { type } = useLocalSearchParams();
- 
+
     const timeOut = 600;
     const totalSteps = type === '8' ? 3 : 6;
     const progress = Math.round((
         (Math.ceil((step / totalSteps) * 100) / 100) +
-        (type === '8' 
-          ? (step === 0 ? 0 : step === 1 ? 0.15 : 0.3) 
-          : (step === 0 ? 0 : 0.09))
+        (type === '8'
+            ? (step === 0 ? 0 : step === 1 ? 0.15 : 0.3)
+            : (step === 0 ? 0 : 0.09))
     ) * 100) / 100;
-      
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -82,7 +82,7 @@ export default function Page() {
                         value: codigoDane
                     };
                 });
-                
+
 
                 setListMunicipios(transformedMunicipios);
 
@@ -124,8 +124,8 @@ export default function Page() {
                 });
 
                 setListPaisesExt(transformedExtPaises);
-                
-            } catch (err) {  
+
+            } catch (err) {
                 setMessageError("Ha ocurrido un error al intentar cargar los datos.");
                 setShowError(true);
             } finally {
@@ -141,10 +141,10 @@ export default function Page() {
                 setStep(1);
             }, timeOut);
 
-            if(type !== '1'){
+            if (type !== '1') {
                 const savedData = await getData('existVinculacion');
-                const change =  await getData("changeData");
-                
+                const change = await getData("changeData");
+
                 if (!savedData || change) {
                     setValidationModal(true);
                 } else {
@@ -153,7 +153,7 @@ export default function Page() {
             }
         } else if (type !== '8' && step === 5) {
             handleSend();
-        } else if (type === '8' && step === 2){
+        } else if (type === '8' && step === 2) {
             handleSend();
         } else {
             const next = stepOpt === 1 ? 1 : step + 1;
@@ -174,91 +174,93 @@ export default function Page() {
         step === 0 ? router.back() : setTimeout(() => { setStep(back) }, timeOut);
     };
 
- const handleSend = () => {  
+    const handleSend = () => {
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
-            if (savedData) { 
+            if (savedData) {
                 const body = type === '1' ? transformDataJuridica(savedData) : type === '0' ? transformData(savedData) : transformDataDbm(savedData);
                 setIsLoading(true);
                 const endpoint = type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico';
                 instanceWallet.post(type === '0' ? 'registroNatural' : type === '8' ? 'createNat' : 'registroJuridico', body)
-                .then(async response => { 
-                    const data = response.data.data;
-                    if (data) {
-                        if(data.idRegistro) {
-                            setTypeResponse('success');
-                            
-                            if(type !== '8'){
-                                const idRegistro = await encryptIdWithSecret(data.idRegistro, secretEncypt);  
-                                const idWsc = await encryptIdWithSecret(idApp, secretEncypt);
-                                router.push({
-                                    pathname: '/auth/signUp/validateRegister',
-                                    params: { 
-                                        type: type,
-                                        idRegister: idRegistro,
-                                        wsc: idWsc
-                                    }
-                                });
-                            } else {
-                                console.log("respuesta else 1")
+                    .then(async response => {
+                        const data = response.data.data;
+                        if (data) {
+                            if (data.idRegistro) {
                                 setTypeResponse('success');
-                                setMessageError('Cliente creado con éxito.\n\nSe ha creado un depósito de bajo monto en el Banco Cooperativo Coopcentral.');
+
+                                if (type !== '8') {
+                                    const idRegistro = await encryptIdWithSecret(data.idRegistro, secretEncypt);
+                                    const idWsc = await encryptIdWithSecret(idApp, secretEncypt);
+                                    router.push({
+                                        pathname: '/auth/signUp/validateRegister',
+                                        params: {
+                                            type: type,
+                                            idRegister: idRegistro,
+                                            wsc: idWsc
+                                        }
+                                    });
+                                } else {
+                                    console.log("respuesta else 1")
+                                    setTypeResponse('success');
+                                    setMessageError('Cliente creado con éxito.\n\nSe ha creado un depósito de bajo monto en el Banco Cooperativo Coopcentral.');
+                                    setShowError(true);
+                                    if (endpoint === 'createNat') {
+                                        setRedirectToHome(true);
+                                    }
+                                }
+                            } else {
+                                console.log("respuesta else 2")
+                                setTypeResponse('error');
+                                setMessageError(data.respuesta);
                                 setShowError(true);
                                 if (endpoint === 'createNat') {
-                                    setRedirectToHome(true);  
-                                }                            }
-                        } else {
-                            console.log("respuesta else 2")
-                            setTypeResponse('error');
-                            setMessageError(data.respuesta);
-                            setShowError(true);
-                            if (endpoint === 'createNat') {
-                                setRedirectToHome(true);  
-                            } 
-                        }
-                    }  else if (response.data.status === 200) {
-                        console.log("respuesta éxito sin idRegistro");
-                        setTypeResponse('success');
-                        setMessageError('Cliente creado con éxito.\n\nSe ha creado un depósito de bajo monto en el Banco Cooperativo Coopcentral.');
-                        setShowError(true);
-                        if (endpoint === 'createNat') {
-                            setRedirectToHome(true);  
-                        }                     }
-                    setIsLoading(false);
-                })
-                .catch(err => {  
-                    if(err.response){
-                        if(err.response.data.message) {
-                            const error = err.response.data.message;
-                            const errorCode = extractErrorCode(error);
-                            if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
-                                setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
-                            } else {
-                                if(err.response.data.message) {
-                                    const error = err.response.data.message;
-                                    const message = error.includes('-') ? error.split('-') : error;
-                                    setMessageError(`${Array.isArray(message) && message.length > 2 ? message[1] + " - " + message[2] : "Hubo un error al intentar crear su depósito en este momento, por favor inténtelo de nuevo en unos minutos."}`);
-                                    console.log("RESPONSE MENSSAGE: ", message[1], " - ", message[2])
-                                } else {
-                                    setMessageError("Hubo un error al intentar enviar el formulario");
+                                    setRedirectToHome(true);
                                 }
                             }
+                        } else if (response.data.status === 200) {
+                            console.log("respuesta éxito sin idRegistro");
+                            setTypeResponse('success');
+                            setMessageError('Cliente creado con éxito.\n\nSe ha creado un depósito de bajo monto en el Banco Cooperativo Coopcentral.');
+                            setShowError(true);
+                            if (endpoint === 'createNat') {
+                                setRedirectToHome(true);
+                            }
                         }
-                    } else {
-                        setMessageError("Hubo un error al intentar enviar el formulario");
-                    }
-                    setTypeResponse('error');
-                    setShowError(true);
-                    setIsLoading(false);
-                });
+                        setIsLoading(false);
+                    })
+                    .catch(err => {
+                            if (err.response) {
+                                if (err.response.data.message) {
+                                    const error = err.response.data.message;
+                                    const errorCode = extractErrorCode(error);
+                                    if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
+                                        setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
+                                    } else {
+                                        if (err.response.data.message) {
+                                            const error = err.response.data.message;
+                                            const message = error.includes('-') ? error.split('-') : error;
+                                            setMessageError(`${Array.isArray(message) && message.length > 2 ? message[1] + " - " + message[2] : "Hubo un error al intentar crear su depósito en este momento, por favor inténtelo de nuevo en unos minutos."}`);
+                                            console.log("RESPONSE MENSSAGE: ", message[1], " - ", message[2])
+                                        } else {
+                                            setMessageError("Hubo un error al intentar enviar el formulario");
+                                        }
+                                    }
+                                }
+                            } else {
+                            setMessageError("Hubo un error al intentar enviar el formulario");
+                        }
+                        setTypeResponse('error');
+                        setShowError(true);
+                        setIsLoading(false);
+                    });
             }
-                                
+
         };
 
         fetchFormData();
     }
 
-    const handleSendPreRegister = () => { 
+    const handleSendPreRegister = () => {
         const fetchFormData = async () => {
             const savedData = await getData('registrationForm');
             if (savedData) {
@@ -268,23 +270,23 @@ export default function Page() {
                 } catch (error) {
                     console.log(error);
                 }
-                
+
                 setIsLoading(true);
                 instanceWallet.post(type === '1' ? 'registroJuridico' : 'registroNatural', body)
-                .then(async response => {      
-                    const data = response.data.data;
-                    if (data) {
-                        if(data.idRegistro) {
-                            console.log("se guardo");
+                    .then(async response => {
+                        const data = response.data.data;
+                        if (data) {
+                            if (data.idRegistro) {
+                                console.log("se guardo");
+                            }
                         }
-                    }
-                })
-                .catch(err => {
-                    console.log(err.response);
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
+                    })
+                    .catch(err => {
+                        console.log(err.response);
+                    })
+                    .finally(() => {
+                        setIsLoading(false);
+                    });
             }
         };
 
@@ -294,7 +296,7 @@ export default function Page() {
     const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
         setMessageError(message);
         setTypeResponse(type);
-        if(type === "error"){
+        if (type === "error") {
             setErrorExistsAccounts(0);
         }
         setStep(0);
@@ -318,12 +320,12 @@ export default function Page() {
     }
 
     const handleErrorModal = (type: number) => {
-        if(type === 1){
+        if (type === 1) {
             router.replace("/");
         }
         setShowError(false);
     }
-    
+
     if (isLoading) {
         return <Loader />;
     }
@@ -331,9 +333,9 @@ export default function Page() {
     const renderStep = (step: number) => {
         switch (step) {
             case 0:
-                return type === '1' ? <BasicInfoJuridica listMunicipios={listMunicipios}  listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <BasicInfo type={0}listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <BasicInfoJuridica listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <BasicInfo type={0} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 1:
-                return type === '1'  ?  <BasicInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <BasicInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} /> : <InfoGeneral type={type} listMunicipios={listMunicipios} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 2:
                 return type === '1' ? <InfoPep type={Number(type)} listMunicipios={listMunicipios} onSubmit={handleFormSubmit} /> : type === '0' ? <InfoWorking listMunicipios={listMunicipios} listCiiu={listCiiu} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             case 3:
@@ -341,7 +343,7 @@ export default function Page() {
             case 4:
                 return <OtherInfo type={Number(type)} listMunicipios={listMunicipios} listPaises={listPaisesExt} onSubmit={handleFormSubmit} />;
             case 5:
-                return type === '1' ? <AuthorizationJuridica type={type} listPaises={listPaises} onSubmit={handleFormSubmit} /> :<Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
+                return type === '1' ? <AuthorizationJuridica type={type} listPaises={listPaises} onSubmit={handleFormSubmit} /> : <Authorization type={type} listPaises={listPaises} onSubmit={handleFormSubmit} />;
             default:
                 return null;
         }
@@ -396,10 +398,10 @@ export default function Page() {
                     type={typeResponse}
                     message={messageError}
                     onPress={() => {
-                        if(errorExistAccounts === 1){
+                        if (errorExistAccounts === 1) {
                             router.replace('/');
                         } else if (redirectToHome) {
-                            router.replace('/');  
+                            router.replace('/');
                         }
                         setRedirectToHome(false);
                         setShowError(false);
