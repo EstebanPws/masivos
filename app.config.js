@@ -4,7 +4,7 @@ export default ({ config }) => ({
     ...config,
     extra: {
         contacto: {
-            nit: "901128535-8",
+            nit: "901123567-0",
             correo: "sac@masivos.com.co",            
             ciudad: "Bogotá D.C",
             departamento: "Bogotá D.C",
