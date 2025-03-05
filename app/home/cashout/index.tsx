@@ -74,8 +74,10 @@ export default function Page() {
         }
      }, [activeTab]);
 
-    const handleNext = async () => {
-        const balance = await getBalance();
+    const handleNext = async () => {        
+        const rawBalance = String(await getBalance());
+            
+        const balance = parseFloat(rawBalance.replace(/,/g, '').trim());
 
         if(!valRecharge){
             setMessageError('Por favor ingresa un monto valido.');
@@ -87,6 +89,14 @@ export default function Page() {
         } 
 
         if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
+            setTypeModal('error');
+            setTitleModal(null);
+            setMessageError('Saldo insuficiente');
+            setShowError(true);
+            return;
+        }
+
+        if(Number(balance) === 0 || (Number(validateNumber(valRecharge)) + Number(comision)) === 0 ){
             setTypeModal('error');
             setTitleModal(null);
             setMessageError('Saldo insuficiente');
@@ -123,7 +133,8 @@ export default function Page() {
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`¿Cuáles son los topes y límites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera ${expo} puedes contar un saldo de 210.50 UVT mensuales legales vigentes, es decir 10,482,689.50 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera ${expo} está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,236,935 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+
         setShowError(true);
         setTypeCloseModal(1);
         setTypeModal('info');

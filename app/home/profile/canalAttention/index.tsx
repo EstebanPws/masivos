@@ -46,8 +46,8 @@ export default function Page() {
             </View>
             <View style={styles.mb5}>
                 <Text variant="titleSmall" style={[primaryBold]}>Reglamentos:</Text>
-                <Link href={'https://paynopain-changeit-test.s3.eu-west-1.amazonaws.com/documents/payments-way/PW_Reglamento_deposito_bajo_monto.pdf'} style={{...styles.link, ...primaryRegular}}>Reglamento depósito de bajo monto.</Link>
-                <Link href={'https://paynopain-changeit-test.s3.eu-west-1.amazonaws.com/documents/payments-way/PW_Instructivo_uso_tarjeta_debito.pdf'} style={{...styles.link, ...primaryRegular}}>Instructivo de uso de tarjeta débito física o virtual.</Link>
+                <Link href={'https://www.coopcentral.com.co/Filef_linka.asp?IDe=1184'} style={{...styles.link, ...primaryRegular}}>Reglamento depósito de bajo monto.</Link>
+                <Link href={'https://www.coopcentral.com.co/Filef_linka.asp?IDe=1183'} style={{...styles.link, ...primaryRegular}}>Instructivo de uso de tarjeta débito física o virtual.</Link>
             </View>
             <View style={styles.mb5}>
                 <Text variant="titleSmall" style={[primaryBold]}>Contacto {expo}:</Text>

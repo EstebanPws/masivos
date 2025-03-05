@@ -217,7 +217,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                 isRequired
                                 label="Tipo"
                                 data={type === 1 ? listBienesJurType : listBienesType}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setTipoBienRaices)}
                                 selectedValue={tipoBienRaices}
                             />
@@ -238,7 +238,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                         isRequired
                                         label="Ciudad"
                                         data={listMunicipios}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setCiudBienRaices)}
                                         selectedValue={ciudBienRaices}
                                     />
@@ -276,7 +276,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                     isRequired
                                     label="Tipo de operación"
                                     data={listOperationType}
-                                    placeholder="Seleccione una opción"
+                                    placeholder="Selecciona una opción"
                                     onSelect={handleSelect(setTipoOpera)}
                                     selectedValue={tipoOpera}
                                 />
@@ -308,7 +308,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                     isRequired
                                     label="Ciudad"
                                     data={listMunicipios}
-                                    placeholder="Seleccione una opción"
+                                    placeholder="Selecciona una opción"
                                     onSelect={handleSelect(setCiudOperaextr)}
                                     selectedValue={ciudOperaextr}
                                 />
@@ -318,7 +318,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                     isRequired
                                     label="Pais"
                                     data={listPaises}
-                                    placeholder="Seleccione una opción"
+                                    placeholder="Selecciona una opción"
                                     onSelect={handleSelect(setPaisOperaextr)}
                                     selectedValue={paisOperaextr}
                                 />
@@ -328,7 +328,7 @@ export default function OtherInfo({type = 0, listMunicipios, listPaises, onSubmi
                                     isRequired
                                     label="Moneda"
                                     data={listCurrencyType}
-                                    placeholder="Seleccione una opción"
+                                    placeholder="Selecciona una opción"
                                     onSelect={handleSelect(setMoneda)}
                                     selectedValue={moneda}
                                 />

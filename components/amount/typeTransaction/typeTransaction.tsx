@@ -5,7 +5,7 @@ import { TouchableOpacity, View } from "react-native";
 import styles from "./typeTransaction.styles";
 import { Icon } from "react-native-paper";
 import { Text } from "react-native-paper";
-import { formatCurrency } from "@/utils/validationForms";
+import { formatCurrency, formatCurrencyTransaction } from "@/utils/validationForms";
 
 const extra = Constants.expoConfig?.extra || {};
 const {primaryRegular, primaryBold} = extra.text;
@@ -45,7 +45,7 @@ export default function TypeTransaction ({merchant, amount, date, time, type, in
                         {/**<Text  variant='bodySmall' style={[primaryRegular]}>{time}</Text>*/}
                     </View>
                     <View>
-                        <Text variant='bodySmall' style={[primaryRegular, {textAlign: 'right'}]}>{type === 'Recibido' ?  `+ ${formatCurrency(amount)}` : `- ${formatCurrency(amount)}`}</Text>
+                    <Text variant='bodySmall' style={[primaryRegular, {textAlign: 'right'}]}>{type === 'Recibido' ?  `+ ${formatCurrencyTransaction(amount)}` : `- ${formatCurrencyTransaction(amount)}`}</Text>
                         <View style={[type === 'Recibido' ? styles.success : styles.error]}>
                             <Text  variant='bodySmall' style={[primaryRegular, styles.textCenter]}>{type}</Text>
                         </View>

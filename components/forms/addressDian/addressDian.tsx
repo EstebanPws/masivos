@@ -83,7 +83,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                             <SearchSelect 
                                 label={'Tipo de vía'} 
                                 data={listStreetType} 
-                                placeholder={'Seleccione una opción'} 
+                                placeholder={'Selecciona una opción'} 
                                 onSelect={handleSelect(setSelectedType)} 
                                 selectedValue={selectedType}  
                                 isRequired                 
@@ -115,7 +115,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                             <SearchSelect 
                                 label={'Sufijo'} 
                                 data={listSuffixType} 
-                                placeholder={'Seleccione una opción'} 
+                                placeholder={'Selecciona una opción'} 
                                 onSelect={handleSelect(setSelectedSuffix)} 
                                 selectedValue={selectedSuffix}  
                                 isRequired={false}               
@@ -134,7 +134,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                             <SearchSelect 
                                 label='' 
                                 data={listAddressOtherType} 
-                                placeholder={'Seleccione una opción'} 
+                                placeholder={'Selecciona una opción'} 
                                 onSelect={handleSelect(setSelectedExtra1)} 
                                 selectedValue={selectedExtra1}                 
                             />
@@ -149,7 +149,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                             <SearchSelect 
                                 label='' 
                                 data={listAddressOtherType} 
-                                placeholder={'Seleccione una opción'} 
+                                placeholder={'Selecciona una opción'} 
                                 onSelect={handleSelect(setSelectedExtra3)} 
                                 selectedValue={selectedExtra3}                 
                             />
@@ -177,7 +177,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                 {error && (
                     <InfoModal 
                         type='info'
-                        message='Por favor ingrese los campos requeridos.'
+                        message='Por favor ingresa los campos requeridos.'
                         isVisible={error}
                         onPress={() => setError(false)}
                     />

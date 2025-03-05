@@ -181,7 +181,7 @@ export default function OtpValidationRegisterModal({ type, numberDocument, id, o
                         transition={{ type: 'timing', duration: 300 }}
                         style={styles.modalContainer}
                     >   
-                        <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Hemos enviado un código a tu correo electrónico por favor ingreselo a continuación</Text>
+                        <Text variant='bodyLarge' style={[primaryBold, styles.textCenter]}>Hemos enviado un código a tu correo electrónico por favor ingresalo a continuación</Text>
                         <View style={[styles.row, styles.ml5]}>
                             {otpValues.map((value, index) => (
                                 <OtpInputs

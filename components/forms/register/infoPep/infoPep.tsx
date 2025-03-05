@@ -214,7 +214,7 @@ export default function InfoPep({listMunicipios , onSubmit, type}: InfoPepProps)
                                         isRequired
                                         label="Ciudad"
                                         data={listMunicipios}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setCiuEstaPeps)}
                                         selectedValue={ciuEstaPeps}
                                     />
@@ -277,7 +277,7 @@ export default function InfoPep({listMunicipios , onSubmit, type}: InfoPepProps)
                                         isRequired
                                         label="Régimen al que pertenece"
                                         data={listTaxesType}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setImpuesRenta)}
                                         selectedValue={impuesRenta}
                                     />

@@ -139,7 +139,7 @@ export default function Page() {
 
     const handleFilter = async () => {
         if (!startDate || !endDate) {
-            setMessageError('Por favor, seleccione ambas fechas.');
+            setMessageError('Por favor, Selecciona ambas fechas.');
             setShowError(true);
             return;
         }

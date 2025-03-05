@@ -42,7 +42,7 @@ interface Select {
 
 const expo = Constants.expoConfig?.name || '';
 const extra = Constants.expoConfig?.extra || {};
-const {colorPrimary} = extra;
+const { colorPrimary } = extra;
 
 export default function Page() {
     const { setActiveTab, activeLoader, desactiveLoader, activeTab } = useTab();
@@ -70,7 +70,7 @@ export default function Page() {
     const [titleModal, setTitleModal] = useState<string | null>(null);
     const [showConfirmTransfer, setShowConfirmTransfer] = useState(false);
     const viewRef = useRef(null);
-    const [nullView, setNullView] = useState(true); 
+    const [nullView, setNullView] = useState(true);
     const [showOtpValidation, setShowOtpValidation] = useState(false);
     const [idTx, setIdTx] = useState('');
     const [viewBalanceComplete, setViewBalanceComplete] = useState(true);
@@ -131,15 +131,17 @@ export default function Page() {
         onSelect: handleSelect(setTypeBank),
         selectedValue: typeBank
     }
-    
+
     useFocusEffect(() => {
         setActiveTab('/home/bankTransfer/');
     });
 
     const handleNext = async () => {
-        const balance = await getBalance();
+        const rawBalance = String(await getBalance());
 
-        if(!valRecharge){
+        const balance = parseFloat(rawBalance.replace(/,/g, '').trim());
+
+        if (!valRecharge) {
             setTypeModal('error');
             setTitleModal(null);
             setMessageError('Por favor ingresa un monto valido.');
@@ -147,13 +149,21 @@ export default function Page() {
             return;
         }
 
-        if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
+        if ((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance)) {
             setTypeModal('error');
             setTitleModal(null);
             setMessageError('Saldo insuficiente');
             setShowError(true);
             return;
-        } 
+        }
+
+        if (Number(balance) === 0 || (Number(validateNumber(valRecharge)) + Number(comision)) === 0) {
+            setTypeModal('error');
+            setTitleModal(null);
+            setMessageError('Saldo insuficiente');
+            setShowError(true);
+            return;
+        }
 
         setShowAddAccount(true);
         setStep(1);
@@ -192,7 +202,7 @@ export default function Page() {
 
         const account = await getNumberAccount();
         const infoClient = await getData('infoClient');
-        
+
         const body = {
             header: {
                 OriginatorAccount: account?.startsWith('0') ? account.slice(1) : account,
@@ -215,22 +225,22 @@ export default function Page() {
         }
 
         await instanceWallet.post('interBankFile', body)
-        .then(async (response) => {
-            const data = response.data;
-            if(data.status === 200 && data.message.includes('correctamente')) {
-                setIdTx(data.data.ID);
-                setShowOtpValidation(true);
-            }
-        })
-        .catch((error) => {
-            console.log('interbank', error);
-            setTypeModal('error');
-            setTitleModal(null);
-            setMessageError('Hubo un error al intentar realizar la transacción, por favor intentelo más tarde.');
-            setShowError(true);
-        });
+            .then(async (response) => {
+                const data = response.data;
+                if (data.status === 200 && data.message.includes('correctamente')) {
+                    setIdTx(data.data.ID);
+                    setShowOtpValidation(true);
+                }
+            })
+            .catch((error) => {
+                console.log('interbank', error);
+                setTypeModal('error');
+                setTitleModal(null);
+                setMessageError('Hubo un error al intentar realizar la transacción, por favor inténtalo más tarde.');
+                setShowError(true);
+            });
 
-        
+
         desactiveLoader();
     };
 
@@ -255,7 +265,8 @@ export default function Page() {
 
     const handleLimits = () => {
         setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`¿Cuáles son los topes y límites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera ${expo} puedes contar un saldo de 210.50 UVT mensuales legales vigentes, es decir 10,482,689.50 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera ${expo} está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,236,935 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+
         setShowError(true);
         setTypeModal('info');
     }
@@ -269,7 +280,7 @@ export default function Page() {
             });
 
             const pdfUri = await createPdfFromImage(imageUri);
-    
+
             if (await Sharing.isAvailableAsync()) {
                 await Sharing.shareAsync(pdfUri, {
                     mimeType: 'application/pdf',
@@ -297,7 +308,7 @@ export default function Page() {
 
         const jpgImage = await pdfDoc.embedPng(`data:image/png;base64,${imageBase64}`);
         const { width, height } = page.getSize();
-        const imageDims = jpgImage.scale(0.5); 
+        const imageDims = jpgImage.scale(0.5);
         const x = (width - imageDims.width) / 2;
         const y = (height - imageDims.height) / 2;
 
@@ -307,14 +318,14 @@ export default function Page() {
             width: imageDims.width,
             height: imageDims.height,
         });
-    
+
         const pdfBytes = await pdfDoc.save();
-        const pdfBase64 = uint8ArrayToBase64(pdfBytes); 
+        const pdfBase64 = uint8ArrayToBase64(pdfBytes);
         const pdfUri = FileSystem.documentDirectory + `Comprobante.pdf`;
         await FileSystem.writeAsStringAsync(pdfUri, pdfBase64, {
             encoding: FileSystem.EncodingType.Base64,
         });
-    
+
         return pdfUri;
     };
 
@@ -330,9 +341,9 @@ export default function Page() {
 
     const handleGesture = (event: any) => {
         if (event.nativeEvent.translationX > 100) {
-          handleBackStep();
+            handleBackStep();
         }
-      };
+    };
 
     const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
@@ -341,14 +352,14 @@ export default function Page() {
         },
     });
 
-    useBackHandler(() => { 
+    useBackHandler(() => {
         handleBackStep();
         return true;
     });
 
     useEffect(() => {
         setNullView(true);
-        if(activeTab === '/home/bankTransfer/'){
+        if (activeTab === '/home/bankTransfer/') {
             setShowConfirmTransfer(false);
             setShowAddAccount(false);
             setDisableContinue(true);
@@ -365,7 +376,7 @@ export default function Page() {
             setTypeBank('');
             setNullView(false);
         }
-     }, [activeTab]);
+    }, [activeTab]);
 
     const handleOtpValidationResponse = (message: string, type: "info" | "success" | "error") => {
         setMessageError(message);
@@ -373,18 +384,18 @@ export default function Page() {
         setShowError(true);
     };
 
-    const handleOnFinish = (modalidad?:string) => {
-       if(modalidad === '1') {
-        setShowOtpValidation(false);
-        setShowConfirmTransfer(true);
-       }
+    const handleOnFinish = (modalidad?: string) => {
+        if (modalidad === '1') {
+            setShowOtpValidation(false);
+            setShowConfirmTransfer(true);
+        }
     }
 
-    if(nullView){
+    if (nullView) {
         return null;
     }
-    
-    return(
+
+    return (
         <ViewFadeIn {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
                 onBack={() => handleBackStep()}
@@ -392,7 +403,7 @@ export default function Page() {
             />
             {!showAddAccount && (
                 <View style={styles.mV1}>
-                   <AnimatePresence>
+                    <AnimatePresence>
                         {viewBalanceComplete && (
                             <MotiView
                                 from={{ opacity: 0, translateY: 0 }}
@@ -401,8 +412,8 @@ export default function Page() {
                                 transition={{ type: 'timing', duration: 300 }}
                                 style={{ width: '100%' }}
                             >
-                                <TouchableOpacity style={{position: 'absolute', right: 30, top: 10, zIndex: 9}} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
-                                    <Icon 
+                                <TouchableOpacity style={{ position: 'absolute', right: 30, top: 10, zIndex: 9 }} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
+                                    <Icon
                                         source={'eye-off'}
                                         size={24}
                                         color={viewBalanceComplete ? "#fff" : colorPrimary}
@@ -416,8 +427,8 @@ export default function Page() {
                     </AnimatePresence>
                 </View>
             )}
-            <View style={[styles.container, showAddAccount ? (styles.h100) : null, {height: viewBalanceComplete && !showAddAccount ? "52%" : "75%"}]}>
-                {!showAddAccount &&(
+            <View style={[styles.container, showAddAccount ? (styles.h100) : null, { height: viewBalanceComplete && !showAddAccount ? "52%" : "75%" }]}>
+                {!showAddAccount && (
                     <AnimatePresence>
                         {!viewBalanceComplete && (
                             <MotiView
@@ -425,9 +436,9 @@ export default function Page() {
                                 animate={{ opacity: 1, translateY: 20 }}
                                 exit={{ opacity: 0, translateY: 0 }}
                                 transition={{ type: 'timing', duration: 300 }}
-                                style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20}}
+                                style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20 }}
                             >
-                                <ButtonsSecondary 
+                                <ButtonsSecondary
                                     label="Ver mi saldo"
                                     onPress={() => setViewBalanceComplete(!viewBalanceComplete)}
                                 />
@@ -440,7 +451,7 @@ export default function Page() {
                     extraHeight={Platform.select({ ios: 100, android: 120 })}
                 >
                     <ScrollView showsVerticalScrollIndicator={false}>
-                        {!showAddAccount &&(
+                        {!showAddAccount && (
                             <SelectAmount
                                 comision={comision}
                                 isConcepto
@@ -450,8 +461,8 @@ export default function Page() {
                                 onShowLimits={handleLimits}
                             />
                         )}
-                        {(showAddAccount && disableContinue) &&(
-                            <AddAccount 
+                        {(showAddAccount && disableContinue) && (
+                            <AddAccount
                                 names={inputNames}
                                 surnames={inputSurnames}
                                 alias={inputAlias}
@@ -475,30 +486,30 @@ export default function Page() {
                             />
                         )}
                         {(confirmInfo && !disableContinue) && (
-                            <ConfirmBankTransfer 
-                                amount={valRecharge} 
-                                comision={comision} 
-                                names={`${names}\n${surnames}`} 
-                                document={document} 
-                                account={accountNumber} 
+                            <ConfirmBankTransfer
+                                amount={valRecharge}
+                                comision={comision}
+                                names={`${names}\n${surnames}`}
+                                document={document}
+                                account={accountNumber}
                                 bank={bankName}
-                                concepto={concepto} 
+                                concepto={concepto}
                             />
                         )}
                     </ScrollView>
-                    <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain"/>
+                    <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain" />
                     {!showAddAccount ? (
-                        <ButtonsPrimary 
+                        <ButtonsPrimary
                             label={'Continuar'}
                             onPress={handleNext}
                         />
-                    ): (
+                    ) : (
                         <View style={styles.row}>
-                            <ButtonsPrimary 
+                            <ButtonsPrimary
                                 label={'Volver'}
                                 onPress={handleBackStep}
                             />
-                            <ButtonsPrimary 
+                            <ButtonsPrimary
                                 label={'Continuar'}
                                 onPress={handleFinal}
                                 disabled={disableContinue}
@@ -508,42 +519,42 @@ export default function Page() {
                 </KeyboardAwareScrollView>
             </View>
             {showConfirmTransfer && (
-                <InfoModalConfirm 
+                <InfoModalConfirm
                     label1="Compartir"
                     label2="Cerrar"
-                    onPress={handleShare} 
+                    onPress={handleShare}
                     onCancel={handleFinish}
                     isBankTransfer
                     view={showConfirmTransfer}
                 >
-                     <ConfirmBankTransferSuccess
-                        amount={valRecharge} 
-                        comision={comision} 
-                        names={names} 
-                        document={document} 
-                        account={accountNumber} 
+                    <ConfirmBankTransferSuccess
+                        amount={valRecharge}
+                        comision={comision}
+                        names={names}
+                        document={document}
+                        account={accountNumber}
                         bank={bankName}
                         concepto={concepto}
-                        viewRef={viewRef} 
+                        viewRef={viewRef}
                     />
                 </InfoModalConfirm>
             )}
             {showOtpValidation && (
-                <OtpValidationRegisterModal 
+                <OtpValidationRegisterModal
                     type={1}
                     id={idTx}
-                    onClose={handleOtpValidationResponse} 
-                    onView={()  =>  setShowOtpValidation(false)} 
-                    onFinish={handleOnFinish}                    
+                    onClose={handleOtpValidationResponse}
+                    onView={() => setShowOtpValidation(false)}
+                    onFinish={handleOnFinish}
                 />
             )}
-            {showError &&(
-                <InfoModal 
+            {showError && (
+                <InfoModal
                     title={titleModal!}
-                    type={typeModal} 
-                    message={messageError} 
-                    onPress={() => setShowError(false)} 
-                    isVisible={showError}                    
+                    type={typeModal}
+                    message={messageError}
+                    onPress={() => setShowError(false)}
+                    isVisible={showError}
                 />
             )}
         </ViewFadeIn>

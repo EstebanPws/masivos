@@ -108,7 +108,7 @@ export default function OtpExistProcessModal({ typePerson, onClose, onView, onFi
             
             setOtpValues(['', '', '', '', '', '']);
         } catch (error) {
-            message = `Hubo un error al intentar enviar el código de verificación por ${type === 0 ? "correo electrónico" : 'sms'} , por favor intentelo de nuevo en unos minutos.`;
+            message = `Hubo un error al intentar enviar el código de verificación por ${type === 0 ? "correo electrónico" : 'sms'} , por favor inténtalo de nuevo en unos minutos.`;
             responseType = "error";
         }
         desactiveLoader();

@@ -72,12 +72,11 @@ export default function Page() {
             return;
         }
 
-        if (inputDocument.includes(".") || inputDocument.includes(",") || inputDocument.includes(" ")) {
+        if (inputDocument.includes(".") || inputDocument.includes(",") || inputDocument.includes("-") || inputDocument.includes("_") || inputDocument.includes(" ")) {
             setMessage('Por favor ingresa tu número de documento; sin puntos, guiones o espacios, para continuar.');
-            setTypeResponse('error');
+            setTypeResponse ('error');
             setShowModal(true);
-            return;
-        }
+            return;         }
 
         activeLoader();
 
@@ -85,7 +84,7 @@ export default function Page() {
         const bodyAccount = {
             no_doc: inputDocument,
             modalidad: "8",
-            estado: "T",
+            estado: "",
             idApp: idApp
         }
 
@@ -148,7 +147,7 @@ export default function Page() {
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={styles.containerText}>
                             <Text variant="titleMedium" style={{ ...styles.text, ...primaryRegular, ...styles.mb5 }}>
-                                Al continuar estás creando un depósito en el Banco Cooperativo Coopcentral.
+                                Al continuar estás creando un depósito de bajo monto en el Banco Cooperativo Coopcentral.
                             </Text>
                             <View style={styles.mb5}>
                                 <SearchSelect

@@ -8,7 +8,7 @@ import { Icon, Text } from 'react-native-paper';
 import ButtonsPrimary from '@/components/forms/buttons/buttonPrimary/button';
 import styles from "./infoTransaction.styles";
 import Constants from "expo-constants";
-import { formatCurrency } from "@/utils/validationForms";
+import { formatCurrency, formatCurrencyTransaction } from "@/utils/validationForms";
 import { PDFDocument } from 'pdf-lib';
 import { useTab } from "@/components/auth/tabsContext/tabsContext";
 
@@ -45,7 +45,7 @@ export default function InfoTransaction ({transaction, onPress}: InfoTransaction
             const seconds = time.substring(4, 6);
             const zoneTime = Number(hour) >= 13 ? 'P.M' : 'A.M'
 
-            const amount = formatCurrency(transaction.valor_tx);
+            const amount = formatCurrencyTransaction(transaction.valor_tx);            
 
             setNewDate(`${year}/${month}/${day}`);
             setTypeInfo(type);

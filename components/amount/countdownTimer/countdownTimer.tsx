@@ -46,7 +46,7 @@ export default function CountdownTimer({ onError, onFinish, amount }: CountdownT
       if (onError) {
         const response = {
           message:
-            'Hubo un error al intentar generar el código.\n\nPor favor intentelo de nuevo en unos minutos.',
+            'Hubo un error al intentar generar el código.\n\nPor favor inténtalo de nuevo en unos minutos.',
           type: 'error',
         };
         onError(response);

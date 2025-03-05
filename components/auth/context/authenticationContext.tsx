@@ -11,7 +11,7 @@ import { getSessionToken, setData, setSessionToken } from '@/utils/storageUtils'
 import Constants from 'expo-constants';
 
 const extra = Constants.expoConfig?.extra || {};
-const {idApp} = extra;
+const { idApp } = extra;
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -31,14 +31,14 @@ interface AuthContextProps {
 
 const AuthenticationContext = createContext<AuthContextType>({
     isAuthenticated: false,
-    authenticate: async () => {},
-    authenticateWithoutFaceId: async () => {},
-    logout: async () => {},
+    authenticate: async () => { },
+    authenticateWithoutFaceId: async () => { },
+    logout: async () => { },
     documentNumber: null,
     password: null,
     modalidad: null,
-    activeLoader: () => {},
-    desactiveLoader: () => {}
+    activeLoader: () => { },
+    desactiveLoader: () => { }
 })
 
 export const useAuth = () => useContext(AuthenticationContext);
@@ -51,7 +51,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
     const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
     const [showOtpValidation, setShowOtpValidation] = useState(false);
     const [typeResponse, setTypeResponse] = useState<"info" | "success" | 'error'>('error');
-    const [message, setMessage] = useState("Hubo un error al intentar autenticarse, por favor intentelo de nuevo.");
+    const [message, setMessage] = useState("Hubo un error al intentar autenticarse, por favor inténtalo de nuevo.");
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -77,48 +77,54 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
 
         setIsLoading(true);
         await instanceWallet.post('LoginCliente', body)
-        .then(async (response) => {
-            const data = response.data;
-            if (!data.message.includes('no tiene')) {
-                const result = await LocalAuthentication.authenticateAsync({
-                    promptMessage: 'Validando...',
-                });
+            .then(async (response) => {
+                const data = response.data;
+                await AsyncStorage.removeItem('session_token');
+                await AsyncStorage.removeItem('number_account');
+                await AsyncStorage.removeItem('balance');
+                await AsyncStorage.removeItem('infoClient');
+                await AsyncStorage.removeItem('lastLogin');
+                await AsyncStorage.removeItem('listBanks');
+                if (!data.message.includes('no tiene')) {
+                    const result = await LocalAuthentication.authenticateAsync({
+                        promptMessage: 'Validando...',
+                    });
 
-                if (result.success) {
-                    await SecureStore.setItemAsync('documentNumber', docWithOtp);
-                    await SecureStore.setItemAsync('password', password);
-                    setDocumentNumber(docWithOtp);
-                    setPassword(password);
-                    if(data.message.startsWith('ey')){
-                        await setData('lastLogin', data.data.lastLogin);
-                        setSessionToken(data.message);
-                        setModalidad(data.data.modalidad);
-                        data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home');
+                    if (result.success) {
+                        await SecureStore.setItemAsync('documentNumber', docWithOtp);
+                        await SecureStore.setItemAsync('password', password);
+                        setDocumentNumber(docWithOtp);
+                        setPassword(password);
+                        if (data.message.startsWith('ey')) {
+                            await setData('lastLogin', data.data.lastLogin);
+                            setSessionToken(data.message);
+                            setModalidad(data.data.modalidad);
+                            data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home');
+                        } else {
+                            setShowOtpValidation(true);
+                        }
+                        setIsAuthenticated(true);
                     } else {
-                        setShowOtpValidation(true);
+                        setMessage('Usuario o contraseña incorrectos.');
+                        setShowErrorModal(true);
                     }
-                    setIsAuthenticated(true);
                 } else {
-                    setMessage('Usuario o contraseña incorrectos.');
+                    setMessage('El usuario no se encuntra registrado en nuestro sistema.');
                     setShowErrorModal(true);
                 }
-            } else {
-                setMessage('El usuario no se encuntra registrado en nuestro sistema.');
+            })
+            .catch((err) => {
+                if (err && err.response.message) {
+                    setMessage(err.response.data.message);
+                } else {
+                    setMessage("Hubo un error al intentar autenticarse.");
+                }
                 setShowErrorModal(true);
-            }
-        })
-        .catch((err) => {
-            if (err && err.response.message) {
-                setMessage(err.response.data.message);
-            }  else {
-                setMessage("Hubo un error al intentar autenticarse.");
-            }
-            setShowErrorModal(true);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        })
-    };    
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
+    };
 
     const authenticateWithoutFaceId = async (docWithOtp: string, password: string) => {
 
@@ -127,57 +133,63 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
             contrasena: password,
             idApp: idApp
         };
-        
+
         setIsLoading(true);
         await instanceWallet.post('LoginCliente', body)
-        .then(async (response) => {
-            const data = response.data;
-            if (!data.message.includes('no tiene')) {
-                setIsAuthenticated(true);
-                setDocumentNumber(docWithOtp);
-                if(data.message.startsWith('ey')){
-                    await setData('lastLogin', data.data.lastLogin);
-                    setSessionToken(data.message);
-                    setModalidad(data.data.modalidad);
-                    data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home');
+            .then(async (response) => {
+                const data = response.data;
+                await AsyncStorage.removeItem('session_token');
+                await AsyncStorage.removeItem('number_account');
+                await AsyncStorage.removeItem('balance');
+                await AsyncStorage.removeItem('infoClient');
+                await AsyncStorage.removeItem('lastLogin');
+                await AsyncStorage.removeItem('listBanks');
+                if (!data.message.includes('no tiene')) {
+                    setIsAuthenticated(true);
+                    setDocumentNumber(docWithOtp);
+                    if (data.message.startsWith('ey')) {
+                        await setData('lastLogin', data.data.lastLogin);
+                        setSessionToken(data.message);
+                        setModalidad(data.data.modalidad);
+                        data.data.modalidad === '0' ? router.replace('/account') : router.replace('/home');
+                    } else {
+                        setShowOtpValidation(true);
+                    }
                 } else {
-                    setShowOtpValidation(true);
+                    setMessage('El usuario no se encuntra registrado en nuestro sistema.');
+                    setShowErrorModal(true);
                 }
-            } else {
-                 setMessage('El usuario no se encuntra registrado en nuestro sistema.');
+            })
+            .catch((err) => {
+                if (err && err.response.data) {
+                    setMessage(err.response.data.message);
+                } else {
+                    setMessage("Hubo un error al intentar autenticarse.");
+                }
                 setShowErrorModal(true);
-            }
-        })
-        .catch((err) => {
-            if (err && err.response.data) {
-                setMessage(err.response.data.message);
-            }  else {
-                setMessage("Hubo un error al intentar autenticarse.");
-            }
-            setShowErrorModal(true);
-        })
-        .finally(() => {
-            setIsLoading(false);
-        });
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
-    
+
     const fetchSessionToken = async () => {
         const token = await getSessionToken();
         const body = {
             token: token,
             no_docum: documentNumber
         }
-    
+
         await instanceWallet.post('time', body)
-        .then((response) => {
-            if(response.data.status = 200){
-                return 'ok';
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-            return 'no save';
-        })
+            .then((response) => {
+                if (response.data.status = 200) {
+                    return 'ok';
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                return 'no save';
+            })
     }
 
     const logout = async () => {
@@ -210,7 +222,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
         setShowErrorModal(true);
     };
 
-    const handleOnFinish = (modalidad?:string) => {
+    const handleOnFinish = (modalidad?: string) => {
         setModalidad(modalidad!);
         setShowOtpValidation(false);
         modalidad === '0' ? router.replace('/account') : router.replace('/home');
@@ -218,16 +230,16 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
 
     return (
         <>
-            <AuthenticationContext.Provider value={{ isAuthenticated, authenticate, authenticateWithoutFaceId, logout, documentNumber, password, modalidad, activeLoader: handleLoaderActive ,desactiveLoader: handleLoaderDesactive}}>
+            <AuthenticationContext.Provider value={{ isAuthenticated, authenticate, authenticateWithoutFaceId, logout, documentNumber, password, modalidad, activeLoader: handleLoaderActive, desactiveLoader: handleLoaderDesactive }}>
                 {children}
             </AuthenticationContext.Provider>
-             {showOtpValidation && (
-                <OtpValidationRegisterModal 
+            {showOtpValidation && (
+                <OtpValidationRegisterModal
                     type={0}
                     numberDocument={documentNumber!}
-                    onClose={handleOtpValidationResponse} 
-                    onView={()  =>  setShowOtpValidation(false)} 
-                    onFinish={handleOnFinish}                    
+                    onClose={handleOtpValidationResponse}
+                    onView={() => setShowOtpValidation(false)}
+                    onFinish={handleOnFinish}
                 />
             )}
             {showErrorModal && (
@@ -239,7 +251,7 @@ export default function AuthenticationProvider({ children }: AuthContextProps) {
                 />
             )}
             {isLoading && (
-               <Loader />
+                <Loader />
             )}
         </>
     );

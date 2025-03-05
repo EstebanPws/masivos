@@ -49,7 +49,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                 const data = response.data;
                 const accountValid = data.filter((account: any) => {
                     let accValid
-                    if(account.account[0].no_cuenta.startsWith('5400') || account.account[0].no_cuenta.startsWith('8760')){
+                    if(account.account[0].no_cuenta.startsWith('73000') || account.account[0].no_cuenta.startsWith('87300')){
                         accValid = account.account[0].no_cuenta;
                     }
                     return accValid
@@ -58,7 +58,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
                 const document = accountValid[0].docCli;
                 const account = accountValid[0].account[0].no_cuenta;
                 
-                if(account.startsWith('5400') || account.startsWith('8760')){
+                if(account.startsWith('73000') || account.startsWith('87300')){
                     const stateAccounts = await fetchListAccounts(document, account);
                     const activeAccounts = stateAccounts.filter((account: { estado: string; }) => account.estado === "A");
                     const uniqueAccounts = new Set<number>();
@@ -105,7 +105,7 @@ export default function ContactSend({onResponseContact }: ContactSendProps) {
         } catch (error) {
             console.log(error);
             
-            return "Hubo un error al intentar consultar los datos del número ingresado, por favor intentelo de nuevo en unos minutos.";
+            return "Hubo un error al intentar consultar los datos del número ingresado, por favor inténtalo de nuevo en unos minutos.";
         }
     };
 

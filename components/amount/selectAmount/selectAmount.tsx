@@ -39,8 +39,8 @@ export default function SelectAmount({valMax, valMin, comision, isConcepto = fal
                 </View>
             )}
             <Inputs 
-                label={`Ingrese el valor a ${type === 0 ? 'recargar' : type === 1 ? 'transferir' : type === 2 ? 'enviar' : 'retirar'}`}
-                placeholder="Ingrese el valor"
+                label={`Ingresa el valor a ${type === 0 ? 'recargar' : type === 1 ? 'transferir' : type === 2 ? 'enviar' : 'retirar'}`}
+                placeholder="Ingresa el valor"
                 isSecureText={false} 
                 isRequired 
                 onChangeText={amount.onChangeText}

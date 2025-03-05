@@ -204,7 +204,7 @@ console.log(state)
 
         fetchGetProccessAccount();
       } else {
-        setShowMessErrorPin(`Los datos ingresados no coinciden. ${'\n\n'} Por favor verifique los datos e intentelo nuevamente.`);
+        setShowMessErrorPin(`Los datos ingresados no coinciden. ${'\n\n'} Por favor verifica los datos e inténtalo nuevamente.`);
         setShowErrorPin(true);
       }
       setValidateAfterSettingPin(false);
@@ -317,7 +317,7 @@ console.log(state)
           onPress={() => {
             //router.push('/auth/signUp/selectTypeAccount');
             //router.push({pathname: '/auth/signUp/formRegister', params: { type: 8 }});
-            router.push('/auth/signUp/videoIdentification');
+            router.push({pathname: '/auth/signUp/videoIdentification', params: { type: 8 }});
             setShowConfirmInfo(false)
           }}
         >
@@ -364,7 +364,7 @@ console.log(state)
                 setValidationModal(false);
                 //router.push('/auth/signUp/selectTypeAccount');
                 //router.push({pathname: '/auth/signUp/formRegister', params: { type: 8 }});
-                router.push('/auth/signUp/videoIdentification');
+                router.push({pathname: '/auth/signUp/videoIdentification', params: { type: 8 }});
                 //router.replace('/')
               }
             }

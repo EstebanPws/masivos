@@ -48,7 +48,7 @@ export default function Page() {
       return;
     }
 
-    if (inputDocument.includes(".") || inputDocument.includes(",") || inputDocument.includes(" ")) {
+    if (inputDocument.includes(".") || inputDocument.includes(",") || inputDocument.includes("-") || inputDocument.includes("_") || inputDocument.includes(" ")) {
       setMessageError('Por favor ingresa tu número de documento; sin puntos, guiones o espacios, para continuar.');
       setShowError(true);
       return;
@@ -117,7 +117,7 @@ export default function Page() {
         <InfoModal
           isVisible={showAlertAuth}
           type="info"
-          message={`El número de documento ingresado no coincide con el de la sesión guardada. ${"\n\n"} Por favor, verifique los datos e inténtelo nuevamente.`}
+          message={`El número de documento ingresado no coincide con el de la sesión guardada. ${"\n\n"} Por favor, verifica los datos e inténtalo nuevamente.`}
           onPress={() => setShowAlertAuth(false)}
         />
       )}

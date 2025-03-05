@@ -32,7 +32,7 @@ export default function Page() {
   const fetchResetPin = async () => {
     if (!pin || !confirmPin || !newPin) {
         setTypeModal('error');
-        setMessageModal('Por favor ingrese todos los datos obligatorios (*)');
+        setMessageModal('Por favor ingresa todos los datos obligatorios (*)');
         setShowModal(true);
         return;
     }
@@ -103,7 +103,7 @@ export default function Page() {
     if (!documentNumber) {
       setShowModalConfirm(false);
       setTypeModal('error');
-      setMessageModal('Por favor ingrese número de identificación');
+      setMessageModal('Por favor ingresa número de identificación');
       setShowModal(true);
       setTypeResponse(2);
       return;

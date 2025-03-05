@@ -27,7 +27,7 @@ export default function Page() {
   const fetchResetPin = async () => {
     if (!pin || !confirmPin || !newPin) {
       setTypeModal('error');
-      setMessageModal('Por favor ingrese todos los datos obligatorios (*)');
+      setMessageModal('Por favor ingresa todos los datos obligatorios (*)');
       setShowModal(true);
       return;
     }

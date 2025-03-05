@@ -28,6 +28,19 @@ export const formatCurrency = (value) => {
     });
 };
 
+export const formatCurrencyTransaction = (value) => {
+  const stringValue = value?.toString() ?? '';
+  const newValue = stringValue.replace(/^\$/, '');
+  const numberValue = parseFloat(newValue.replaceAll('.', '').replaceAll(',', ''));
+  if (isNaN(numberValue)) return '';
+  const amountInUnits = numberValue / 100;
+  const formatted = amountInUnits.toFixed(2);
+  const [integerPart, decimalPart] = formatted.split('.');
+  const intFormatted = parseInt(integerPart, 10).toLocaleString('es-CO');
+
+  return `${intFormatted}.${decimalPart}`;
+};
+
 export const validateNumber = (value) => {
     const newValue = value.replace(/^\$/, '');
     const numberValue = parseFloat(newValue.replaceAll('.', ''));

@@ -86,7 +86,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Nombres"
-                    placeholder="Ingrese el valor"
+                    placeholder="Ingresa el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={names.onChangeText}
@@ -98,7 +98,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Apellidos"
-                    placeholder="Ingrese el valor"
+                    placeholder="Ingresa el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={surnames.onChangeText}
@@ -110,7 +110,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Número de documento"
-                    placeholder="Ingrese el valor"
+                    placeholder="Ingresa el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={document.onChangeText}
@@ -122,7 +122,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Correo"
-                    placeholder="Ingrese el valor"
+                    placeholder="Ingresa el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={email.onChangeText}
@@ -144,7 +144,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
             <View style={styles.mb5}>
                 <Inputs 
                     label="Celular"
-                    placeholder="Ingrese el valor"
+                    placeholder="Ingresa el valor"
                     isSecureText={false} 
                     isRequired 
                     onChangeText={phone.onChangeText}
@@ -159,7 +159,7 @@ export default function Pse({names, surnames,  document, email, address, phone, 
                     isRequired
                     label="Bancos"
                     data={listBanks}
-                    placeholder="Seleccione una opción"
+                    placeholder="Selecciona una opción"
                     onSelect={banks.onSelect}
                     selectedValue={banks.selectedValue}
                 />

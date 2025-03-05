@@ -137,7 +137,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                 isRequired
                                 label="Genero"
                                 data={listGenderType}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setGender)}
                                 selectedValue={gender}
                             />
@@ -149,7 +149,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                         isRequired
                                         label="Estado civil"
                                         data={listCivilStatusType}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setCivilStatus)}
                                         selectedValue={civilStatus}
                                     />
@@ -159,7 +159,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                         isRequired
                                         label="Nivel de educación"
                                         data={listEducationType}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setEducation)}
                                         selectedValue={education}
                                     />
@@ -169,7 +169,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                         isRequired
                                         label="Ocupación"
                                         data={listOcupationType}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setOcupation)}
                                         selectedValue={ocupation}
                                     />
@@ -181,7 +181,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                 isRequired
                                 label="Ciudad de residencia"
                                 data={listMunicipios}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setCiudMuni)}
                                 selectedValue={ciudMuni}
                             />
@@ -212,7 +212,7 @@ export default function InfoGeneral({type, listMunicipios, listPaises, onSubmit 
                                             isRequired
                                             label="Pais de nacimiento"
                                             data={listPaises}
-                                            placeholder="Seleccione una opción"
+                                            placeholder="Selecciona una opción"
                                             onSelect={handleSelect(setPaisNacimiento)}
                                             selectedValue={paisNacimiento}
                                         />

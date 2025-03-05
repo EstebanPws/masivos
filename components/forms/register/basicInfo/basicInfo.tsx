@@ -291,7 +291,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                             <DateSelect
                                 isRequired
                                 label="Fecha de nacimiento"
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleDateSelect(setBirthDate)}
                                 value={birthDate}
                             />
@@ -301,7 +301,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                                 isRequired
                                 label="Lugar de nacimiento"
                                 data={listMunicipios}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setPlaceBirthDate)}
                                 selectedValue={placeBirthDate}
                             />
@@ -331,7 +331,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                             <DateSelect
                                 isRequired
                                 label="Fecha de expedicón"
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleDateSelect(setBirthDateDoc)}
                                 value={birthDateDoc}
                             />
@@ -341,7 +341,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                                 isRequired
                                 label="Lugar de expedicón"
                                 data={listMunicipios}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setPlaceBirthDateDoc)}
                                 selectedValue={placeBirthDateDoc}
                             />
@@ -353,7 +353,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                                         isRequired
                                         label="Ciudad de residencia"
                                         data={listMunicipios}
-                                        placeholder="Seleccione una opción"
+                                        placeholder="Selecciona una opción"
                                         onSelect={handleSelect(setCiudMuniJur)}
                                         selectedValue={ciudMuniJur}
                                     />
@@ -409,7 +409,7 @@ export default function BasicInfo({type, listMunicipios, listPaises, onSubmit }:
                                             isRequired
                                             label="Pais de nacimiento"
                                             data={listPaises}
-                                            placeholder="Seleccione una opción"
+                                            placeholder="Selecciona una opción"
                                             onSelect={handleSelect(setPaisNacimiento)}
                                             selectedValue={paisNacimiento}
                                         />

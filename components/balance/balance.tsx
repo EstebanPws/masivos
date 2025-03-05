@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "react-native-paper";
-import { formatCurrency } from "@/utils/validationForms";
+import { formatCurrency, formatCurrencyTransaction } from "@/utils/validationForms";
 import styles from "./balance.styles";
 import { useAuth } from "../auth/context/authenticationContext";
 import { useTab } from "../auth/tabsContext/tabsContext";
@@ -26,6 +26,12 @@ export default function Balance({ isWelcome = true, onMount }: BalanceProps) {
     const [name, setName] = useState<string | null>('');
     const pathname = usePathname();
 
+    const formattedBalance = formatCurrencyTransaction(viewSaldo);
+    const wholePart = formattedBalance.slice(0, -2);
+    const lastTwoDigits = formattedBalance.slice(-2);
+    console.log(viewSaldo);
+    
+
     const fetchComplianceData = async () => {
         if (pathname === '/home') {
             activeLoader();
@@ -42,7 +48,7 @@ export default function Balance({ isWelcome = true, onMount }: BalanceProps) {
 
                     const account = await instanceWallet.post('getAccounts', bodyAccount);
                     console.log("account balance: ", account);
-                    
+
                     let cuenta: string = "";
 
                     if (account.data && account.data.data) {
@@ -95,13 +101,15 @@ export default function Balance({ isWelcome = true, onMount }: BalanceProps) {
                     }
 
                     const response = await instanceWallet.post('getBalance', bodySaldo);
+                    console.log("saldo: ", response);
+                    
 
                     const data = response.data.message;
                     if (data.includes('Saldo:')) {
                         const saldo = data.split(',');
                         const saldoFinal = saldo[1].replace('Saldo: ', '');
-                        await setBalance(saldoFinal);
-                        setViewSaldo(saldoFinal);
+                        await setBalance(`${saldoFinal},${saldo[2]}`);
+                        setViewSaldo(`${saldoFinal},${saldo[2]}`);
                     }
                     desactiveLoader();
                 } catch (error) {
@@ -143,7 +151,10 @@ export default function Balance({ isWelcome = true, onMount }: BalanceProps) {
                 end={{ x: 0, y: 0 }}
                 style={styles.balance}
             >
-                <Text variant="headlineSmall" style={[primaryBold, styles.text]}>{formatCurrency(viewSaldo)} COP</Text>
+                <Text variant="headlineSmall" style={[primaryBold, styles.text]}>
+                    {wholePart}
+                    <Text style={{ fontSize: 17, fontWeight: "900", color: "white" }}>{lastTwoDigits}</Text> COP
+                </Text>
             </LinearGradient>
             <Text variant="titleSmall" style={[primaryRegular, styles.text]}>Tu saldo</Text>
         </LinearGradient>

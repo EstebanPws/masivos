@@ -15,7 +15,7 @@ const tabs = [
     { name: 'Home', screen: '/home', icon: 'home' },
     { name: 'Services', screen: '/home/services/', icon: 'file' },
     { name: 'More', screen: '/home', icon: 'plus' },
-    { name: 'Card', screen: '/home/cards/', icon: 'credit-card' },
+    //{ name: 'Card', screen: '/home/cards/', icon: 'credit-card' },
     { name: 'Profile', screen: '/home/profile/', icon: 'account' }
 ];
 

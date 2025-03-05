@@ -70,9 +70,13 @@ export default function Page() {
   });
 
   const fetchDeleteAccount = async () => {
-    const balance = await getBalance();
+    const rawBalance = String(await getBalance());
+    
+    const balance = parseFloat(rawBalance.replace(/,/g, '').trim());
 
-    if(Number(balance) === 0){
+    console.log("balance limpio: ", balance);
+
+    if (balance === 0) {
       activeLoader();
       const infoClient = await getData('infoClient');
       const account = await getNumberAccount();
@@ -84,7 +88,7 @@ export default function Page() {
       }
 
       await instanceWallet.post('accountOperations', body)
-      .then(async (response) => {
+      .then(async (response) => {        
         const data = response.data;
        
         if(data.status === 200){
@@ -231,7 +235,7 @@ export default function Page() {
           onCancel={() => setShowModalConfirm(false)}>
             <View style={styles.centerContainer}>
               <Icon source={'information'} size={50} color={`${MD2Colors.blue700}`} />
-              <Text variant="labelLarge" style={primaryRegular}>¿Esta seguro de eliminar la cuenta?</Text>
+              <Text variant="labelLarge" style={primaryRegular}>¿Estás seguro de eliminar la cuenta?</Text>
             </View>
         </InfoModalConfirm>
       )}

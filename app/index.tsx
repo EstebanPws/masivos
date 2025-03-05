@@ -126,7 +126,7 @@ export default function Page() {
         <InfoModal
             isVisible={showAlertAuth}
             type="info"
-            message={`El número de documento ingresado no coincide con el de la sesión guradada. ${'\n\n'} Por favor verifique los datos e intentelo nuevamente.`}
+            message={`El número de documento ingresado no coincide con el de la sesión guradada. ${'\n\n'} Por favor verifica los datos e inténtalo nuevamente.`}
             onPress={() => setShowAlertAuth(false)}
         />
       )}

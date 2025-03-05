@@ -37,10 +37,10 @@ interface ContactSelect {
 
 const expo = Constants.expoConfig?.name || '';
 const extra = Constants.expoConfig?.extra || {};
-const {colorPrimary} = extra;
+const { colorPrimary } = extra;
 
 export default function Page() {
-    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab} = useTab();
+    const { setActiveTab, goBack, activeLoader, desactiveLoader, activeTab } = useTab();
     const [valRecharge, setValRecharge] = useState('');
     const [valMax] = useState('2000000');
     const [valMin] = useState('10000');
@@ -54,7 +54,7 @@ export default function Page() {
     const [contactInfo, setContactInfo] = useState<any>(null);
     const [typeFinish, setTypeFinish] = useState(0);
     const [titleModal, setTitleModal] = useState<string | null>(null);
-    const [nullView, setNullView] = useState(true); 
+    const [nullView, setNullView] = useState(true);
     const [showOtpValidation, setShowOtpValidation] = useState(false);
     const [idTx, setIdTx] = useState('');
     const [disabledSaveContact, setDisabledSaveContact] = useState(false);
@@ -65,46 +65,44 @@ export default function Page() {
         const infoClient = await getData('infoClient');
         const account = await getNumberAccount();
         const body = {
-           tipo_oper_tx:"3",
-           orig_ope:"13",
-           tipo_mov_ori:"",
-           tipo_mov_des:"",
-           prod_orig: account?.startsWith('0') ? account.slice(1) : account,
-           doc_prod_orig: `${infoClient.numDoc}`,
-           nom_orig:`${infoClient.names} ${infoClient.surnames}`,
-           id_tx_entidad: generateUniqueId(),
-           prod_dest:`${contactInfo.no_cuenta}`,
-           doc_prod_dest: `${contactInfo.docCli}`,
-           nom_dest:`${`${contactInfo.nombres1} ${contactInfo.nombres2} ${contactInfo.apellido1} ${contactInfo.apellido2}`}`,
-           descrip_tx: "Envio de billetera a billetera",
-           valor_tx: validateNumber(valRecharge),
-           tipo_canal_proce:"04",
-           valor_comision: Number(comision)
+            tipo_oper_tx: "3",
+            orig_ope: "13",
+            tipo_mov_ori: "",
+            tipo_mov_des: "",
+            prod_orig: account?.startsWith('0') ? account.slice(1) : account,
+            doc_prod_orig: `${infoClient.numDoc}`,
+            nom_orig: `${infoClient.names} ${infoClient.surnames}`,
+            id_tx_entidad: generateUniqueId(),
+            prod_dest: `${contactInfo.no_cuenta}`,
+            doc_prod_dest: `${contactInfo.docCli}`,
+            nom_dest: `${`${contactInfo.nombres1} ${contactInfo.nombres2} ${contactInfo.apellido1} ${contactInfo.apellido2}`}`,
+            descrip_tx: "Envio de billetera a billetera",
+            valor_tx: validateNumber(valRecharge),
+            tipo_canal_proce: "04",
+            valor_comision: Number(comision)
         }
-        
+
         await instanceWallet.post('atc', body)
-        .then((response) => {
-            const data = response.data;
-            if(data.status === 200 && data.message.includes('exito')){
-                setIdTx(data.data.respuesta);
-                setShowOtpValidation(true);
-            } else {
-                setTitleModal(null);
-                setMessageError('La transacción ha sido rechazada. Por favor intentelo de nuevo más tarde.');
+            .then((response) => {
+                const data = response.data;
+                if (data.status === 200 && data.message.includes('exito')) {
+                    setIdTx(data.data.respuesta);
+                    setShowOtpValidation(true);
+                } else {
+                    setMessageError('La transacción ha sido rechazada. Por favor inténtalo de nuevo más tarde.');
+                    setShowError(true);
+                    setTypeMessage('error');
+                    setTypeFinish(0);
+                }
+                desactiveLoader();
+            })
+            .catch((error) => {
+                setMessageError('Hubo un error al intentar realizar la transacción.');
                 setShowError(true);
                 setTypeMessage('error');
                 setTypeFinish(0);
-            }
-            desactiveLoader();
-        })
-        .catch((error) => {
-            setTitleModal(null);
-            setMessageError('Hubo un error al intentar realizar la transacción.');
-            setShowError(true);
-            setTypeMessage('error');
-            setTypeFinish(0);
-            desactiveLoader();
-        });
+                desactiveLoader();
+            });
     }
 
     const inputAmount: Input = {
@@ -118,9 +116,9 @@ export default function Page() {
 
     const handleGesture = (event: any) => {
         if (event.nativeEvent.translationX > 100) {
-           handleBackStep
+            handleBackStep
         }
-      };
+    };
 
     const panResponder = PanResponder.create({
         onMoveShouldSetPanResponder: () => true,
@@ -136,29 +134,37 @@ export default function Page() {
 
     useEffect(() => {
         setNullView(true);
-        if(activeTab === '/home/sendMoney/'){
+        if (activeTab === '/home/sendMoney/') {
             setShowContactList(true);
             setStep(0);
             setNullView(false);
         }
-     }, [activeTab]) 
+    }, [activeTab])
 
     const handleNext = async (type: number) => {
-        if(type === 0){
+        if (type === 0) {
             setShowContactList(false);
             setStep(1);
-        } else if (type === 1){
-            const balance = await getBalance();
+        } else if (type === 1) {
+            const rawBalance = String(await getBalance());
 
-            if(!valRecharge){
+            const balance = parseFloat(rawBalance.replace(/,/g, '').trim());
+
+            if (!valRecharge) {
                 setMessageError('Por favor ingresa un monto valido.');
                 setShowError(true);
                 setTypeFinish(0);
-                setTitleModal(null);
                 return;
             }
 
-            if((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance) ){
+            if ((Number(validateNumber(valRecharge)) + Number(comision)) > Number(balance)) {
+                setTypeMessage('error');
+                setMessageError('Saldo insuficiente');
+                setShowError(true);
+                return;
+            }
+
+            if (Number(balance) === 0 || (Number(validateNumber(valRecharge)) + Number(comision)) === 0) {
                 setTypeMessage('error');
                 setTitleModal(null);
                 setMessageError('Saldo insuficiente');
@@ -169,7 +175,7 @@ export default function Page() {
             setStep(2);
         } else if (type === 2) {
             fetchSendTransaction();
-        }else {
+        } else {
             setValRecharge('');
             setShowContactList(true);
             setStep(0);
@@ -198,7 +204,6 @@ export default function Page() {
             setMessageError(response);
             setShowError(true);
             setTypeMessage('error');
-            setTitleModal(null);
         } else {
             const contact: ContactSelect = {
                 name: `${response.nombres1} ${response.nombres2} ${response.apellido1} ${response.apellido2}`,
@@ -211,7 +216,7 @@ export default function Page() {
     }
 
     const handleFinishTransaction = (type: number) => {
-        if(type === 1){
+        if (type === 1) {
             router.push('/home');
         }
 
@@ -219,8 +224,7 @@ export default function Page() {
     }
 
     const handleLimits = () => {
-        setTitleModal('Límites transaccionales');
-        setMessageError(`¿Cuáles son los topes y limites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera puedes contar  un saldo  de 210.50 UVT mensuales legales vigentes, es decir 9,907,182 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,059,225 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
+        setMessageError(`Límites transaccionales\n\n\n¿Cuáles son los topes y límites de mi Deposito de bajo monto?\n\n ${expo} opera como corresponsal digital del Banco Cooperativo Coopcentral, entidad que a través de ${expo}, ofrece un depósito de bajo monto (DBM), por lo tanto, en tu Billetera ${expo} puedes contar un saldo de 210.50 UVT mensuales legales vigentes, es decir 10,482,689.50 pesos colombianos. Estos montos, son establecidos por normatividad legal, según el decreto 222 del 2020, de igual forma por ser un depósito de bajo monto (DBM), puedes realizar movimientos acumulados por por mes hasta 210.50 UVT.\n\n¿Mi billetera ${expo} está exento de 4xmil (Gravamen a los movimientos financieros- GMF)?\n\nCon ${expo} puedes realizar transacciones exentas de 4xmil hasta por 65 Unidades de Valor Tributario (UVT) equivalentes a 3,236,935 de manera mensual. Una vez superes este monto, deberás realizar el pago del GMF por las transacciones realizadas.`);
         setShowError(true);
         setTypeMessage('info');
     }
@@ -231,49 +235,46 @@ export default function Page() {
         setShowError(true);
     };
 
-    const handleOnFinish = (modalidad?:string) => {
-        if(modalidad === '1') {
-         setShowOtpValidation(false);
-         setTitleModal(null);
-         setMessageError('Transacción completada con éxito.');
-         setShowError(true);
-         setTypeMessage('success');
+    const handleOnFinish = (modalidad?: string) => {
+        if (modalidad === '1') {
+            setShowOtpValidation(false);
+            setMessageError('Transacción completada con éxito.');
+            setShowError(true);
+            setTypeMessage('success');
 
-         setValRecharge('');
-         setShowContactList(true);
-         setStep(0);
-         setTypeFinish(1);
-         setDisabledSaveContact(false);
+            setValRecharge('');
+            setShowContactList(true);
+            setStep(0);
+            setTypeFinish(1);
+            setDisabledSaveContact(false);
         }
     }
 
     const saveContact = async () => {
         const { status } = await Contacts.requestPermissionsAsync();
-        
+
         if (status === 'granted') {
             const contact = {
                 name: `${contactSelect?.name || "Nombre desconocido"}`,
                 [Contacts.Fields.FirstName]: contactSelect?.name || "Nombre desconocido",
                 [Contacts.Fields.LastName]: "",
                 [Contacts.Fields.PhoneNumbers]: [
-                  { 
-                    number: contactSelect?.phone || "",
-                    isPrimary: true, 
-                    label: 'mobile'
-                  }
+                    {
+                        number: contactSelect?.phone || "",
+                        isPrimary: true,
+                        label: 'mobile'
+                    }
                 ],
                 contactType: Contacts.ContactTypes.Person,
-              };
-        
+            };
+
             try {
                 await Contacts.addContactAsync(contact);
-                setTitleModal(null);
                 setMessageError('El contacto se guardo con éxito.');
                 setShowError(true);
                 setTypeMessage('success');
                 setDisabledSaveContact(true);
             } catch (error) {
-                setTitleModal(null);
                 setMessageError('Error al guardar el contacto.');
                 setShowError(true);
                 setTypeMessage('error');
@@ -281,19 +282,18 @@ export default function Page() {
                 console.error(error);
             }
         } else {
-            setTitleModal(null);
             setMessageError('No tienes permiso para guardar contactos.');
             setShowError(true);
             setTypeMessage('error');
             setDisabledSaveContact(false);
         }
     };
-      
-    if(nullView){
+
+    if (nullView) {
         return null;
     }
 
-    return(
+    return (
         <ViewFadeIn  {...panResponder.panHandlers} isWidthFull>
             <HeaderForm
                 onBack={() => handleBackStep()}
@@ -310,8 +310,8 @@ export default function Page() {
                                 transition={{ type: 'timing', duration: 300 }}
                                 style={{ width: '100%' }}
                             >
-                                <TouchableOpacity style={{position: 'absolute', right: 30, top: 10, zIndex: 9}} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
-                                    <Icon 
+                                <TouchableOpacity style={{ position: 'absolute', right: 30, top: 10, zIndex: 9 }} onPress={() => setViewBalanceComplete(!viewBalanceComplete)}>
+                                    <Icon
                                         source={'eye-off'}
                                         size={24}
                                         color={viewBalanceComplete ? "#fff" : colorPrimary}
@@ -332,7 +332,7 @@ export default function Page() {
                     />
                 </View>
             )}
-            <View style={[styles.container, {height: viewBalanceComplete ? "52%" : "75%"}]}>
+            <View style={[styles.container, { height: viewBalanceComplete ? "52%" : "75%" }]}>
                 {(step === 1 || step === 2) && (
                     <AnimatePresence>
                         {!viewBalanceComplete && (
@@ -341,9 +341,9 @@ export default function Page() {
                                 animate={{ opacity: 1, translateY: 20 }}
                                 exit={{ opacity: 0, translateY: 0 }}
                                 transition={{ type: 'timing', duration: 300 }}
-                                style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20}}
+                                style={{ width: '100%', alignItems: 'flex-end', marginBottom: 50, marginTop: -20 }}
                             >
-                                <ButtonsSecondary 
+                                <ButtonsSecondary
                                     label="Ver mi saldo"
                                     onPress={() => setViewBalanceComplete(!viewBalanceComplete)}
                                 />
@@ -356,12 +356,12 @@ export default function Page() {
                     extraHeight={Platform.select({ ios: 100, android: 120 })}
                 >
                     <ScrollView showsVerticalScrollIndicator={false}>
-                        {showContactList &&(
-                            <ContactList 
-                                onResponseContact={handleResponseContact} 
+                        {showContactList && (
+                            <ContactList
+                                onResponseContact={handleResponseContact}
                             />
                         )}
-                        {(!showContactList && step === 1) &&(
+                        {(!showContactList && step === 1) && (
                             <SelectAmount
                                 comision={comision}
                                 amount={inputAmount}
@@ -370,32 +370,32 @@ export default function Page() {
                             />
                         )}
                         {step === 2 && (
-                            <ConfirmBankTransfer 
-                                amount={valRecharge} 
-                                comision={comision} 
-                                names={contactSelect?.name} 
+                            <ConfirmBankTransfer
+                                amount={valRecharge}
+                                comision={comision}
+                                names={contactSelect?.name}
                                 phone={contactSelect?.phone}
                             />
                         )}
                     </ScrollView>
                     {!showContactList && (
                         <>
-                            <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain"/>
+                            <Image style={styles.image} source={require('@/assets/images/general/logo_coopcentral.png')} resizeMode="contain" />
                             {step === 2 && (
-                                 <View style={[styles.mb5, styles.row]}>
-                                    <ButtonsPrimary 
+                                <View style={[styles.mb5, styles.row]}>
+                                    <ButtonsPrimary
                                         label={'Guardar contacto'}
                                         onPress={() => saveContact()}
                                         disabled={disabledSaveContact}
                                     />
-                                 </View>
+                                </View>
                             )}
                             <View style={styles.row}>
-                                <ButtonsPrimary 
+                                <ButtonsPrimary
                                     label={'Volver'}
                                     onPress={handleBackStep}
                                 />
-                                <ButtonsPrimary 
+                                <ButtonsPrimary
                                     label={'Continuar'}
                                     onPress={() => handleNext(step === 1 ? 1 : step === 2 ? 2 : 3)}
                                 />
@@ -405,20 +405,20 @@ export default function Page() {
                 </KeyboardAwareScrollView>
             </View>
             {showOtpValidation && (
-                <OtpValidationRegisterModal 
+                <OtpValidationRegisterModal
                     type={2}
                     id={idTx}
-                    onClose={handleOtpValidationResponse} 
-                    onView={()  =>  setShowOtpValidation(false)} 
-                    onFinish={handleOnFinish}                    
+                    onClose={handleOtpValidationResponse}
+                    onView={() => setShowOtpValidation(false)}
+                    onFinish={handleOnFinish}
                 />
             )}
-            {showError &&(
-                <InfoModal 
-                    type={typeMessage} 
-                    message={messageError} 
-                    onPress={() => handleFinishTransaction(typeFinish)} 
-                    isVisible={showError}                    
+            {showError && (
+                <InfoModal
+                    type={typeMessage}
+                    message={messageError}
+                    onPress={() => handleFinishTransaction(typeFinish)}
+                    isVisible={showError}
                 />
             )}
         </ViewFadeIn>

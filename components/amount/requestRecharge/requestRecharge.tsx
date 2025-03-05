@@ -26,7 +26,7 @@ export default function RequestRecharge({phone, onPress}:RequestRechargeProps) {
             </View>
             <Inputs 
                 label="Introduce el número de celular"
-                placeholder="Ingrese el valor"
+                placeholder="Ingresa el valor"
                 isSecureText={false} 
                 isRequired 
                 onChangeText={phone.onChangeText}

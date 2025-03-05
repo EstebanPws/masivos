@@ -97,7 +97,7 @@ export default function Page() {
                   isRequired
                   label="Ciudad de residencia"
                   data={listMunicipios}
-                  placeholder="Seleccione una opción"
+                  placeholder="Selecciona una opción"
                   onSelect={handleSelect(setCiudMuni)}
                   selectedValue={ciudMuni}
                 />

@@ -48,6 +48,8 @@ export default function Page() {
     const [finishRegister, setFinishRegister] = useState(0);
     const [errorExistAccounts, setErrorExistsAccounts] = useState(0)
     const { type } = useLocalSearchParams();
+    const [isOtpValidated, setIsOtpValidated] = useState(false);
+
 
     const timeOut = 600;
     const totalSteps = type === '8' ? 3 : 6;
@@ -146,7 +148,10 @@ export default function Page() {
                 const change = await getData("changeData");
 
                 if (!savedData || change) {
-                    setValidationModal(true);
+                    if (!isOtpValidated) {
+                        setValidationModal(true);
+                        return; // Detener aquí hasta que se valide OTP
+                    }
                 } else {
                     setValidationModal(false);
                 }
@@ -229,24 +234,24 @@ export default function Page() {
                         setIsLoading(false);
                     })
                     .catch(err => {
-                            if (err.response) {
-                                if (err.response.data.message) {
-                                    const error = err.response.data.message;
-                                    const errorCode = extractErrorCode(error);
-                                    if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
-                                        setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
+                        if (err.response) {
+                            if (err.response.data.message) {
+                                const error = err.response.data.message;
+                                const errorCode = extractErrorCode(error);
+                                if (errorMessageRegister[errorCode as keyof typeof errorMessageRegister]) {
+                                    setMessageError(errorMessageRegister[errorCode as keyof typeof errorMessageRegister]);
+                                } else {
+                                    if (err.response.data.message) {
+                                        const error = err.response.data.message;
+                                        const message = error.includes('-') ? error.split('-') : error;
+                                        setMessageError(`${Array.isArray(message) && message.length > 2 ? message[1] + " - " + message[2] : "Hubo un error al intentar crear tú depósito en este momento, por favor inténtalo de nuevo en unos minutos."}`);
+                                        console.log("RESPONSE MENSSAGE: ", message[1], " - ", message[2])
                                     } else {
-                                        if (err.response.data.message) {
-                                            const error = err.response.data.message;
-                                            const message = error.includes('-') ? error.split('-') : error;
-                                            setMessageError(`${Array.isArray(message) && message.length > 2 ? message[1] + " - " + message[2] : "Hubo un error al intentar crear su depósito en este momento, por favor inténtelo de nuevo en unos minutos."}`);
-                                            console.log("RESPONSE MENSSAGE: ", message[1], " - ", message[2])
-                                        } else {
-                                            setMessageError("Hubo un error al intentar enviar el formulario");
-                                        }
+                                        setMessageError("Hubo un error al intentar enviar el formulario");
                                     }
                                 }
-                            } else {
+                            }
+                        } else {
                             setMessageError("Hubo un error al intentar enviar el formulario");
                         }
                         setTypeResponse('error');
@@ -299,7 +304,7 @@ export default function Page() {
         if (type === "error") {
             setErrorExistsAccounts(0);
         }
-        setStep(0);
+        //setStep(0);
         setShowError(true);
     };
 

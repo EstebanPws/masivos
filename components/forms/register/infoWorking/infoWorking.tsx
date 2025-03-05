@@ -221,7 +221,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
                                             isRequired
                                             label="Actividad economica"
                                             data={listCiiu}
-                                            placeholder="Seleccione una opción"
+                                            placeholder="Selecciona una opción"
                                             onSelect={handleSelectCiiu(setActiCiiu)}
                                             selectedValue={actiCiiu}
                                         />
@@ -245,7 +245,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
                                                 isRequired
                                                 label="Ciudad"
                                                 data={listMunicipios}
-                                                placeholder="Seleccione una opción"
+                                                placeholder="Selecciona una opción"
                                                 onSelect={handleSelect(setCiuEmpreNeg)}
                                                 selectedValue={ciuEmpreNeg}
                                             />
@@ -284,7 +284,7 @@ export default function InfoWorking({type = 0, listMunicipios, listCiiu, onSubmi
                             <DateSelect
                                 isRequired
                                 label="Mes y año de corte de la información financiera suministradas"
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleDateSelect(setMesInfoFinan)}
                                 value={mesInfoFinan}
                             />

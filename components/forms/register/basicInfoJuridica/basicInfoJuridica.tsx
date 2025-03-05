@@ -220,7 +220,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                                 isRequired
                                 label="Ciudad"
                                 data={listMunicipios}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setCiuEmpreNeg)}
                                 selectedValue={ciuEmpreNeg}
                             />
@@ -263,7 +263,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                                 isRequired
                                 label="Actividad economica"
                                 data={listCiiu}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelectCiiu(setActiCiiu)}
                                 selectedValue={actiCiiu}
                             />
@@ -273,7 +273,7 @@ export default function BasicInfoJuridica({listMunicipios,listCiiu,  onSubmit }:
                                 isRequired
                                 label="Tipo de sociedad"
                                 data={listAssociationType}
-                                placeholder="Seleccione una opción"
+                                placeholder="Selecciona una opción"
                                 onSelect={handleSelect(setTipoSociedad)}
                                 selectedValue={tipoSociedad}
                             />
