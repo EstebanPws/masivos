@@ -24,7 +24,7 @@ interface AddressDianProps {
     selectedValue: any;
     disabled?: boolean;
 }
-export default function AddressDian({ isRequired = false, label, placeholder, onSelect, selectedValue = '', disabled = false}: AddressDianProps) {
+export default function AddressDian({ isRequired = false, label, placeholder, onSelect, selectedValue = '', disabled = false }: AddressDianProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedType, setSelectedType] = useState('');
@@ -47,7 +47,7 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
         const allFieldsFilled = selectedType && selectedNumber && selectedLetter;
         if (!!allFieldsFilled === false) {
             setError(true);
-            return;    
+            return;
         }
 
         const fullAddress = `${selectedType} ${selectedNumber} ${selectedLetter} ${selectedSuffix} ${selectedExtra ? `, ${selectedExtra}` : ''} ${selectedExtra1 ? `, ${selectedExtra1}` : ''} ${selectedExtra2} ${selectedExtra3} ${selectedExtra4}`;
@@ -80,13 +80,13 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                 <View style={styles.modalContainer}>
                     <ScrollView>
                         <View style={styles.mb5}>
-                            <SearchSelect 
-                                label={'Tipo de vía'} 
-                                data={listStreetType} 
-                                placeholder={'Selecciona una opción'} 
-                                onSelect={handleSelect(setSelectedType)} 
-                                selectedValue={selectedType}  
-                                isRequired                 
+                            <SearchSelect
+                                label={'Tipo de vía'}
+                                data={listStreetType}
+                                placeholder={'Seleccione una opción'}
+                                onSelect={handleSelect(setSelectedType)}
+                                selectedValue={selectedType}
+                                isRequired
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -95,9 +95,9 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                                 onChangeText={setSelectedNumber}
                                 label='Vía Principal'
                                 placeholder="Ej: 32, 32A etc."
-                                keyboardType="default" 
-                                isSecureText={false} 
-                                isRequired={true}                    
+                                keyboardType="default"
+                                isSecureText={false}
+                                isRequired={true}
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -107,75 +107,75 @@ export default function AddressDian({ isRequired = false, label, placeholder, on
                                 value={selectedLetter}
                                 onChangeText={setSelectedLetter}
                                 label='Prefijo'
-                                placeholder="Ej: 17 151" 
-                                isSecureText={false}                    
+                                placeholder="Ej: 17 151"
+                                isSecureText={false}
                             />
                         </View>
                         <View style={styles.mb5}>
-                            <SearchSelect 
-                                label={'Sufijo'} 
-                                data={listSuffixType} 
-                                placeholder={'Selecciona una opción'} 
-                                onSelect={handleSelect(setSelectedSuffix)} 
-                                selectedValue={selectedSuffix}  
-                                isRequired={false}               
+                            <SearchSelect
+                                label={'Sufijo'}
+                                data={listSuffixType}
+                                placeholder={'Seleccione una opción'}
+                                onSelect={handleSelect(setSelectedSuffix)}
+                                selectedValue={selectedSuffix}
+                                isRequired={false}
                             />
                         </View>
                         <View style={styles.mb5}>
                             <Inputs
-                                label='Complemento' 
+                                label='Complemento'
                                 isRequired={false}
                                 keyboardType="default"
                                 value={selectedExtra}
                                 onChangeText={setSelectedExtra}
-                                placeholder="Ej: Conjunto, Residencia etc." 
-                                isSecureText={false}                    
+                                placeholder="Ej: Conjunto, Residencia etc."
+                                isSecureText={false}
                             />
-                            <SearchSelect 
-                                label='' 
-                                data={listAddressOtherType} 
-                                placeholder={'Selecciona una opción'} 
-                                onSelect={handleSelect(setSelectedExtra1)} 
-                                selectedValue={selectedExtra1}                 
+                            <SearchSelect
+                                label=''
+                                data={listAddressOtherType}
+                                placeholder={'Seleccione una opción'}
+                                onSelect={handleSelect(setSelectedExtra1)}
+                                selectedValue={selectedExtra1}
                             />
                             <Inputs
                                 isRequired={false}
                                 keyboardType="default"
                                 value={selectedExtra2}
                                 onChangeText={setSelectedExtra2}
-                                placeholder="Ej: 2, 45 etc" 
-                                isSecureText={false}                    
+                                placeholder="Ej: 2, 45 etc"
+                                isSecureText={false}
                             />
-                            <SearchSelect 
-                                label='' 
-                                data={listAddressOtherType} 
-                                placeholder={'Selecciona una opción'} 
-                                onSelect={handleSelect(setSelectedExtra3)} 
-                                selectedValue={selectedExtra3}                 
+                            <SearchSelect
+                                label=''
+                                data={listAddressOtherType}
+                                placeholder={'Seleccione una opción'}
+                                onSelect={handleSelect(setSelectedExtra3)}
+                                selectedValue={selectedExtra3}
                             />
                             <Inputs
                                 isRequired={false}
                                 keyboardType="default"
                                 value={selectedExtra4}
                                 onChangeText={setSelectedExtra4}
-                                placeholder="Ej: 2, 45 etc" 
-                                isSecureText={false}                    
+                                placeholder="Ej: 2, 45 etc"
+                                isSecureText={false}
                             />
                         </View>
                     </ScrollView>
                     <View style={styles.row}>
-                        <ButtonsPrimary
-                            label='Confirmar'
-                            onPress={handleConfirm}
-                        />
                         <ButtonsSecondary
                             label='Cerrar'
                             onPress={toggleModal}
                         />
+                        <ButtonsPrimary
+                            label='Confirmar'
+                            onPress={handleConfirm}
+                        />
                     </View>
                 </View>
                 {error && (
-                    <InfoModal 
+                    <InfoModal
                         type='info'
                         message='Por favor ingresa los campos requeridos.'
                         isVisible={error}

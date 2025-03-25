@@ -13,6 +13,7 @@ import instanceMunicipios from "@/services/instanceMunicipio";
 import InfoModal from "@/components/modals/infoModal/infoModal";
 import Loader from "@/components/loader/loader";
 import { getData } from "@/utils/storageUtils";
+import instanceWallet from "@/services/instanceWallet";
 
 interface List {
   name: string;
@@ -43,31 +44,28 @@ export default function Page() {
 
   const fetchData = async () => {
     try {
-        activeLoader();
-        const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
-        const municipiosData = municipiosResponse.data;
+      activeLoader();
+      const municipiosResponse = await instanceWallet.get('municipios');
+      const municipiosData = municipiosResponse.data.message;
 
-        const transformedMunicipios: List[] = municipiosData.map((item: any) => {
-            const municipio = item.municipio;
-            const departamento = item.departamento;
-            let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
+      const transformedMunicipios: List[] = municipiosData.map((item: any) => {
+        const municipio = item.municipio;
+        const departamento = item.departamento;
+        let codigoDane = item.c_digo_dane_del_municipio;
 
-            if (codigoDane.startsWith('5') || codigoDane.startsWith('8')) {
-                codigoDane = `0${codigoDane}`;
-            }
+        return {
+          name: `${municipio} - ${departamento}`,
+          value: codigoDane
+        };
+      });
 
-            return {
-                name: `${municipio} - ${departamento}`,
-                value: codigoDane
-            };
-        });
 
-        setListMunicipios(transformedMunicipios);
-    } catch (err) {  
-        setMessageError("Ha ocurrido un error al intentar cargar los datos.");
-        setShowError(true);
+      setListMunicipios(transformedMunicipios);
+    } catch (err) {
+      setMessageError("Ha ocurrido un error al intentar cargar los datos.");
+      setShowError(true);
     } finally {
-       desactiveLoader();
+      desactiveLoader();
     }
   };
   

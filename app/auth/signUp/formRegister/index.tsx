@@ -64,27 +64,20 @@ export default function Page() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const municipiosResponse = await instanceMunicipios.get('xdk5-pm3f.json?$query=select%20*%2C%20%3Aid%20limit%201300');
-                const municipiosData = municipiosResponse.data;
+                const municipiosResponse = await instanceWallet.get('municipios');
+                const municipiosData = municipiosResponse.data.message;
+
 
                 const transformedMunicipios: List[] = municipiosData.map((item: any) => {
                     const municipio = item.municipio;
                     const departamento = item.departamento;
-                    let codigoDane = item.c_digo_dane_del_municipio.replaceAll('.', '');
-                    const codigoDepartamento = item.c_digo_dane_del_departamento;
-
-                    if (codigoDepartamento === '5' || codigoDepartamento === '8') {
-                        codigoDane = `0${codigoDane}`;
-                    } else if (codigoDane === '2529' || codigoDane === '2543' || codigoDane === '8501') {
-                        codigoDane = `${codigoDane}0`;
-                    }
+                    let codigoDane = item.c_digo_dane_del_municipio;
 
                     return {
                         name: `${municipio} - ${departamento}`,
                         value: codigoDane
                     };
                 });
-
 
                 setListMunicipios(transformedMunicipios);
 
