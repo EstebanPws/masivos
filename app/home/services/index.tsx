@@ -649,7 +649,6 @@ export default function Page() {
                               <Icon
                                 source={{ uri: selectedOption.image }}
                                 size={28}
-                              
                               />
                             </View>
                             <Text style={primaryBold}>{selectedOption.name}</Text>
